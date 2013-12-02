@@ -3,20 +3,38 @@
    {
   /* Global section */
 
+<<<<<<< HEAD
+  /* Prefered server URL */
+  "serverUrl" : "http://www.example.be",
+
+
+  /* Root path of site contents  */
+  "root_path" : "/var/www/demo_site",
+=======
   /* Root path of site contents  */
   /*
   "root_path" : "/var/www/wt/resources/wittyshare/dev_site",
   */
   "root_path" : "/var/www/wt/resources/wittyshare/dev_site",
+>>>>>>> 392122dedaed741fed9a2eb27a34d1c57bcbc4fd
 
   /* Use Daemon compression */
   "enable_compression" : "true",
 
   /* Make site public or no (Give access to everyone to everything */
+<<<<<<< HEAD
+  "public_site" : "true",
+  /* Enable login window if public site and request is internal" */
+  "login_window" : "false", 
+
+  /* Home page location */
+  /*"home_page" : "/index.fhtml",*/
+=======
   "public_site" : "false",
 
   /* Home page location */
   "home_page" : "index.fhtml",
+>>>>>>> 392122dedaed741fed9a2eb27a34d1c57bcbc4fd
 
   /* Use GAMIN to monitor site content */
   "monitoring": "true",
@@ -25,17 +43,29 @@
   "daemon"	: "true",
 
   /* Administrator group name */
+<<<<<<< HEAD
+  "admin_group" : "Administrators",
+
+  /* Editor group name */
+  "editor_group" : "Editors",
+=======
   "admin_group" : "Admin",
 
   /* Editor group name */
   "editor_group" : "ezEditors",
+>>>>>>> 392122dedaed741fed9a2eb27a34d1c57bcbc4fd
 
   /* If monitor = false, will refresh the tree every x sec. 
    otherwise on each timout, it will check for modifications 
    and update the tree if necessary 
    if monitor = false, and x=0 the tree will never be updated.
   */
+<<<<<<< HEAD
+  "refresh_delay" : "10",
+  "tree_check_delay" : "10",
+=======
   "refresh_delay" : "30",
+>>>>>>> 392122dedaed741fed9a2eb27a34d1c57bcbc4fd
                                                   
   /* Max menu depth : 0 means no max depth*/
   "max_menu_depth"  : "0",
@@ -44,7 +74,12 @@
   "inherit_rights_from_parent" :  "false",
 
   "log_level" : "debug",                          /* Log level : debug, info, warn, error */
+<<<<<<< HEAD
+  "log_path" : "/tmp/fsdaemon.log",                          /* Log location : STDOUT, STDERR, or any file path */
+  //"log_path" : "STDOUT",                          /* Log location : STDOUT, STDERR, or any file path */
+=======
   "log_path" : "STDOUT",                          /* Log location : STDOUT, STDERR, or any file path */
+>>>>>>> 392122dedaed741fed9a2eb27a34d1c57bcbc4fd
 
 
   /* Seach module */
@@ -54,19 +89,36 @@
   "ldap":
    {
   /* LDAP section */
+<<<<<<< HEAD
+  "search_base_uid" : "o=Example,c=be",      /* LDAP search base uid */
+  "search_base_groups" : "o=Example,c=be",   /* LDAP search base groups */
+  "server" : "ldap.example.be",              /* LDAP server */
+  "server_name" : "Example Ldap",            /* LDAP server name */
+=======
   "search_base_uid" : "o=Eurofer,c=be",      /* LDAP search base uid */
   "search_base_groups" : "o=Eurofer,c=be",   /* LDAP search base groups */
   "server" : "ldap.eurofer.be",              /* LDAP server */
   "server_name" : "Eurofer Ldap",            /* LDAP server name */
+>>>>>>> 392122dedaed741fed9a2eb27a34d1c57bcbc4fd
   "uid" : "uid",                             /* LDAP uid */
   "sn_key" : "sn",                           /* LDAP sn key */
   "gn_key" : "givenName",                    /* LDAP givenName */
   "mail_key" : "mail",                       /* LDAP mail key */
+<<<<<<< HEAD
+  "groups_key" : "ListsMember",           /* LDAP groups key */
+  "filter_groups": "(&(uid=$1))",            /* LDAP filter groups */
+  "filter_uid" : "(&(uid=$1))",               /* LDAP filter uid */
+  "filter_allgroups" : "(&(objectClass=DynGroup))",
+  "search_base_allgroups" : "ou=extranet,ou=ezp,o=Example,c=be",
+  "allgroups_key" : "cn",
+  "ip_mask" : "*" 			     /* LDAP authorized ip eg: 192.168.1.* will authorize all ips from 192.168.1.0 -> 192.168.1.255 */
+=======
   "groups_key" : "EurListsMember",           /* LDAP groups key */
   "filter_groups": "(&(uid=$1))",            /* LDAP filter groups */
   "filter_uid" : "(&(uid=$1))",               /* LDAP filter uid */
   "filter_allgroups" : "(&(objectClass=ezDynGroup))",
   "search_base_allgroups" : "ou=extranet,ou=ezp,o=Eurofer,c=be",
   "allgroups_key" : "cn"
+>>>>>>> 392122dedaed741fed9a2eb27a34d1c57bcbc4fd
   }
 }

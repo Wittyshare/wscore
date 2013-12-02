@@ -2,6 +2,233 @@
  {
   "modules" :
     {
+<<<<<<< HEAD
+     "WsModTwitter" :
+       {   
+        "moduleName"  : "WsModTwitter",
+        "soName"      : "libWsModTwitter.so",
+        "loadOnStartup" : true,
+        "options"     :   
+          {   
+           "debug" : true,
+           "inContentMenuBar" : false
+          }   
+       },  
+
+    "WsModImagesGallery" :
+      {   
+       "moduleName" : "WsModImagesGallery",
+        "soName"    : "libWsModImagesGallery.so",
+        "options" :
+          {   
+           "debug"     : "false",
+           "image_delay"    : "7000",
+           "reactWhenPathChange" : "false",
+           "imageInBackground" : "true",
+           "plusWidget" : "false",
+           "textWidget" : "true",
+           "imagesPath" : ""
+          }   
+      } , 
+
+     "WsModBreadCrumb" :
+       {   
+        "moduleName"  : "WsModBreadCrumb",
+        "soName"      : "libWsModBreadCrumb.so",
+        "options"     :   
+          {   
+           "debug" : "false",
+           "directorySelectable" : "true"
+          }   
+       },  
+
+     "WsModGalleria" :
+       {   
+        "moduleName"  : "WsModGalleria",
+        "soName"      : "libWsModGalleria.so",
+        "fileName"    : "galleria",
+        "options"     :   
+          {   
+           "debug" : true
+          }   
+       },  
+
+     "WsModRSS" :
+       {
+        "moduleName" : "WsModRSS",
+        "loadOnStartup" : true,
+        "soName"    : "libWsModRSS.so",
+        "extension"   : ".rss",
+        "options"     :   
+          {   
+           "serverDesc" : "Example",
+           "serverTitle" : "Example",
+           "rssFile" : "/ws.res/Example.rss",
+           "debug" : true
+          }
+       } ,
+
+    "WsModFollowUs" :
+      {
+       "moduleName" : "WsModFollowUs",
+        "soName"    : "libWsModFollowUs.so",
+        "options" :
+          {
+           "debug"     : "false"
+          }
+      },
+
+    "WsModLinksList" :
+      {
+       "moduleName" : "WsModLinksList",
+        "soName"    : "libWsModLinksList.so",
+        "options" :
+          {
+           "debug"     : "false",
+           "link"      : "",
+           "text"      : ""
+          }
+      },
+
+    "WsModNewsLetter" :
+      {
+       "moduleName" : "WsModNewsLetter",
+        "soName"    : "libWsModNewsLetter.so",
+        //"prefix"    : "/Newsletter",
+        "options" :
+          {
+           "debug"     : "true",
+           "title"     : "",
+           "subTitle"  : "",
+           "useReadAll"  : "false",
+           "link"      : "",
+           "ldapServer"    : "ldap.eurofer.be",
+           "ldapName"      : "ldap.eurofer.be",
+           "ldapBase"      : "o=Eurofer,c=be",
+           "ldapLogon"     : "cn=rootdn,o=Eurofer,c=be",
+           "ldapSecret"    : "secret",
+           "smtpServer"    : "smtp://smtp.eurofer.be",
+           "NLEmailFrom"   : "webadmin@eurofer.be",
+           "NLEmailTo"     : "webadmin@eurofer.be",
+           "NLSignature"   : "Guy",
+           "NLSubject"     : "Eurofer News letter registration process.",
+           "NLBody"        : "Dear Madam, Sir,<br/><br/>Click on the link below to confirm your subscription on the Eurofer News letter.<br/><br/>The Eurofer staff.<br/><br/>",
+           "NLBodyPlain"   : "Dear Madam, Sir,\n\nClick on the link below to confirm your subscription on the Eurofer News letter.\n\nThe Eurofer staff.\n\n",
+           "dbNewsLetter"  : "/var/www/ws/newsletter.sqlite3",
+           "text"      : "Read all"
+          }
+      } ,
+
+    "WsModAnchor" :
+      {
+       "moduleName" : "WsModAnchor",
+        "soName"    : "libWsModAnchor.so",
+        "options" :
+          {
+           "debug"     : "false",
+           "link"      : "",
+           "text"      : ""
+          }
+      } ,
+
+     "WsModVideo" :
+       {
+        "moduleName"  : "WsModVideo",
+        "soName"      : "libWsModVideo.so",
+        "extensions"  : ".mp4|.ogv|.m4v|.youtube",
+        "options"     :
+          {
+           "debug"    : "false"
+          }
+       },
+
+    "WsModMenu" :
+      {
+       "moduleName" : "WsModMenu",
+        "soName"    : "libWsModMenu.so",
+        "options" :
+          {
+           "debug"     : "false",
+           "image_delay"    : "0",
+           "reactWhenPathChange" : "false",
+           "imageInBackground" : "true",
+           "plusWidget" : "false",
+           "textWidget" : "false",
+           "imagesPath" : ""
+          }
+      } ,
+
+    "WsModMenuImages" :
+      {
+       "moduleName" : "WsModMenuImages",
+        "soName"    : "libWsModMenuImages.so",
+        "options" :
+          {
+           "debug"     : "false",
+           "image_delay"    : "5000",
+           "reactWhenPathChange" : "false",
+           "imageInBackground" : "true",
+           "plusWidget" : "true",
+           "textWidget" : "true",
+           "imagesPath" : ""
+          }
+      } ,
+
+    "WsModBanners" :
+      {
+       "moduleName" : "WsModBanners",
+        "soName"    : "libWsModBanners.so",
+        "options" :
+          {
+           "debug"     : "false",
+           "image_delay"    : "5000",
+           "reactWhenPathChange" : "false",
+           "imageInBackground" : "true",
+           "plusWidget" : "false",
+           "textWidget" : "true",
+           "imagesPath" : ""
+          }
+      } ,
+
+     "WsModFileUpload" :
+       {
+        "moduleName" : "WsModFileUpload",
+        "soName"     : "libWsModFileUpload.so",
+        "options" :
+          {
+           "debug"     : "true"
+          }
+       },
+
+    "WsModLatestNews2" :
+      {
+       "moduleName" : "WsModLatestNews2",
+        "soName"    : "libWsModLatestNews2.so",
+        "fileName"  : "Latest2",
+        "options" :
+          {
+           "fileMenu"  : true,
+           "header"    : "allow",
+           "useLayout" : true
+          }
+      } ,
+
+    "WsModDirectoryView2" :
+      {
+       "moduleName" : "WsModDirectoryView2",
+        "soName"    : "libWsModDirectoryView2.so",
+        "options" :
+          {
+           "debug"     : "false",
+           "fileMenu"    : true,
+           "header"      : "allow",
+           "useLayout"   : true,
+           "hideHeader"  : "false",
+           "hideColumns" : "",
+           "rowsCount" : "-1",
+           "rootPath"    : ""
+          }
+=======
 
     "WsModLatestNews" : 
       {   
@@ -13,6 +240,7 @@
            "fileMenu" : true,
            "header" : "allow"
           }   
+>>>>>>> 392122dedaed741fed9a2eb27a34d1c57bcbc4fd
       } ,
 
      "WsModZip" :
@@ -38,7 +266,12 @@
            "fileMenu" : true,
            "header"   : "allow"
           }
+<<<<<<< HEAD
+       },
+
+=======
        }
+>>>>>>> 392122dedaed741fed9a2eb27a34d1c57bcbc4fd
 
     }
  }
