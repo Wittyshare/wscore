@@ -1,0 +1,6 @@
+{
+	"display_children" : "true",
+    "groups" : [ "group1", "group3"],
+	"in_menu" : "true",
+	"in_parent" : "true"
+}

@@ -1,0 +1,17 @@
+// loadable modules (plugins) loaded at startup
+ {
+  "modules" :
+     "WsModGalleria" :
+       {   
+        "moduleName"  : "WsModGalleria",
+        "soName"      : "libWsModGalleria.so",
+        "fileName"  : "Galleria",
+        "options"     :   
+          {   
+           "debug" : true
+          }   
+       }  
+
+
+ }
+

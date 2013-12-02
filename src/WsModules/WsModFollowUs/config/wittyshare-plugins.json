@@ -1,0 +1,12 @@
+// loadable modules (plugins) loaded at startup
+ {
+  "modules" :
+    {
+     "WsModFollowUs" :
+       {
+        "name"      : "WsModFollowUs",
+        "soName"    : "libWsModFollowUs.so",
+       }
+    }
+ }
+

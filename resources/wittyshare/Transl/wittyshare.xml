@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<messages>
+ <message id="appName"><h1>wittyshare</h1></message>
+ <message id="appVersion">Version : 1.0.1</message>
+ <message id="appAuthor">>Written by : Benoit Daccache, Raphael Baudoin, Gautier Hankenne, Guy De Leeuw</message>
+ <message id="appDesc"><p>A wt cms.</p></message>
+ <message id="win-title">wittyshare : a wt cms</message>
+ <message id="app-title"><h1>wittyshare</h1><h4><i>A wt cms</i></h4><hr/></message>
+
+ <message id="bottomBannerText">EUROPEAN CONFEDERATION OF IRON AND STEEL INDUSTRIES</message>
+</messages>
+

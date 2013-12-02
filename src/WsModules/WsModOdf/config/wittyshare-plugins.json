@@ -1,0 +1,18 @@
+// loadable modules (plugins) loaded at startup
+ {
+  "modules" :
+     "WsModOdf" :
+       {   
+        "moduleName"  : "WsModOdf",
+        "soName"      : "libWsModOdf.so",
+        "extensions"  : ".odt|.ods|.odp",
+        "options"     :   
+          {   
+           "fileMenu" : true,
+           "header"   : "allow"
+          }   
+       }  
+
+
+ }
+

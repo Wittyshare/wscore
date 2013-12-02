@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<messages>
+ <message id="appName"><h1>fhtmlEditor</h1></message>
+ <message id="appVersion">Version : 1.0.1</message>
+ <message id="appAuthor">>Written by : Guy Deleeuw</message>
+ <message id="appDesc"><p>fragmented html editor.</p></message>
+ <message id="win-title">fhtmlEditor : tinymce fragmented html editor</message>
+ <message id="app-title"><h1>fhtmlEditor</h1><h4><i>A wt cms</i></h4><hr/></message>
+
+</messages>
+

@@ -1,0 +1,4 @@
+- Après avoir modifié un fichier html, j'ai du vider le cache de mon navigateur pour qu'il s'affiche correctement.
+- L'affichage sur vsStats est très lent.
+- Apres avoir navigue dans le SiteMap puis effectue un GoBack le fileView affiche le root et non le currentDirectory.
+

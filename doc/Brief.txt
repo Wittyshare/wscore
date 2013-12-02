@@ -1,0 +1,11 @@
+How it works:
+
+The primary modules are:
+	-FileSystemTree
+	-MenuTree
+	-User
+
+The FileSystemTree is a singleton, it needs to be instanciated only once. The FileSystemTree is shared between all the users. It is updated each time a new File or Folder is created/deleted.
+Each Time a user connects, a new instance of User class is created. First of all the User class connects to the Ldap Server and retrieves a list of all the groups which a person belongs to.
+Afterwards it build the menuTree of the User.
+The menuTree represents the nodes (files/folders) that the user can access. The MenuTree is based on the TreeTraversal class and uses to the FileSystemTree. What it does is browse the FileSystemTree and for each node found, check if the user has access to it. If so, A copy of the node with the same properties but whithout children will be added to the menuTree.

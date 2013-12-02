@@ -1,0 +1,7 @@
+{
+  "global" :
+  {
+  "inherit_rights_from_parent" : "true",
+  "in_menu" : "true"
+  }
+}

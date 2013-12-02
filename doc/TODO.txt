@@ -1,0 +1,45 @@
+- gdToolbar : add a function to clear the menu bar.
+- Fileview : how to trigger a splitter resized event ?
+- remove bug in SiteMapItemSelected
+- When toolbar is disable : how the navigation work ?
+- How search the main page ? (home page) ?
+- Cannot test easy without ldap ?
+- option for skip fsdaemon 
+
+-Put a lock on a file or config file when editing it
+
+-IsAllowed: make it configurable to search parent config file if no config found.
+
+- are json config items in sync with the documentation?
+- access denied + error pages
+- odf support for search
+- webodf support
+- adding link to a page in tinyMCE
+- admin UI
+- validation of configuration of the whole content structure to detect config error or illogisms
+- how do we handle images in .html documents
+- testing with selenium?
+- dynamic pages, eg list of members
+- merge config files
+- implement latest news (when building the file system tree, keep the list of the latest 100 items)
+- code optimisation (avoid vector copies and use references)
+- create a ldap object to avoid binding with the server at each session start. Do one bind, and request info with that bind for each session.
+- Catch of events from TinyMCE
+- CMake: can we avoid to copy all the file list? Eg, when you need user, you need to add all file listed to be compiled in user/CMakeList in your CMakeList.
+
+
+
+
+nice additions:
+
+- other markup support markdown, textile....
+
+Switch pointers to refs if possible
+Find a way to free mem
+=======
+- rename directories in fhtmlEditor/ 
+- Switch server request type from defines to const
+- Try to switch from pointers to references where we can
+- Find a way to free as much memory as we can when user disconnects 
+- Add Excpetions when errors 
+

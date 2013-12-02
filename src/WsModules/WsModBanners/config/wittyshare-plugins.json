@@ -1,0 +1,12 @@
+// loadable modules (plugins) loaded at startup
+ {
+  "modules" :
+    {
+     "WsModBanners" :
+       {
+        "moduleName" : "WsModBanners",
+        "soName"     : "libWsModBanners.so",
+       }
+    }
+ }
+

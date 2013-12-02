@@ -1,0 +1,12 @@
+// loadable modules (plugins) loaded at startup
+ {
+  "modules" :
+    {
+     "WsModAnchor" :
+       {
+        "name"      : "WsModAnchor",
+        "soName"    : "libWsModAnchor.so",
+       }
+    }
+ }
+

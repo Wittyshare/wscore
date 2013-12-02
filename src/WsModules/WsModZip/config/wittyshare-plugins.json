@@ -1,0 +1,21 @@
+// loadable modules (plugins) loaded at startup
+ {
+  "modules" :
+    {
+
+     "WsModZip" :
+       {
+        "moduleName"  : "WsModZip",
+        "soName"      : "libWsModZip.so",
+        "loadOnStartup" : true,
+        "options"     :
+          {
+           "fileMenu" : true,
+           "header"   : "allow"
+          }
+       }
+
+
+    }
+ }
+

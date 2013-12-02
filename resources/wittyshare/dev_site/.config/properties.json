@@ -1,0 +1,8 @@
+{
+  "global" :
+  {
+    "author" : "guy",
+    "groups" : ["RawMaterialsQuest"],
+    "in_menu" : "true"
+  }
+}

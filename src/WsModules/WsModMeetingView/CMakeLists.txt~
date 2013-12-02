@@ -1,0 +1,28 @@
+cmake_minimum_required(VERSION 2.8.3)
+SET(APPNAME "WsModMeetingView")
+
+SET ( APPNAME_SRCS 
+     src/WsMeetingView.cpp
+     src/WsModMeetingView.cpp
+    )
+
+INCLUDE(${CMAKE_ROOT}/Modules/gdcmake/Find_gdwtcore.cmake)
+IF(NOT GDWTCORE_FOUND)
+    MESSAGE(FATAL_ERROR "** these program needs gdwtcore libraries... Abord.")
+ENDIF(NOT GDWTCORE_FOUND)
+
+INCLUDE(${CMAKE_ROOT}/Modules/gdcmake/Find_wsmodule.cmake)
+
+
+INCLUDE_DIRECTORIES(
+    ${GDWTCORE_INCLUDE_DIRS}
+    ${WSMODULE_INCLUDE_DIRS}
+    ../..
+)
+
+TARGET_LINK_LIBRARIES(
+    Asterisk ${GDTARGETLIBS}
+)
+
+INCLUDE(${CMAKE_ROOT}/Modules/gdcmake/install_libs.cmake)
+

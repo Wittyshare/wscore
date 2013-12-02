@@ -1,0 +1,4 @@
+To build
+
+ cmake -DGM_LIBRARY=/usr/lib/ -DGM_INCLUDE_DIR=/usr/include/ DBoost_NO_SYSTEM_PATHS=TRUE -DBUILD_LIB_STATIC=false -DBUILD_LIB_SHARED=true -D WSMODULE_INCLUDE_DIR=/usr/local/include/ ..
+

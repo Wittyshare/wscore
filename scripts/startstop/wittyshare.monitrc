@@ -1,0 +1,16 @@
+  check process wittyshare with pidfile /tmp/wittyshare.pid
+      start program = "/var/www/startwittyshare.sh" as uid www-data with timeout 60 seconds
+      stop program = "/var/www/stopwittyshare.sh" as uid www-data
+      if cpu > 60% for 2 cycles then alert
+      if cpu > 80% for 5 cycles then restart
+      if totalmem > 200.0 MB for 5 cycles then restart
+      if failed host localhost port 8080 protocol http 
+         and request "/wt/resources/form.css"
+         then restart
+      if 3 restarts within 5 cycles then timeout
+
+  check process fsdaemon with pidfile /tmp/fsdaemon.pid
+      start program = "/var/www/startfsdaemon.sh" as uid www-data with timeout 60 seconds
+      stop program = "/var/www/stopfsdaemon.sh" as uid www-data
+      if totalmem > 200.0 MB for 5 cycles then restart
+

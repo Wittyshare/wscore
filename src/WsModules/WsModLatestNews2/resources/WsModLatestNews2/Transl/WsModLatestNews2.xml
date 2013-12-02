@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<messages>
+ <message id="WsModLatestNews2-root">/Latest2</message>
+
+ <message id="WsModLatestNews2-Name">Name</message>
+ <message id="WsModLatestNews2-Desc">Description</message>
+ <message id="WsModLatestNews2-Size">Size</message>
+ <message id="WsModLatestNews2-Date">Date</message>
+
+</messages>
+

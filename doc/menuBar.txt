@@ -1,0 +1,7 @@
+menuBar est chargé d'afficher les menus et sous menus
+il utilise deux options configurable dans /etc/wt/wittyshare_config.xml :
+- logMenuBar       : log des éléments du menu pendant sa construction et différents messages, TODO : augmenter le nombres de messages ?
+- menuBarTimerTime : si < = 0 pas de timer sur le menu, si > 0 valeur en millisecondes du delai avant d'afficher le popup menu, valeur par defaut 500 millisecondes.
+
+Ce qui ne marche pas actuellement :
+- quand la souris quitte la zone d'un popup menu celui-ci n'est pas desactivé.

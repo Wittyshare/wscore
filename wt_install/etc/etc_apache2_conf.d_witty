@@ -1,0 +1,34 @@
+#
+# Added for wt web toolkit support
+#
+
+#first an additional handler for witty's extension
+<IfModule mod_fastcgi.c>
+ AddHandler fastcgi-script .wt
+ FastCgiConfig -idle-timeout 100 -maxClassProcesses 1 -initial-env WT_APP_ROOT=/var/www/wt
+</IfModule>
+
+# wt users directory
+Alias /users /var/www/users
+<Directory /users>
+ Options -MultiViews +SymLinksIfOwnerMatch
+ AllowOverride None
+</Directory>
+
+#next make an alias for witty dir
+Alias /wt /var/www/wt
+<Directory /wt>
+ Options -MultiViews +SymLinksIfOwnerMatch
+ AllowOverride None
+</Directory>
+
+# finally treat all fcg of fgci files as fastcgi scripts
+#<Files ~ "\.(fcg|fcgi)$">
+# Options +ExecCGI -MultiViews +SymLinksIfOwnerMatch
+# AllowOverride None
+#</Files>
+
+<Files ~ "\.(wt)$">
+ Options +ExecCGI -MultiViews +SymLinksIfOwnerMatch
+</Files>
+

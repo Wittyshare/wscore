@@ -1,0 +1,45 @@
+// loadable modules (plugins) loaded at startup
+ {
+  "modules" :
+    {
+
+    "WsModLatestNews" : 
+      {   
+       "moduleName" : "WsModLatestNews",
+        "soName" : "libWsModLatestNews.so",
+        "fileName" : "Latest",
+        "options" :
+          {   
+           "fileMenu" : true,
+           "header" : "allow"
+          }   
+      } ,
+
+     "WsModZip" :
+       {
+        "moduleName"  : "WsModZip",
+        "soName"      : "libWsModZip.so",
+        "loadOnStartup" : true,
+        "options"     :
+          {
+           "fileMenu" : true,
+           "header"   : "allow"
+          }
+       },
+
+     "webodf" :
+       {
+        "moduleName"  : "WsModOdf",
+        "soName"      : "libWsModOdf.so",
+        "extensions"  : ".odt|.ods|.odp",
+        "hideImages"  : false,
+        "options"     :
+          {
+           "fileMenu" : true,
+           "header"   : "allow"
+          }
+       }
+
+    }
+ }
+

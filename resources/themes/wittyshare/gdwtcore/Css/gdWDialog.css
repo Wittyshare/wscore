@@ -1,0 +1,13 @@
+.gdWDialog .titlebar tr {
+ height: 16px !important;
+}
+
+.gdWDialog .titlebar td {
+ padding: 1px !important;
+}
+
+.gdWDialog .titlebar img {
+ cursor: default;
+/* enlever cette ligne des que Koen aura corrige le prob d'affichage */
+ height: 16px !important;
+}

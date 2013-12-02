@@ -1,0 +1,22 @@
+# // Guy 2011-07-22 : TODO : add doct2text, ods converter, rpg search pattern, ect...
+Documents are indexed by mnogosearch.
+Document types indexed are PDF, fhtml, html.
+PDF documents are converted to text by pdftotext, and html are natively handled
+by mnogosearch.
+fhtml and fragments of html documents and need a wrapper to be indexed by
+mnogosearch because they are not full html documents. These fragments are the
+content of a page.
+
+The search class takes as constructor a FileSystemTree instance and a string
+which is the query to perform.
+First, all search results are loaded in the object by the load() method. Once
+this is done, it is possible to retrieve the results available to a user or a
+list of groups with the getResults method. This method returns a list of
+ResultItems containing only documents readable by the groups (or the user)
+passed as argument.
+
+A ResultItem gives access to: 
+  * the path of the document
+  * the excerpt of the document containing the word.
+  * the mime type of the document
+  * the size of the document

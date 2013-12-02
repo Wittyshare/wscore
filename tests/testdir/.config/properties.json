@@ -1,0 +1,8 @@
+{
+  "global":
+  {
+		"groups" : [ "Guest" ],
+    "in_menu" : "true"
+  }
+}
+

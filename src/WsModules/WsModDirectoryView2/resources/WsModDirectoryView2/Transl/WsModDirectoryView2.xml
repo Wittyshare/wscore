@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<messages>
+ <message id="WsDirectoryView2-Name">Name</message>
+ <message id="WsDirectoryView2-Desc">Description</message>
+ <message id="WsDirectoryView2-Size">Size</message>
+ <message id="WsDirectoryView2-Date">Date</message>
+
+</messages>
+

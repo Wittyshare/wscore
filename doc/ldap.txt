@@ -1,0 +1,27 @@
+Ldap config example:
+
+{
+    "ldap_search_base_uid" : "o=MyCompany,c=org",          // Search base when retrieving name, mail, sn 
+        "ldap_search_base_groups" : "o=MyCompany,c=org",   // Search base when retrieving user groups
+        "ldap_server" : "ldap.mycompany.org",              // Ldap server url
+        "ldap_server_name" : "MyCompany Ldap",            // Ldap server name
+        "ldap_sn_key" : "sn",                           // User surname key in Ldap(this key contains the surname of the user)
+        "ldap_gn_key" : "givenName",                    // User name key in Ldap(this key contains the name of the user)
+        "ldap_mail_key" : "mail",                       // User Mail key in Ldap(this key contains the mail of the user)
+        "ldap_groups_key" : "ListMembers",           // User groups key (this key contains the groups which the user belongs to) 
+        "ldap_filter_groups": "(&(uid=$1))",            // Filter used to retrieve groups which the person belongs to .$1 will be replaced by the uid of the user
+        "ldap_filter_uid" : "(&(uid=$1))"               // Filer  used to retrieve name, surname, email of the user. $1 will be replaced by the uid of the user
+}
+
+{
+    "ldap_search_base_uid" : "o=MyCompany,c=org",
+        "ldap_search_base_groups" : "ou=Groups,o=MyCompany,c=org",
+        "ldap_server" : "ldap.mycompany.org",
+        "ldap_server_name" : "MyCompany Ldap",
+        "ldap_sn_key" : "sn",
+        "ldap_gn_key" : "givenName",
+        "ldap_mail_key" : "mail",
+        "ldap_groups_key" : "cn"
+        "ldap_filter_groups": "(&(menberUid=$1))",
+        "ldap_filter_uid" : "(&(uid=$1))"
+}

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<messages>
+ <message id="WsSearchView-root">/SiteMap</message>
+
+ <message id="WsSearchView-Name">Name</message>
+ <message id="WsSearchView-Desc">Description</message>
+ <message id="WsSearchView-Size">Size</message>
+ <message id="WsSearchView-Date">Date</message>
+
+</messages>
+

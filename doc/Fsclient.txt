@@ -1,0 +1,4 @@
+This is an abstract class that can be implemented in multiple ways.
+At time of writing there is one implementation FsTreeClient that manages all
+data, and one implementation that requests information to a daemon,
+communicating through zero_mq.

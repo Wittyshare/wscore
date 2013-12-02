@@ -1,0 +1,39 @@
+.gdToolbar {
+  border: 2px solid #F1F2F4;
+  background:#D3E1F1 repeat-x scroll left top;
+ }
+
+.gdToolbarItemIcon {
+  cursor: pointer;
+  margin: 0px;
+  padding: 0 0px;
+  border: none;
+  background:#D3E1F1 repeat-x scroll left top;
+  vertical-align: top;
+ }
+
+.gdPanelItemIcon {
+ }
+
+button.gdPanelItemText {
+  cursor: pointer;
+  margin: 0px;
+  padding: 0 0px;
+  border: none;
+  background: #6880A0 repeat-x scroll 0 -20px;
+  color: #FFFFFF;
+  font: Verdana;
+/*  font: bold 10px Verdana;*/
+ }
+
+button.gdToolbarItemText {
+  cursor: pointer;
+  margin: 1px;
+  padding: 0 0px;
+  border: none;
+  background:#D3E1F1 repeat-x scroll left top;
+  border-color:#D0D0D0;
+  color: black;
+  vertical-align: top;
+ }
+

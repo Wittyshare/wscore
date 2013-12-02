@@ -1,0 +1,51 @@
+# // Guy 2011-07-22 : TODO : Change lassie by nothing (/usr/local)
+===== Compilation =====
+
+Install libharu with this script:
+
+  #!/bin/bash
+  set -x
+  
+  sudo rm -Rf  /usr/local/include/hpdf
+  sudo rm -Rf  /usr/local/lib/libhpdf*
+  rm -Rf libharu/
+    
+  git clone git://github.com/kdeforche/libharu.git
+  cd libharu
+  git pull
+  sed -i -e "s#install(FILES \${haru_HDRS} DESTINATION include)#install(FILES \${haru_HDRS} DESTINATION \${CMAKE_INSTALL_INCLUDEDIR})#" CMakeLists.txt
+  sed -i -e "s#install(FILES README CHANGES INSTALL DESTINATION .)#install(FILES README CHANGES INSTALL DESTINATION \${CMAKE_INSTALL_INCLUDEDIR})#" CMakeLists.txt
+  sed -i -e "s#install(DIRECTORY doc DESTINATION .)#install(DIRECTORY doc DESTINATION \${CMAKE_INSTALL_INCLUDEDIR})#" CMakeLists.txt
+  sed -i -e "s#install(DIRECTORY if DESTINATION .)#install(DIRECTORY if DESTINATION \${CMAKE_INSTALL_INCLUDEDIR})#" CMakeLists.txt
+  mkdir build
+  cd build
+  cmake -DCMAKE_INSTALL_INCLUDEDIR=/usr/local/include/hpdf ../
+  make
+  make install
+
+Checkout the repos common, gdcore and gdwtcore in $src.
+Copy config to /etc/wt and edit accordingly the file 
+First compile gdcore with this command, issue when in the gdcore directory:
+   $src/common/autogenbase.sh
+This will install the libraries in /usr/local/lassie.
+
+Then go into the project's repository, and launch the script $src/common/autogenbase.sh 
+
+
+In the CMake of the application, you need to include at the end of the file
+
+For a web app:
+  INCLUDE(../common/install_webapp.cmake) 
+For a library:
+  INCLUDE(../common/install_libs.cmake) 
+For an application:
+  INCLUDE(../common/install_progs.cmake) 
+
+===== How it works =====
+
+The structure of the content of the site is the structure of directories and files stored on disk from a base directory.
+The content in the base directory is crawled by the DirCrawler, and it build a tree structure in memory (fileSystemTree). The hidden files are ignored. Directories are put in the tree with a DirNode object, files are put with a FileNode object.
+A DirNode gives access to the properties of this directory. The properties of a directory are stored in the hidden file .properties in the directory itself. Recognized properties are, amongst others, in_menu, groups, ....
+Some properties like groups are inherited by children nodes, others like in_menu are not. Inheritance of the groups by children means that to make a node unavailable to all, it is not possible to do it by setting an empty list of groups. The solution is to assign a group NO_ACCESS with no member.
+A DirNode also gives access to its children nodes in 2 distinct lists: directory children list, and file children list.
+

@@ -1,0 +1,26 @@
+.WsBreadcrumb {
+	font-size: 80%;
+	margin-left: 1em;
+	float: left;
+}
+
+.WsBreadcrumb ul {
+	list-style: none;
+}
+
+.WsBreadcrumb ul li {
+	display: inline;
+}
+
+.WsBreadcrumb a {
+	text-decoration: none;
+}
+
+.WsBreadcrumb a:before {
+	content: " / ";
+}
+
+a, .WsClickable {
+	color: #4e545e;
+	cursor: pointer;
+}

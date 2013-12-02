@@ -1,0 +1,2 @@
+1- There is a problem with the symlink 
+# // Guy 2011-07-22 : TODO : push a c code in gdcore to solve this

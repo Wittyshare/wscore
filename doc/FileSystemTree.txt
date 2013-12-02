@@ -1,0 +1,5 @@
+The FileSystemTree represents the file system with a tree. It uses the dircrawler to crawl over the directories. The FSTree inherits form the dircrawler and each time a dir is found, it calls the virtual method applyDir which is overriden in FileSystemTree. This method creates a new Node and adds it to the current node and the current node is set to this node.
+The same is done for apply file, but the current node is not changed.(we dont crawl deeper because it's a file).
+When all the subdirs of a directory are crawled, the dirCrawler class calls the endChild method to notify the subclass so it can set the current node to the current.parent()
+
+Each node has an properties object attached by the filesystemtree. Each node also has the method isAllowed taking a list of groups that will return true if at least one of the groups has access. The FileNode checks access against its containing directory. The DirNode checks if it has a properties object setting groups. If yes, it checks against these groups. It not, it does up to the parent and goes through the same procedure. 

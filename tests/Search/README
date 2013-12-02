@@ -1,0 +1,11 @@
+first run the script run.sh, which will copy the test directories to /tmp,
+index this directory in the sqlite database file /tmp/testdb.sqlite, and
+created the reverse index.
+Once that's done, create the build directory, go in it, run cmake .. and the
+make to get the executable.
+before running you have to
+  
+  export LD_LIBRARY_PATH=/usr/local/mnogosearch/lib
+
+build command :
+mkdir build; cd build; cmake -DBOOST_PREFIX=/usr/local/boost_1_43_0 -DCMAKE_BUILD_TYPE=Debug ..; make

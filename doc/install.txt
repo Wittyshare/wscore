@@ -1,0 +1,144 @@
+echo "deb http://backports.debian.org/debian-backports squeeze-backports main" >> /etc/apt/sources.list.d/wittyshare.list
+apt-get -t squeeze-backports install cmake
+
+apt-get install build-essential
+apt-get install git-core
+apt-get install cmake libz-dev libfreetype6-dev libxml2-dev libboost-all-dev libpng12-dev libpq-dev libldap2-dev
+libgraphicsmagick++1-dev libvmime-dev automake libfam-dev libfcgi-dev
+
+install libharu (see overview.txt)
+
+cd 
+git clone git@vsGitInt:gdcore
+git clone git@vsGitInt:gdwtcore
+git clone git@vsGitInt:wittyshare
+
+
+################################
+cd gdcore
+mkdir build
+cmake -Wno-dev -D CONNECTOR_FCGI=ON -D CONNECTOR_HTTP=ON -DBoost_NO_SYSTEM_PATHS=TRUE -DBUILD_LIB_STATIC=false -DBUILD_LIB_SHARED=true  -DAPPNAME=gdcore -DCMAKE_BUILD_TYPE=Release -DBOOST_ROOT=/usr/  ..
+#in case of error with libharu, check also that libpng is installed
+
+make
+make install
+
+###############################
+git clone https://github.com/kdeforche/wt.git
+cd wt
+mkdir build
+cd build
+cmake -Wno-dev -D CONNECTOR_FCGI=ON -D CONNECTOR_HTTP=ON -DBoost_NO_SYSTEM_PATHS=TRUE ..
+
+
+###############################
+cd gdwtcore/
+mkdir build
+cd build
+cmake -Wno-dev -D CONNECTOR_FCGI=ON -D CONNECTOR_HTTP=ON -DBoost_NO_SYSTEM_PATHS=TRUE -DBUILD_LIB_STATIC=false -DBUILD_LIB_SHARED=true  -DAPPNAME=gdwtcore -DCMAKE_BUILD_TYPE=Release -DBOOST_ROOT=/usr/  -DGM_LIBRARY=/usr/lib/GraphicsMagick -DGM_INCLUDE_DIR=/usr/include/GraphicsMagick ..
+
+###############################
+cd
+sudo apt-get install scons
+wget "http://freefr.dl.sourceforge.net/project/jsoncpp/jsoncpp/0.5.0/jsoncpp-src-0.5.0.tar.gz"
+tar -xvzf jsoncpp-src-0.5.0.tar.gz
+cd jsoncpp-src-0.5.0
+scons platform=linux-gcc
+cp -r include/* /usr/local/include
+cp -r libs/linux-gcc-4.4.5/* /usr/local/lib
+
+##########################
+cd
+apt-get install libtool uuid-dev
+git clone https://github.com/zeromq/zeromq3-0.git
+cd zeromq3-0/
+./autogen.sh
+./configure
+make 
+make install
+cd
+
+wget https://github.com/zeromq/cppzmq/raw/master/zmq.hpp
+cp zmq.hpp /usr/local/include/
+
+
+###############
+Install libarchive
+wget https://github.com/downloads/libarchive/libarchive/libarchive-3.0.4.tar.gz
+tar zxvf libarchive-3.0.4.tar.gz
+cd libarchive-3.0.4
+./configure
+make
+make install
+
+#TODO:
+# in wittyshare/wsModule/CMakeList, comment SUBDIRS
+cd
+cd wittyshare
+mkdir build
+cd build
+cmake -Wno-dev -D CONNECTOR_FCGI=ON -D CONNECTOR_HTTP=ON -DBoost_NO_SYSTEM_PATHS=TRUE -DBUILD_LIB_STATIC=false -DBUILD_LIB_SHARED=true  -DAPPNAME=wittyshare -DCMAKE_BUILD_TYPE=Release -DBOOST_ROOT=/usr/ ..
+make
+make install
+
+cd
+cd wittyshare/config
+cp wittyshare-global.json  wittyshare-ldap.json  wittyshare-plugins.json wittyshare_config.xml /etc/wt/
+
+
+cd /var/www/wt
+rm -rf resources
+ln -s  /usr/local/share/Wt/resources
+
+cd 
+cd gdcore/build
+make install
+cd
+cd gdwtcore/build
+make install
+
+
+#to build fsdaemon, compile its tests
+cd
+cd wittyshare/fsdaemon/tests
+mkdir build
+cd build
+cmake ..
+./fsdaemon
+
+#edit /etc/wt/wittyshare-global.xml to set the directory of the website, eg the demo_site.
+
+#start the app:
+#possibly need to copy resources (I think this is what was needed: link the resource dir to the wt resources dir :
+# $ ls -l /var/www/wt/resources
+# lrwxrwxrwx 1 root root 29 Feb  8 15:57 /var/www/wt/resources -> /usr/local/share/Wt/resources
+# and after you made this link, do a make install of gdwtcore)
+
+/var/www/wt/wittyshare/wittyshare.wthttpd --docroot /var/www/ --http-port 8080 --http-address 0.0.0.0 --approot /var/www/wt/
+
+Symptom:  the browser waits indefinitely long to get the response and display the page (hangs)
+Possible cause: the fsdaemon is not running
+
+Symptom: you get a blank page
+Possible cause: the ldap server is not reachable.
+
+
+
+Adding mnogosearch:
+-------------------
+apt-get install libsqlite3-dev html2text
+apt-get install poppler-utils # for pdf indexing with pdftotext
+
+wget http://www.mnogosearch.org/Download/mnogosearch-3.3.12.tar.gz
+tar zxvf mnogosearch-3.3.12.tar.gz
+cd mnogosearch-3.3.12
+./configure --with-sqlite3 --prefix=/usr/local/mnogosearch
+make
+make install
+
+cd
+cd wittyshare/search/tests/build
+cmake -D MnoGoSearch_INCLUDE_DIR=/usr/local/mnogosearch/include/ ..
+make
+
+

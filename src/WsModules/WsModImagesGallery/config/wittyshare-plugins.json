@@ -1,0 +1,12 @@
+// loadable modules (plugins) loaded at startup
+ {
+  "modules" :
+    {
+     "WsModImagesGallery" :
+       {
+        "name"      : "WsModImagesGallery",
+        "soName"    : "libWsModImagesGallery.so",
+       }
+    }
+ }
+

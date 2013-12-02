@@ -1,0 +1,8 @@
+*.swp
+*.swo
+build-Linux*
+build-x86_64-Linux*
+doc/html
+doc/latex
+doc/reference
+build

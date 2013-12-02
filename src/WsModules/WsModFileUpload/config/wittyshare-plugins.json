@@ -1,0 +1,12 @@
+// loadable modules (plugins) loaded at startup
+ {
+  "modules" :
+    {
+     "WsModFileUpload" :
+       {
+        "name"      : "WsModFileUpload",
+        "soName"    : "libWsModFileUpload.so",
+       }
+    }
+ }
+

@@ -1,0 +1,202 @@
+\documentclass[]{beamer}
+%\documentclass[handout]{beamer}
+\usepackage{lmodern}
+
+\usetheme{Malmoe}
+\usepackage{array}
+\usepackage{xcolor}
+
+\usepackage{pgf,tikz}
+
+\usetikzlibrary{positioning,calc,arrows}
+
+\title{Wittyshare}
+\author{Rapha\"el Bauduin - Beno\^it Daccache - Guy De Leeuw}
+\date{11 july 2012}
+\begin{document}
+
+% \newcommand{\example}{Example}
+
+\begin{frame}
+ \titlepage
+\end{frame}
+
+\begin{frame}
+ \tableofcontents
+\end{frame}
+
+
+\section{Overview}
+
+\begin{frame}
+\frametitle{Philosophy}
+\begin{itemize}
+  \item Filesystem based
+    \begin{itemize}
+      \item Content
+      \item Access Rights
+      \item Configuration
+      \item Translations (not yet implemented)
+      \item Versioning   (not yet implemented)
+    \end{itemize}
+  \item Avoid Database use
+    \begin{itemize}
+      \item Except for search (MnoGoSearch)
+    \end{itemize}
+  \item Modular
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Content Structure}
+\begin{itemize}
+  \item Content's Root dir
+    \begin{itemize}
+      \item .config
+      \item Directory1
+        \begin{itemize}
+          \item .config
+          \item page1.fhtml
+          \item fragment.fhtml
+        \end{itemize}
+      \item homepage.fhtml
+    \end{itemize}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{.config}
+\begin{itemize}
+  \item properties: Configuration of the directory
+    \begin{itemize}
+      \item in\_parent
+      \item in\_menu
+      \item groups
+      \item \ldots
+    \end{itemize}
+  \item Optionally one config per content file
+    \begin{itemize}
+      \item same name as content file, with .json appended
+      \item in\_menu
+      \item i18n attributes
+    \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{Filesystem structure}
+\begin{itemize}
+  \item access rights inheritance
+    \begin{itemize}
+      \item on
+      \item off
+        \begin{itemize}
+          \item overwrite per node possible
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{FsDaemon}
+
+    \begin{itemize}
+      \item Scans all content and associated config
+      \item Gives view adapted to user
+        \begin{itemize}
+          \item MenuTree
+          \item FileSystem Tree
+          \item Search results
+        \end{itemize}
+      \item Can be notified by FAM when file changes
+      \item Separate process 
+      \item Update to the fsdaemon's tree: trees are enqueued and removed when unused
+      \item Freeze content option
+      \item Can be ``internalised'' 
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Communication}
+\begin{itemize}
+  \item Using zeromq
+  \item Json messages
+    \begin{itemize}
+      \item MenuTree
+      \item Permissions on node
+      \item Search request
+      \item \ldots
+    \end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Search}
+\begin{itemize}
+  \item MnoGoSearch
+  \item Indexes content we configure
+  \item Uses sqlite
+  \item Filter results according to access rights
+    \begin{itemize}
+      \item send search request to fsdaemon
+      \item fsdaemon uses mnogosearch index to get results
+      \item for each result, validate access
+      \item return filtered results list 
+    \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Contents}
+This content can be displayed in the browser:
+\begin{itemize}
+  \item .fhtml
+  \item .odf
+  \item .pdf (not yet done)
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Download content}
+\begin{itemize}
+  \item Download folder
+    \begin{itemize}
+      \item respecting access rights
+      \item zip or tgz
+      \item including subfolder or only direct children
+    \end{itemize}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Modules}
+\begin{itemize}
+  \item Modules can easily be developed
+  \item Currently:
+    \begin{itemize}
+      \item zip (folder download)
+      \item latest news
+      \item ODF
+    \end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{}
+\begin{itemize}
+  \item jsoncpp
+  \item Gamin
+  \item libarchive
+\end{itemize}
+\end{frame}
+\end{document}
+
