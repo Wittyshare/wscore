@@ -99,12 +99,12 @@ int main(int argc, char** argv)
     usage();
   }
   if (root == "") {
-    root = WsGlobalProperties::instance()->get("global", "root_path","/");
+    root = WsGlobalProperties::instance()->get("global", "root_path", "/");
   }
   string ret;
   {
     WsAccessTreeDisplayer disp(root);
-    if(grps.size() == 0)
+    if (grps.size() == 0)
       ret = disp.display(uid, pass);
     else
       ret = disp.display(grps);

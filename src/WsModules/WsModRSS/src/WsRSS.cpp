@@ -79,7 +79,7 @@ void WsRSS::buildRSS()
     root = user->getAccessRoot();
   else
     root = user->getAccessRoot();
-    root = root.get()->eatPath(rootPath);
+  root = root.get()->eatPath(rootPath);
   if (root == 0) {
     LOG(DEBUG) << "WsRSS::setTable cannot get root !";
     return;

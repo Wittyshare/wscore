@@ -16,10 +16,11 @@ using namespace std;
 
 int main()
 {
-    while(1){
-    WsFileSystemTree *tree = new WsFileSystemTree("/var/www/web03");
+  while (1) {
+    WsFileSystemTree* tree = new WsFileSystemTree("/var/www/web03");
     sleep(2);
     tree->start();
-    delete tree;}
-    cout << "FileSystemTree tests Succeeded" << endl;
+    delete tree;
+  }
+  cout << "FileSystemTree tests Succeeded" << endl;
 }
