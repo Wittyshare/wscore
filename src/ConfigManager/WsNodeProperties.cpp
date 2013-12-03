@@ -34,8 +34,8 @@ WsNodeProperties::WsNodeProperties(boost::filesystem::path nodePath, Type t):
 WsNodeProperties::WsNodeProperties(string jsonInput)
 {
   Reader r;
-  r.parse(jsonInput, m_root, false);
-  m_parsed = true;
+  if(r.parse(jsonInput, m_root, false))
+    m_parsed = true;
 }
 
 WsNodeProperties::~WsNodeProperties()
@@ -46,7 +46,8 @@ string WsNodeProperties::get(const string& section, const string& id, const stri
 {
   if (!m_parsed) {
     string p = getPath();
-    parse(p);
+    if(parse(p) == FAILURE)
+      return string();
   }
   Value val = m_root[section][id];
   if (val == Value::null || val.asString() == "null") {
@@ -60,7 +61,8 @@ std::set<string> WsNodeProperties::getGroups()
   std::set<std::string> grp;
   if (!m_parsed) {
     string p = getPath();
-    parse(p);
+    if(parse(p) == FAILURE)
+      return grp;
   }
   const Value groups = m_root["global"]["groups"];
   if (groups != Value::null) {
@@ -76,7 +78,8 @@ bool WsNodeProperties::isAllowed(std::set<string> gids)
   std::set<string> nodeGroups = getGroups();
   if (!m_parsed) {
     string p = getPath();
-    parse(p);
+    if(parse(p) == FAILURE)
+      return false;
   }
   WsGlobalProperties* props = WsGlobalProperties::instance();
   string admgrp = props->get("global", "admin_group", "");
@@ -122,7 +125,8 @@ Value WsNodeProperties::getRoot()
 {
   if (!m_parsed) {
     string p = getPath();
-    parse(p);
+    if(parse(p) == FAILURE)
+      return Value();
   }
   return m_root;
 }
@@ -136,8 +140,10 @@ void WsNodeProperties::setRoot(Json::Value root)
 void WsNodeProperties::setRoot(const std::string& jsonInput)
 {
   Reader r;
-  r.parse(jsonInput, m_root, false);
-  m_parsed = true;
+  if(r.parse(jsonInput, m_root, false))
+    m_parsed = true;
+  else 
+    m_parsed = false;
 }
 
 void WsNodeProperties::set(const string& section, const string& key, const string& value)
@@ -146,7 +152,8 @@ void WsNodeProperties::set(const string& section, const string& key, const strin
     return;
   if (!m_parsed) {
     string p = getPath();
-    parse(p);
+    if(parse(p) == FAILURE)
+      return;
   }
   m_root[section][key] = value;
 }
@@ -155,7 +162,8 @@ void WsNodeProperties::setGroups(std::set<string> grps)
 {
   if (!m_parsed) {
     string p = getPath();
-    parse(p);
+    if(parse(p) == FAILURE)
+      return;
   }
   m_root["global"]["groups"].clear();
   std::set<string>::iterator it;
