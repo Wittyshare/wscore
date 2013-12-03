@@ -473,7 +473,7 @@ WsFsDaemon::DaemonStatus WsFsDaemon::handleSavePropertiesRequest(socket_t& sock)
   /* Get groups */
   set<string> groups = m_userMap[uid]->getGroups();
   /* Save */
-  if (m_operation->saveProperties(groups, m_root[RequestField::Type].toStyledString(), path) != FAILURE)
+  if (m_operation->saveProperties(groups, m_root[RequestField::Property].toStyledString(), path) != FAILURE)
     return send(sock, RequestField::Success);
   return Failure;
 }

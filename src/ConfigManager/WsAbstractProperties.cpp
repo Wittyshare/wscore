@@ -28,6 +28,7 @@ WsAbstractProperties::WsAbstractProperties():
 int WsAbstractProperties::parse(const std::string& path)
 {
   Reader reader;
+  std::cout<<"DEbug: parsing : "<<path<<std::endl;
   std::ifstream conf(path.c_str(), std::ifstream::binary);
   if (! conf.good()) {
     LOG(DEBUG) << "WsAbstractProperties::parse() : Conf file not found : " << path;
