@@ -46,37 +46,37 @@ int WsBasicAuth::authentify(const string& uid, const string& pass, const std::st
   return SUCCESS;
 }
 
-string WsLdapAuth::getUid()
+string WsBasicAuth::getUid()
 {
   return m_uid;
 }
 
-string WsLdapAuth::getFirstName()
+string WsBasicAuth::getFirstName()
 {
   return m_name;
 }
 
-string WsLdapAuth::getSurname()
+string WsBasicAuth::getSurname()
 {
   return m_surname;
 }
 
-string WsLdapAuth::getEmail()
+string WsBasicAuth::getEmail()
 {
   return m_email;
 }
 
-set<string> WsLdapAuth::getUserGroups()
+set<string> WsBasicAuth::getUserGroups()
 {
   return m_groups;
 }
 
-set<string> WsLdapAuth::getAllGroups()
+set<string> WsBasicAuth::getAllGroups()
 {
   return m_allGroups;
 }
 
-bool WsLdapAuth::ipValid(string ip)
+bool WsBasicAuth::ipValid(string ip)
 {
   string ipMask = WsGlobalProperties::instance()->get("ldap", "ip_mask", "*");
   if (ipMask == "*")

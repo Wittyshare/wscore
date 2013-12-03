@@ -47,7 +47,7 @@ string WsNodeProperties::get(const string& section, const string& id, const stri
   if (!m_parsed) {
     string p = getPath();
     if(parse(p) == FAILURE)
-      return FAILURE;
+      return string();
   }
   Value val = m_root[section][id];
   if (val == Value::null || val.asString() == "null") {
@@ -62,7 +62,7 @@ std::set<string> WsNodeProperties::getGroups()
   if (!m_parsed) {
     string p = getPath();
     if(parse(p) == FAILURE)
-      return FAILURE;
+      return grp;
   }
   const Value groups = m_root["global"]["groups"];
   if (groups != Value::null) {
@@ -79,7 +79,7 @@ bool WsNodeProperties::isAllowed(std::set<string> gids)
   if (!m_parsed) {
     string p = getPath();
     if(parse(p) == FAILURE)
-      return FAILURE;
+      return false;
   }
   WsGlobalProperties* props = WsGlobalProperties::instance();
   string admgrp = props->get("global", "admin_group", "");
@@ -126,7 +126,7 @@ Value WsNodeProperties::getRoot()
   if (!m_parsed) {
     string p = getPath();
     if(parse(p) == FAILURE)
-      return FAILURE;
+      return Value();
   }
   return m_root;
 }
@@ -153,7 +153,7 @@ void WsNodeProperties::set(const string& section, const string& key, const strin
   if (!m_parsed) {
     string p = getPath();
     if(parse(p) == FAILURE)
-      return FAILURE;
+      return;
   }
   m_root[section][key] = value;
 }
@@ -163,7 +163,7 @@ void WsNodeProperties::setGroups(std::set<string> grps)
   if (!m_parsed) {
     string p = getPath();
     if(parse(p) == FAILURE)
-      return FAILURE;
+      return;
   }
   m_root["global"]["groups"].clear();
   std::set<string>::iterator it;
