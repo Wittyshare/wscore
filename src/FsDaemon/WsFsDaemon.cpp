@@ -210,7 +210,7 @@ WsFsDaemon::DaemonStatus WsFsDaemon::handleRequest(socket_t& sock, Value& root )
   LOG(INFO) << "WsFsDaemon::handleRequest() : Received request : " << requestType << " from user " << uid << " ip " << ip;
   /* Authenticate request */
   if (requestType == Auth)
-    return handleAuthRequest(sock);
+    return handleAuthRequest(sock, root);
   /* Check if user is logged because all other requests needs authenticated user*/
   if (!isActiveSession(uid, pass, ip)) {
     LOG(ERROR) << "WsFsDaemon::handleRequest() :  User is not logged " << uid << " ip " << ip << " request : " << requestType;
@@ -569,8 +569,8 @@ WsFsDaemon::DaemonStatus WsFsDaemon::handleRootPathRequest(socket_t& sock, Value
   /* Get credentials */
   string uid = root[RequestField::Uid].asString();
   /* get rootPath */
-  string root = m_operation->getRootPath();
-  return send(sock, root);
+  string rootPath = m_operation->getRootPath();
+  return send(sock, rootPath);
 }
 
 WsFsDaemon::DaemonStatus WsFsDaemon::handleGetTreeVersion(socket_t& sock, Value& root)

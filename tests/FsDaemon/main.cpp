@@ -16,7 +16,7 @@
 #include <assert.h>
 using namespace std;
 
-const int nbUsers = 25;
+const int nbUsers = 50;
 vector<WsUser*> users;
 /**
  * @brief Creates and loads the user

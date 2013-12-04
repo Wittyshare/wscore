@@ -190,6 +190,7 @@ string WsNode::getProperty(const std::string& section, const std::string& id, co
 
 void WsNode::sort()
 {
+/*
   vector<NodePtr> all;
   all.reserve(m_fileVect.size() + m_dirVect.size());
   all.insert(all.end(), m_dirVect.begin(), m_dirVect.end());
@@ -200,6 +201,7 @@ void WsNode::sort()
     std::sort(all.begin(), all.end(), compareNodes());
   }
   m_combinedVect = all;
+*/
 }
 
 NodePtr WsNode::eatPath(const string& path)
