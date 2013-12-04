@@ -65,7 +65,9 @@ public:
    * @brief start listening on the port
    * @return DaemonStatus
    */
-  DaemonStatus bind();
+  DaemonStatus bind(unsigned int numWorkers = 1);
+
+  DaemonStatus WsFsDaemon::workerRoutine();
 
 private:
 
@@ -295,6 +297,8 @@ private:
    * Object used for decompressions
    */
   WsDecompressor* m_decompressor;
+
+  zmq::context_t* m_context;
 };
 
 #endif
