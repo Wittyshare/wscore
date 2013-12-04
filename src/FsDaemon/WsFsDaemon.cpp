@@ -46,32 +46,9 @@ WsFsDaemon::~WsFsDaemon()
   delete WsLogWriter::instance();
 }
 
-WsFsDaemon::WsFsDaemon::DaemonStatus WsFsDaemon::bind()
-{
-  /* Instanciate object used for operations on tree */
-  m_operation = new WsFsTreeOperations();
-  if ( m_operation->update() == FAILURE) {
-    LOG(ERROR) << "WsFsDaemon::bind() : Could not update WsFileSystemTree";
-    return Failure;
-  }
-  /* Init socket related data and socket */
-  context_t context(1);
-  socket_t sock(context, ZMQ_REP);
-  string protocol = m_conf->get("global", "protocol", "tcp");
-  string host = m_conf->get("global", "host", "127.0.0.1");
-  string port = m_conf->get("global", "port", "5555");
-  try {
-    LOG(INFO) << "WsFsDaemon::bind() : Binding server using " << protocol << " on " << host << ":" << port;
-    sock.bind((protocol + "://" + host + ":" + port).c_str());
-  } catch (zmq::error_t err) {
-    LOG(ERROR) << "WsFsDaemon::bind() : Cannot bind socket : " << err.what();
-    return Failure;
-  }
-  LOG(INFO) << "WsFsDaemon::bind() : Binding server Success !";
-  /* Load All groups */
-  WsAuthenticator auth;
-  m_allGroups = auth.getAllGroups();
-  /* Start infinite loop that will wait for connections */
+WsFsDaemon::WsFsDaemon::DaemonStatus WsFsDaemon::workerRoutine() {
+  zmq::socket_t sock (*m_context, ZMQ_REP);
+  socket.connect ("inproc://workers");
   while (m_listening) {
     try {
       string data;
@@ -98,6 +75,54 @@ WsFsDaemon::WsFsDaemon::DaemonStatus WsFsDaemon::bind()
       LOG(ERROR) << "WsFsDaemon::bind() : Error listening " << err.what();
     }
   }
+
+
+
+}
+
+
+WsFsDaemon::WsFsDaemon::DaemonStatus WsFsDaemon::bind(unsigned int numWorkers)
+{
+  /* Instanciate object used for operations on tree */
+  m_operation = new WsFsTreeOperations();
+  if ( m_operation->update() == FAILURE) {
+    LOG(ERROR) << "WsFsDaemon::bind() : Could not update WsFileSystemTree";
+    return Failure;
+  }
+
+  /* Retrieve values from configuration */
+  string protocol = m_conf->get("global", "protocol", "tcp");
+  string host = m_conf->get("global", "host", "127.0.0.1");
+  string port = m_conf->get("global", "port", "5555");
+
+  /* Init socket related data and socket */
+  m_context = new context_t(1);
+  socket_t clients(*m_context, ZMQ_ROUTER);
+  
+  try {
+    LOG(INFO) << "WsFsDaemon::bind() : Binding server using " << protocol << " on " << host << ":" << port;
+    sock.bind((protocol + "://" + host + ":" + port).c_str());
+  } catch (zmq::error_t err) {
+    LOG(ERROR) << "WsFsDaemon::bind() : Cannot bind socket : " << err.what();
+    return Failure;
+  }
+
+  socket_t workers(*m_context, ZMQ_DEALER);
+  workers.bind("inproc://workers");
+
+  /* Load All groups */
+  WsAuthenticator auth;
+  m_allGroups = auth.getAllGroups();
+
+  /* Launch workers in separate threads */
+  for (int thread_nbr = 0; thread_nbr != numWorkers; thread_nbr++) {
+    new boost::thread(boost::bind(&WsFsDaemon::workerRoutine, this));
+  }
+  // Connect work threads to client threads via a queue
+  zmq::proxy (clients, workers, NULL);
+  return 0;
+
+  LOG(INFO) << "WsFsDaemon::bind() : Binding server Success !";
 }
 
 WsFsDaemon::DaemonStatus WsFsDaemon::send(socket_t& sock, const string& s)
