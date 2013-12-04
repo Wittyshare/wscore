@@ -203,9 +203,9 @@ WsFsDaemon::DaemonStatus WsFsDaemon::handleRequest(socket_t& sock, Value& root )
     return Failure;
   }
   /* get credentials */
-  string uid = m_root[RequestField::Uid].asString();
-  string pass = m_root[RequestField::Pass].asString();
-  string ip = m_root[RequestField::Ip].asString();
+  string uid = root[RequestField::Uid].asString();
+  string pass = root[RequestField::Pass].asString();
+  string ip = root[RequestField::Ip].asString();
   int requestType = v.asInt();
   LOG(INFO) << "WsFsDaemon::handleRequest() : Received request : " << requestType << " from user " << uid << " ip " << ip;
   /* Authenticate request */
@@ -219,57 +219,57 @@ WsFsDaemon::DaemonStatus WsFsDaemon::handleRequest(socket_t& sock, Value& root )
   switch (requestType) {
     /* Permission request */
   case Perm:
-    return handlePermRequest(sock);
+    return handlePermRequest(sock, root);
     /* Get all groups request */
   case AllGroups:
-    return handleAllGroupsRequest(sock);
+    return handleAllGroupsRequest(sock, root);
     /* Get properties of a node request */
   case Properties:
-    return handlePropsRequest(sock);
+    return handlePropsRequest(sock, root);
     /* Get a property of a node request */
   case Property:
-    return handlePropRequest(sock);
+    return handlePropRequest(sock, root);
     /* Search request */
   case Search:
-    return handleSearchRequest(sock);
+    return handleSearchRequest(sock, root);
     /* Clear cache request */
   case ClearCache:
-    return handleClearCache(sock);
+    return handleClearCache(sock, root);
     /* Get menu item request */
   case MenuItems:
-    return handleMenuRequest(sock);
+    return handleMenuRequest(sock, root);
     /* Get menu item with exclusions request */
   case MenuItemsEx:
-    return handleMenuRequestEx(sock);
+    return handleMenuRequestEx(sock, root);
     /* Get access tree items */
   case AccessItems:
-    return handleAccessTreeRequest(sock);
+    return handleAccessTreeRequest(sock, root);
     /* Get isEditor request */
   case IsEditor:
-    return handleIsEditorRequest(sock);
+    return handleIsEditorRequest(sock, root);
     /* Get isAdmin request */
   case IsAdmin:
-    return handleIsAdminRequest(sock);
+    return handleIsAdminRequest(sock, root);
   case RootPath:
-    return handleRootPathRequest(sock);
+    return handleRootPathRequest(sock, root);
     /* Get tree version request */
   case TreeVersion:
-    return handleGetTreeVersion(sock);
+    return handleGetTreeVersion(sock, root);
     /* Save properties of a node request */
   case SaveProps:
-    return handleSavePropertiesRequest(sock);
+    return handleSavePropertiesRequest(sock, root);
     /* Save a property of a node request */
   case SaveProp:
-    return handleSavePropertyRequest(sock);
+    return handleSavePropertyRequest(sock, root);
     /* Create a node request */
   case CreateNode:
-    return handleCreateNodeRequest(sock);
+    return handleCreateNodeRequest(sock, root);
     /* Delete a node request */
   case DeleteNode:
-    return handleDeleteNodeRequest(sock);
+    return handleDeleteNodeRequest(sock, root);
     /* Rename a node request */
   case RenameNode:
-    return handleRenameNodeRequest(sock);
+    return handleRenameNodeRequest(sock, root);
     /* get RootPath request */
   default:
     LOG(ERROR) << "WsFsDaemon::handleRequest() : Undefined request type " << requestType;
@@ -277,12 +277,12 @@ WsFsDaemon::DaemonStatus WsFsDaemon::handleRequest(socket_t& sock, Value& root )
   }
 }
 
-WsFsDaemon::DaemonStatus WsFsDaemon::handleAuthRequest(socket_t& sock)
+WsFsDaemon::DaemonStatus WsFsDaemon::handleAuthRequest(socket_t& sock, Value& root)
 {
   /* get credentials */
-  string uid = m_root[RequestField::Uid].asString();
-  string pass = m_root[RequestField::Pass].asString();
-  string ip = m_root[RequestField::Ip].asString();
+  string uid = root[RequestField::Uid].asString();
+  string pass = root[RequestField::Pass].asString();
+  string ip = root[RequestField::Ip].asString();
   /* Check if there's already an active session for the user */
   if (isActiveSession(uid, pass, ip)) {
     /* If yes retrieve it from the cache */
@@ -319,10 +319,10 @@ WsFsDaemon::DaemonStatus WsFsDaemon::handleAuthRequest(socket_t& sock)
   return send(sock, answer.toStyledString());
 }
 
-WsFsDaemon::DaemonStatus WsFsDaemon::handleMenuRequest(socket_t& sock)
+WsFsDaemon::DaemonStatus WsFsDaemon::handleMenuRequest(socket_t& sock, Value& root)
 {
   /* get credentials */
-  string uid = m_root[RequestField::Uid].asString();
+  string uid = root[RequestField::Uid].asString();
   set<string> groups = m_userMap[uid]->getGroups();
   /* Create menuTree */
   WsMenuTree* tree = m_operation->getMenuTree(groups);
@@ -335,19 +335,19 @@ WsFsDaemon::DaemonStatus WsFsDaemon::handleMenuRequest(socket_t& sock)
   return send(sock, serializer.getSerializedForm());
 }
 
-WsFsDaemon::DaemonStatus WsFsDaemon::handleMenuRequestEx(socket_t& sock)
+WsFsDaemon::DaemonStatus WsFsDaemon::handleMenuRequestEx(socket_t& sock, Value& root)
 {
   /* get credentials */
-  string uid = m_root[RequestField::Uid].asString();
+  string uid = root[RequestField::Uid].asString();
   Value names;
   Value ext;
   set<string> groups = m_userMap[uid]->getGroups();
   /* Get the 2 vectors */
   set<string> exclNames, exclExt;
-  names = m_root[RequestField::ExclNames];
+  names = root[RequestField::ExclNames];
   for (int i = 0; i < names.size(); ++i)
     exclNames.insert(names[i].asString());
-  ext = m_root[RequestField::ExclExt];
+  ext = root[RequestField::ExclExt];
   for (int i = 0; i < ext.size(); ++i)
     exclExt.insert(ext[i].asString());
   /* Create menuTree */
@@ -361,10 +361,10 @@ WsFsDaemon::DaemonStatus WsFsDaemon::handleMenuRequestEx(socket_t& sock)
   return send(sock, serializer.getSerializedForm());
 }
 
-WsFsDaemon::DaemonStatus WsFsDaemon::handleAccessTreeRequest(socket_t& sock)
+WsFsDaemon::DaemonStatus WsFsDaemon::handleAccessTreeRequest(socket_t& sock, Value& root)
 {
   /* get credentials */
-  string uid = m_root[RequestField::Uid].asString();
+  string uid = root[RequestField::Uid].asString();
   /* Get the groups of the user */
   set<string> groups = m_userMap[uid]->getGroups();
   /* Create AccessTree */
@@ -378,11 +378,11 @@ WsFsDaemon::DaemonStatus WsFsDaemon::handleAccessTreeRequest(socket_t& sock)
   return send(sock, serializer.getSerializedForm());
 }
 
-WsFsDaemon::DaemonStatus WsFsDaemon::handlePermRequest(socket_t& sock)
+WsFsDaemon::DaemonStatus WsFsDaemon::handlePermRequest(socket_t& sock, Value& root)
 {
   /* get credentials */
-  string uid = m_root[RequestField::Uid].asString();
-  string path = m_root[RequestField::Path].asString();
+  string uid = root[RequestField::Uid].asString();
+  string path = root[RequestField::Path].asString();
   /* get users groups */
   set<string> groups = m_userMap[uid]->getGroups();
   /* Get permissions on node for user */
@@ -392,10 +392,10 @@ WsFsDaemon::DaemonStatus WsFsDaemon::handlePermRequest(socket_t& sock)
   return Failure;
 }
 
-WsFsDaemon::DaemonStatus WsFsDaemon::handleAllGroupsRequest(socket_t& sock)
+WsFsDaemon::DaemonStatus WsFsDaemon::handleAllGroupsRequest(socket_t& sock, Value& root)
 {
   /* Get credentials */
-  string uid = m_root[RequestField::Uid].asString();
+  string uid = root[RequestField::Uid].asString();
   /* Serialize the groups */
   WsArraySerializer s(m_allGroups);
   if (send(sock, s.getSerializedForm()) == FAILURE)
@@ -403,11 +403,11 @@ WsFsDaemon::DaemonStatus WsFsDaemon::handleAllGroupsRequest(socket_t& sock)
   return Success;
 }
 
-WsFsDaemon::DaemonStatus WsFsDaemon::handlePropsRequest(socket_t& sock)
+WsFsDaemon::DaemonStatus WsFsDaemon::handlePropsRequest(socket_t& sock, Value& root)
 {
   /* Get credentials */
-  string uid = m_root[RequestField::Uid].asString();
-  string path = m_root[RequestField::Path].asString();
+  string uid = root[RequestField::Uid].asString();
+  string path = root[RequestField::Path].asString();
   int i;
   WsNodeProperties* answer;
   /* Get groups of user */
@@ -419,13 +419,13 @@ WsFsDaemon::DaemonStatus WsFsDaemon::handlePropsRequest(socket_t& sock)
   return send(sock, answer->getRoot().toStyledString());
 }
 
-WsFsDaemon::DaemonStatus WsFsDaemon::handlePropRequest(socket_t& sock)
+WsFsDaemon::DaemonStatus WsFsDaemon::handlePropRequest(socket_t& sock, Value& root)
 {
   /* Get credentials */
-  string uid = m_root[RequestField::Uid].asString();
-  string p = m_root[RequestField::Path].asString();
-  string section = m_root[RequestField::Section].asString();
-  string prop = m_root[RequestField::Property].asString();
+  string uid = root[RequestField::Uid].asString();
+  string p = root[RequestField::Path].asString();
+  string section = root[RequestField::Section].asString();
+  string prop = root[RequestField::Property].asString();
   int i;
   string answer;
   set<string> groups = m_userMap[uid]->getGroups();
@@ -433,12 +433,13 @@ WsFsDaemon::DaemonStatus WsFsDaemon::handlePropRequest(socket_t& sock)
   answer = m_operation->getProperty(groups, section, p, prop);
   return send(sock, answer);
 }
-WsFsDaemon::DaemonStatus WsFsDaemon::handleSearchRequest(socket_t& sock)
+
+WsFsDaemon::DaemonStatus WsFsDaemon::handleSearchRequest(socket_t& sock, Value& root)
 {
   /* Get credentials */
   Value answer;
-  string uid = m_root[RequestField::Uid].asString();
-  string terms = m_root[RequestField::Terms].asString();
+  string uid = root[RequestField::Uid].asString();
+  string terms = root[RequestField::Terms].asString();
   /* Get the groups of user */
   set<string> groups = m_userMap[uid]->getGroups();
   /* Get the search results */
@@ -456,20 +457,20 @@ WsFsDaemon::DaemonStatus WsFsDaemon::handleSearchRequest(socket_t& sock)
   return send(sock, answer.toStyledString());
 }
 
-WsFsDaemon::DaemonStatus WsFsDaemon::handleClearCache(socket_t& sock)
+WsFsDaemon::DaemonStatus WsFsDaemon::handleClearCache(socket_t& sock, Value& root)
 {
   /* Get credentials */
-  string uid = m_root[RequestField::Uid].asString();
+  string uid = root[RequestField::Uid].asString();
   if (m_userMap.count(uid) > 0)
     delete m_userMap[uid];
   m_userMap.erase(uid);
   return send(sock, RequestField::Success);
 }
 
-WsFsDaemon::DaemonStatus WsFsDaemon::handleIsEditorRequest(socket_t& sock)
+WsFsDaemon::DaemonStatus WsFsDaemon::handleIsEditorRequest(socket_t& sock, Value& root)
 {
   /* Get credentials */
-  string uid = m_root[RequestField::Uid].asString();
+  string uid = root[RequestField::Uid].asString();
   /* Get user groups */
   set<string> groups = m_userMap[uid]->getGroups();
   /* Check if he is editor and send result */
@@ -479,10 +480,10 @@ WsFsDaemon::DaemonStatus WsFsDaemon::handleIsEditorRequest(socket_t& sock)
     return send(sock, "false");
 }
 
-WsFsDaemon::DaemonStatus WsFsDaemon::handleIsAdminRequest(socket_t& sock)
+WsFsDaemon::DaemonStatus WsFsDaemon::handleIsAdminRequest(socket_t& sock, Value& root)
 {
   /* Get credentials */
-  string uid = m_root[RequestField::Uid].asString();
+  string uid = root[RequestField::Uid].asString();
   /* Get the groups of the user */
   set<string> groups = m_userMap[uid]->getGroups();
   /* Check if he is an admin and send result */
@@ -492,27 +493,27 @@ WsFsDaemon::DaemonStatus WsFsDaemon::handleIsAdminRequest(socket_t& sock)
     return send(sock, "false");
 }
 
-WsFsDaemon::DaemonStatus WsFsDaemon::handleSavePropertiesRequest(socket_t& sock)
+WsFsDaemon::DaemonStatus WsFsDaemon::handleSavePropertiesRequest(socket_t& sock, Value& root)
 {
   /* Get credentials */
-  string uid = m_root[RequestField::Uid].asString();
-  string path = m_root[RequestField::Path].asString();
+  string uid = root[RequestField::Uid].asString();
+  string path = root[RequestField::Path].asString();
   /* Get groups */
   set<string> groups = m_userMap[uid]->getGroups();
   /* Save */
-  if (m_operation->saveProperties(groups, m_root[RequestField::Type].toStyledString(), path) != FAILURE)
+  if (m_operation->saveProperties(groups, root[RequestField::Type].toStyledString(), path) != FAILURE)
     return send(sock, RequestField::Success);
   return Failure;
 }
 
-WsFsDaemon::DaemonStatus WsFsDaemon::handleSavePropertyRequest(socket_t& sock)
+WsFsDaemon::DaemonStatus WsFsDaemon::handleSavePropertyRequest(socket_t& sock, Value& root)
 {
   /* Get credentials */
-  string uid = m_root[RequestField::Uid].asString();
-  string path = m_root[RequestField::Path].asString();
-  string section = m_root[RequestField::Section].asString();
-  string key = m_root[RequestField::Key].asString();
-  string value = m_root[RequestField::Value].asString();
+  string uid = root[RequestField::Uid].asString();
+  string path = root[RequestField::Path].asString();
+  string section = root[RequestField::Section].asString();
+  string key = root[RequestField::Key].asString();
+  string value = root[RequestField::Value].asString();
   /* get groups */
   set<string> groups = m_userMap[uid]->getGroups();
   /* Save */
@@ -522,12 +523,12 @@ WsFsDaemon::DaemonStatus WsFsDaemon::handleSavePropertyRequest(socket_t& sock)
 }
 
 
-WsFsDaemon::DaemonStatus WsFsDaemon::handleCreateNodeRequest(socket_t& sock)
+WsFsDaemon::DaemonStatus WsFsDaemon::handleCreateNodeRequest(socket_t& sock, Value& root)
 {
   /* Get credentials */
-  string uid = m_root[RequestField::Uid].asString();
-  string path = m_root[RequestField::Path].asString();
-  int type = m_root[RequestField::NodeType].asInt();
+  string uid = root[RequestField::Uid].asString();
+  string path = root[RequestField::Path].asString();
+  int type = root[RequestField::NodeType].asInt();
   /* Get groups */
   set<string> groups = m_userMap[uid]->getGroups();
   /* Create node */
@@ -536,11 +537,11 @@ WsFsDaemon::DaemonStatus WsFsDaemon::handleCreateNodeRequest(socket_t& sock)
   return send(sock, RequestField::Success);
 }
 
-WsFsDaemon::DaemonStatus WsFsDaemon::handleDeleteNodeRequest(socket_t& sock)
+WsFsDaemon::DaemonStatus WsFsDaemon::handleDeleteNodeRequest(socket_t& sock, Value& root)
 {
   /* Get credentials */
-  string uid = m_root[RequestField::Uid].asString();
-  string path = m_root[RequestField::Path].asString();
+  string uid = root[RequestField::Uid].asString();
+  string path = root[RequestField::Path].asString();
   /* Get groups */
   set<string> groups = m_userMap[uid]->getGroups();
   /* delete node */
@@ -549,12 +550,12 @@ WsFsDaemon::DaemonStatus WsFsDaemon::handleDeleteNodeRequest(socket_t& sock)
   return send(sock, RequestField::Success);
 }
 
-WsFsDaemon::DaemonStatus WsFsDaemon::handleRenameNodeRequest(socket_t& sock)
+WsFsDaemon::DaemonStatus WsFsDaemon::handleRenameNodeRequest(socket_t& sock, Value& root)
 {
   /* Get credentials */
-  string uid = m_root[RequestField::Uid].asString();
-  string path = m_root[RequestField::Path].asString();
-  string newPath = m_root[RequestField::NewPath].asString();
+  string uid = root[RequestField::Uid].asString();
+  string path = root[RequestField::Path].asString();
+  string newPath = root[RequestField::NewPath].asString();
   /* Get groups */
   set<string> groups = m_userMap[uid]->getGroups();
   /* rename node */
@@ -563,19 +564,19 @@ WsFsDaemon::DaemonStatus WsFsDaemon::handleRenameNodeRequest(socket_t& sock)
   return send(sock, RequestField::Success);
 }
 
-WsFsDaemon::DaemonStatus WsFsDaemon::handleRootPathRequest(socket_t& sock)
+WsFsDaemon::DaemonStatus WsFsDaemon::handleRootPathRequest(socket_t& sock, Value& root)
 {
   /* Get credentials */
-  string uid = m_root[RequestField::Uid].asString();
+  string uid = root[RequestField::Uid].asString();
   /* get rootPath */
   string root = m_operation->getRootPath();
   return send(sock, root);
 }
 
-WsFsDaemon::DaemonStatus WsFsDaemon::handleGetTreeVersion(socket_t& sock)
+WsFsDaemon::DaemonStatus WsFsDaemon::handleGetTreeVersion(socket_t& sock, Value& root)
 {
   /* Get credentials */
-  string uid = m_root[RequestField::Uid].asString();
+  string uid = root[RequestField::Uid].asString();
   string version = m_operation->getFsTreeStamp();
   return send(sock, version);
 }
