@@ -47,8 +47,10 @@ WsFsDaemon::~WsFsDaemon()
 }
 
 WsFsDaemon::WsFsDaemon::DaemonStatus WsFsDaemon::workerRoutine() {
+  LOG(DEBUG)<<"WsFsDaemon::workerRoutine : starting new worker";
   zmq::socket_t sock (*m_context, ZMQ_REP);
-  socket.connect ("inproc://workers");
+  sock.connect ("inproc://workers");
+  Value root;
   while (m_listening) {
     try {
       string data;
@@ -56,12 +58,12 @@ WsFsDaemon::WsFsDaemon::DaemonStatus WsFsDaemon::workerRoutine() {
       if (receive(sock, data) == Failure)
         return Failure;
       /* Parse data (Json) */
-      if (parse(data) == Failure) {
+      if (parse(data, root) == Failure) {
         send(sock, RequestField::Failure);
         continue;
       }
       /* handle the request depending on type */
-      int ret = handleRequest(sock);
+      int ret = handleRequest(sock, root);
       /* If return code is error or not logged send a message */
       switch (ret) {
       case Failure:
@@ -101,7 +103,7 @@ WsFsDaemon::WsFsDaemon::DaemonStatus WsFsDaemon::bind(unsigned int numWorkers)
   
   try {
     LOG(INFO) << "WsFsDaemon::bind() : Binding server using " << protocol << " on " << host << ":" << port;
-    sock.bind((protocol + "://" + host + ":" + port).c_str());
+    clients.bind((protocol + "://" + host + ":" + port).c_str());
   } catch (zmq::error_t err) {
     LOG(ERROR) << "WsFsDaemon::bind() : Cannot bind socket : " << err.what();
     return Failure;
@@ -120,9 +122,8 @@ WsFsDaemon::WsFsDaemon::DaemonStatus WsFsDaemon::bind(unsigned int numWorkers)
   }
   // Connect work threads to client threads via a queue
   zmq::proxy (clients, workers, NULL);
-  return 0;
-
   LOG(INFO) << "WsFsDaemon::bind() : Binding server Success !";
+  return Success;
 }
 
 WsFsDaemon::DaemonStatus WsFsDaemon::send(socket_t& sock, const string& s)
@@ -182,20 +183,21 @@ WsFsDaemon::DaemonStatus WsFsDaemon::receive(socket_t& sock, string& receivedDat
   return Success;
 }
 
-WsFsDaemon::DaemonStatus WsFsDaemon::parse(const string& s)
+WsFsDaemon::DaemonStatus WsFsDaemon::parse(const string& s, Value& root)
 {
   //Clear old Json tree
-  m_root.clear();
-  if (!m_reader.parse(s, m_root, false)) {
+  Reader reader;
+  root.clear();
+  if (!reader.parse(s, root, false)) {
     LOG(ERROR) << "WsFsDaemon::parse() : Could not parse received input";
     return Failure;
   }
   return Success;
 }
 
-WsFsDaemon::DaemonStatus WsFsDaemon::handleRequest(socket_t& sock)
+WsFsDaemon::DaemonStatus WsFsDaemon::handleRequest(socket_t& sock, Value& root )
 {
-  Value v = m_root[RequestField::Type];
+  Value v = root[RequestField::Type];
   if (v == Value::null) {
     LOG(ERROR) << "WsFsDaemon::handleRequest() : Could not find request type";
     return Failure;

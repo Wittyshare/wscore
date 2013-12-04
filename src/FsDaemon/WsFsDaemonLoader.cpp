@@ -33,7 +33,8 @@ int WsFsDaemonLoader::start()
 {
   if (!m_daemon) {
     m_server = new WsFsDaemon(m_props);
-    return m_server->bind();
+    int nworkers = boost::lexical_cast<int>(m_props->get("global","num_workers", "1")); 
+    return m_server->bind(nworkers);
   } else
     return daemonize();
 }
@@ -55,6 +56,7 @@ void usage()
   cout << "Usage : " << endl;
   cout << "[-h | --host] value\t: connect on host" << endl;
   cout << "[-p | --port] value\t: connect on port" << endl;
+  cout << "[-w | --nworkers] value\t: number of workers" << endl;
   cout << "[--protocol]  value\t: use protocol" << endl;
   cout << "[--daemonize]\t\t: run server in background" << endl;
   cout << "[--root]\t\t: Filesystem root path" << endl;
@@ -84,6 +86,7 @@ int main(int argc, char** argv)
   static struct option long_options[] = {
     {"host", required_argument, NULL, 'h'},
     {"port", required_argument, NULL, 'p'},
+    {"nworkers", required_argument, NULL, 'w'},
     {"daemonize", no_argument, NULL, 0},
     {"protocol", required_argument, NULL, 1},
     {"help", no_argument, NULL, 2},
@@ -96,13 +99,16 @@ int main(int argc, char** argv)
   bool bpid = false;
   std::string pidPath = "";
   char c;
-  while ((c = getopt_long (argc, argv, "h:p:01:", long_options, &option_index)) != -1) {
+  while ((c = getopt_long (argc, argv, "h:p:w:01:", long_options, &option_index)) != -1) {
     switch (c) {
     case 'h':
       props->set("global", "host", string((char*)optarg));
       break;
     case 'p':
       props->set("global", "port", string((char*)optarg));
+      break;
+    case 'w':
+      props->set("global", "num_workers", string((char*)optarg));
       break;
     case 0:
       bdaemon = true;

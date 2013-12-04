@@ -67,7 +67,7 @@ public:
    */
   DaemonStatus bind(unsigned int numWorkers = 1);
 
-  DaemonStatus WsFsDaemon::workerRoutine();
+  DaemonStatus workerRoutine();
 
 private:
 
@@ -92,147 +92,147 @@ private:
    * @param s the string to parse (Json)
    * @return DaemonStatus
    **/
-  DaemonStatus parse(const std::string& s);
+  DaemonStatus parse(const std::string& s, Json::Value& root);
 
   /**
    * @brief Handle received request and redirect to correct method
    * @param sock the zmq::socket_t
    * @returns DaemonStatus
    **/
-  DaemonStatus handleRequest(zmq::socket_t& sock);
+  DaemonStatus handleRequest(zmq::socket_t& sock, Json::Value& root);
 
   /**
    * @brief Authenticate user on server
    * Loads the groups which the user belongs to, uid, email, etc..
    * @see WsAbstractAuth
    **/
-  DaemonStatus handleAuthRequest(zmq::socket_t& sock);
+  DaemonStatus handleAuthRequest(zmq::socket_t& sock, Json::Value& root);
 
   /**
    * @brief Sends the menu to the client
    * @param sock the zmq::socket_t
    * @returns DaemonStatus
    */
-  DaemonStatus handleMenuRequest(zmq::socket_t& sock);
+  DaemonStatus handleMenuRequest(zmq::socket_t& sock, Json::Value& root);
 
   /**
    * @brief Sends the menu to the client, the client requested a menu with exclusion of extensions
    * @param sock the zmq::socket_t
    * @returns DaemonStatus
    */
-  DaemonStatus handleMenuRequestEx(zmq::socket_t& sock);
+  DaemonStatus handleMenuRequestEx(zmq::socket_t& sock, Json::Value& root);
 
   /**
    * @brief Sends the accesstree to the client
    * @param sock the zmq::socket_t
    * @returns DaemonStatus
    */
-  DaemonStatus handleAccessTreeRequest(zmq::socket_t& sock);
+  DaemonStatus handleAccessTreeRequest(zmq::socket_t& sock, Json::Value& root);
 
   /**
    * @brief sends the permissions of a path to the client
    * @param sock the zmq::socket_t
    * @returns DaemonStatus
    */
-  DaemonStatus handlePermRequest(zmq::socket_t& sock);
+  DaemonStatus handlePermRequest(zmq::socket_t& sock, Json::Value& root);
 
   /**
    * @brief sends a property of a node to the client
    * @param sock the zmq::socket_t
    * @returns DaemonStatus
    */
-  DaemonStatus handlePropRequest(zmq::socket_t& sock);
+  DaemonStatus handlePropRequest(zmq::socket_t& sock, Json::Value& root);
 
   /**
    * @brief sends all the groups available to the client
    * @param sock the zmq::socket_t
    * @returns DaemonStatus
    */
-  DaemonStatus handleAllGroupsRequest(zmq::socket_t& sock);
+  DaemonStatus handleAllGroupsRequest(zmq::socket_t& sock, Json::Value& root);
 
   /**
    * @brief sends all the properties of a node
    * @param sock the zmq::socket_t
    * @returns DaemonStatus
    */
-  DaemonStatus handlePropsRequest(zmq::socket_t& sock);
+  DaemonStatus handlePropsRequest(zmq::socket_t& sock, Json::Value& root);
 
   /**
    * @brief sends the result of a search request to the client. Only nodes where the user has access are returned
    * @param sock the zmq::socket_t
    * @returns DaemonStatus
    */
-  DaemonStatus handleSearchRequest(zmq::socket_t& sock);
+  DaemonStatus handleSearchRequest(zmq::socket_t& sock, Json::Value& root);
 
   /**
    * @brief clears the user from the cache
    * @param sock the zmq::socket_t
    * @returns DaemonStatus
    */
-  DaemonStatus handleClearCache(zmq::socket_t& sock);
+  DaemonStatus handleClearCache(zmq::socket_t& sock, Json::Value& root);
 
   /**
    * @brief sends the result of an admin request so that the client can know if he is an admin or not
    * @param sock the zmq::socket_t
    * @returns DaemonStatus
    */
-  DaemonStatus handleIsAdminRequest(zmq::socket_t& sock);
+  DaemonStatus handleIsAdminRequest(zmq::socket_t& sock, Json::Value& root);
 
   /**
    * @brief sends the result of an editor  request so that the client can know if he is an editor or not
    * @param sock the zmq::socket_t
    * @returns DaemonStatus
    */
-  DaemonStatus handleIsEditorRequest(zmq::socket_t& sock);
+  DaemonStatus handleIsEditorRequest(zmq::socket_t& sock, Json::Value& root);
 
   /**
    * @brief saves the properties received by the client for a node
    * @param sock the zmq::socket_t
    * @returns DaemonStatus
    */
-  DaemonStatus handleSavePropertiesRequest(zmq::socket_t& sock);
+  DaemonStatus handleSavePropertiesRequest(zmq::socket_t& sock, Json::Value& root);
 
   /**
    * @brief saves one property received by a client for a node
    * @param sock the zmq::socket_t
    * @returns DaemonStatus
    */
-  DaemonStatus handleSavePropertyRequest(zmq::socket_t& sock);
+  DaemonStatus handleSavePropertyRequest(zmq::socket_t& sock, Json::Value& root);
 
   /**
    * @brief create a node requested by the client
    * @param sock the zmq::socket_t
    * @returns DaemonStatus
    */
-  DaemonStatus handleCreateNodeRequest(zmq::socket_t& sock);
+  DaemonStatus handleCreateNodeRequest(zmq::socket_t& sock, Json::Value& root);
 
   /**
    * @brief rename a node
    * @param sock the zmq::socket_t
    * @returns DaemonStatus
    */
-  DaemonStatus handleRenameNodeRequest(zmq::socket_t& sock);
+  DaemonStatus handleRenameNodeRequest(zmq::socket_t& sock, Json::Value& root);
 
   /**
    * @brief delete a node requested by the client
    * @param sock the zmq::socket_t
    * @returns DaemonStatus
    */
-  DaemonStatus handleDeleteNodeRequest(zmq::socket_t& sock);
+  DaemonStatus handleDeleteNodeRequest(zmq::socket_t& sock, Json::Value& root);
 
   /**
    * @brief send the rootPath to the client
    * @param sock the zmq::socket_t
    * @returns DaemonStatus
    */
-  DaemonStatus handleRootPathRequest(zmq::socket_t& sock);
+  DaemonStatus handleRootPathRequest(zmq::socket_t& sock, Json::Value& root);
 
   /**
    * @brief sends the last tree version to the client
    * @param sock the zmq::socket_t
    * @returns DaemonStatus
    */
-  DaemonStatus handleGetTreeVersion(zmq::socket_t& sock);
+  DaemonStatus handleGetTreeVersion(zmq::socket_t& sock, Json::Value& root);
 
   /**
    * @brief converts raw data received on the socket to string
@@ -262,16 +262,6 @@ private:
    * Contains the interface to all possible operations on tree
    */
   WsFsTreeOperations* m_operation;
-
-  /**
-   * Json root
-   */
-  Json::Value m_root;
-
-  /**
-   * Json reader
-   */
-  Json::Reader m_reader;
 
   /**
    * User's session map
