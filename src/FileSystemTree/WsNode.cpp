@@ -28,6 +28,7 @@ WsNode::~WsNode()
 WsNode::WsNode(const path& fullPath, const path& rootPath):
   WsAbstractNode()
 {
+  m_mutexSort = new boost::mutex();
   try {
     m_size = 0;
     m_fullPath = fullPath;
@@ -190,7 +191,7 @@ string WsNode::getProperty(const std::string& section, const std::string& id, co
 
 void WsNode::sort()
 {
-/*
+  boost::mutex::scoped_lock lock(*m_mutexSort);
   vector<NodePtr> all;
   all.reserve(m_fileVect.size() + m_dirVect.size());
   all.insert(all.end(), m_dirVect.begin(), m_dirVect.end());
@@ -201,7 +202,6 @@ void WsNode::sort()
     std::sort(all.begin(), all.end(), compareNodes());
   }
   m_combinedVect = all;
-*/
 }
 
 NodePtr WsNode::eatPath(const string& path)
