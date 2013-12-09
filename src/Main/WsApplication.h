@@ -42,6 +42,7 @@ public :
 public slots :
   void                         doPathChanged(std::string newPath);
   void                         doEndDialogLogon(std::string sUid, std::string pPassword);
+  void                         googleAnalyticsLogger(std::string newPath);
 
 private :
   WsUser*                      m_pUser;
