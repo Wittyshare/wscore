@@ -1,7 +1,0 @@
-Creating a Search Module
-
-Create a class that subclass WsAbstractSearch and redefine virtual functions.
-
-The module must be compiled separatly and should be named 'WsModSearch'. The resulting so file will therefore be 'libwsmodsearch.so'
-
-For the current SearchModule that uses MnoGoSearch, you should export LD_LIBRARY_PATH=/usr/local/mnogosearch/lib

@@ -1,9 +1,0 @@
-sudo apt-get install scons
-wget "http://freefr.dl.sourceforge.net/project/jsoncpp/jsoncpp/0.5.0/jsoncpp-src-0.5.0.tar.gz"
-tar -xvzf jsoncpp-src-0.5.0.tar.gz
-cd jsoncpp-src-0.5.0
-scons platform=linux-gcc
-sudo cp -r include/* /usr/local/include
-sudo cp -r libs/linux-gcc-4.4.5/* /usr/local/lib
-
-
