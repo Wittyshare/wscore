@@ -1,7 +1,0 @@
-The node is a structure that represents a file or folder.
-A derived class FileNode and DirNode is used to represent them. Each one of these class has specific attributes.
-The Node constructor takes as parameter a FullPath (which is the path on the disk) and a root path (which is the path of the root Node).
-Each DirNode can have many childs. There are 2 lists in the Node class: 
-	-dirList to store all the sub directories of the Node (dir)
-	-fileList to store all the subfiles of the node 
-
