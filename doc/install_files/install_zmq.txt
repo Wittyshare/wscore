@@ -1,0 +1,11 @@
+sudo apt-get install libtool
+sudo aptitude install uuid-dev
+git clone https://github.com/zeromq/zeromq3-0.git
+cd zeromq3-0/
+./autogen
+configure
+make 
+make install
+wget https://download.github.com/zeromq-cppzmq-f5bc62f.tar.gz
+cd ../zeromq-cppzmq-f5bc62f
+sudo cp zmq.hpp /usr/local/include/
