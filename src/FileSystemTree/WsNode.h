@@ -14,12 +14,12 @@
 #define WS_NODE_H__
 
 #include <boost/lexical_cast.hpp>
-
 #include <algorithm>
 
 #include <ConfigManager/WsNodeProperties.h>
-#include "WsAbstractNode.h"
 #include <Include/WsGlobalConfig.h>
+#include "WsAbstractNode.h"
+
 
 /**
  * @brief Represents a node on disk
@@ -224,6 +224,9 @@ protected:
    * The modification date of the node
    */
   time_t m_modifyTime;
+  
+  boost::mutex *m_mutexSort;
+
 };
 
 #endif

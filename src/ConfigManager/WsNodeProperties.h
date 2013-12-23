@@ -17,6 +17,7 @@
 #include <iostream>
 #include <set>
 #include <boost/filesystem.hpp>
+#include <boost/thread/mutex.hpp>
 
 #include "WsAbstractProperties.h"
 
@@ -122,6 +123,7 @@ protected:
 private:
   boost::filesystem::path m_nodePath;
   Type m_type;
+  boost::mutex m_mutex;
 
 };
 #endif
