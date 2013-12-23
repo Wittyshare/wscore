@@ -1,13 +1,12 @@
 cmake_minimum_required(VERSION 2.8.3)
-PROJECT($APPNAME)
+SET(APPNAME wscore)
+SET(CMAKE_INSTALL_PREFIX  /usr/local/wscore)
+PROJECT(wscore)
 
 # pour support de std::tr1
 # http://www.johndcook.com/cpp_regex.html
 #set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -std=gnu++11")
 #set(CMAKE_CSS_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -std=gnu++11")
-
-SET(APPBIN "${APPNAME}.wt ${APPNAME}.wthttpd")
-SET(DEPLOYROOT /var/www/wt CACHE PATH "Deploy the app under this directory")
 
 set(CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH} ${HARU_PREFIX} ${GDCORE_PREFIX} ${GDWTCORE_PREFIX})
 
@@ -46,6 +45,7 @@ SET (APPNAME_SRCS
    src/Tree/WsAbstractTree.cpp
 
    src/Serializer/WsTreeSerializer.cpp
+   src/Serializer/WsArraySerializer.cpp
    src/Serializer/WsTreeDeserializer.cpp
    src/Serializer/WsArrayDeserializer.cpp
 
@@ -65,23 +65,6 @@ SET (APPNAME_SRCS
    src/Logger/WsLogWriter.cpp
    src/Logger/WsCrashLogger.cpp
 
-   src/Main/main.cpp
-   src/Main/WsFormConfig.cpp
-   src/Main/WsLogo.cpp
-   src/Main/WsSiteMap.cpp
-   src/Main/WsSearchObject.cpp
-   src/Main/WsTopBanner.cpp
-   src/Main/WsBottomBanner.cpp
-   src/Main/WsContent.cpp
-   src/Main/WsContentButtonsBar.cpp
-   src/Main/WsFileResource.cpp
-   src/Main/WsModulesLoader.cpp 
-   src/Main/WsFunctionnalities.cpp
-   src/Main/WsSiteMapView.cpp
-   src/Main/WsSearchView.cpp
-   src/Main/WsTemplate.cpp
-   src/Main/WsApplication.cpp
-
    src/Search/WsSearch.cpp
    src/Search/WsResultItem.cpp
    src/Search/WsAbstractSearch.cpp
@@ -91,16 +74,10 @@ SET (APPNAME_SRCS
 
     )
 
-INCLUDE(${CMAKE_ROOT}/Modules/gdcmake/Find_gdwtcore.cmake)
-INCLUDE(${CMAKE_HOME_DIRECTORY}/cmake/FindJsoncpp.cmake)
-INCLUDE(${CMAKE_HOME_DIRECTORY}/cmake/FindZmq.cmake)
-INCLUDE(${CMAKE_HOME_DIRECTORY}/cmake/FindFam.cmake)
-INCLUDE(${CMAKE_HOME_DIRECTORY}/cmake/FindZlib.cmake)
-INCLUDE(${CMAKE_SOURCE_DIR}/src/WsModule/cmake/WsModuleInclude.cmake)
-
-IF(NOT GDWTCORE_FOUND)
-    MESSAGE(FATAL_ERROR "** these program needs gdwtcore libraries... Abord.")
-ENDIF(NOT GDWTCORE_FOUND)
+INCLUDE(./cmake/FindJsoncpp.cmake)
+INCLUDE(./cmake/FindZmq.cmake)
+INCLUDE(./cmake/FindFam.cmake)
+INCLUDE(./cmake/FindZlib.cmake)
 
 IF(NOT JSONCPP_FOUND)
     MESSAGE(FATAL_ERROR "** these program needs jsoncpp libraries... Abord.")
@@ -119,7 +96,6 @@ IF(NOT ZLIB_FOUND)
 ENDIF(NOT ZLIB_FOUND)
 
 INCLUDE_DIRECTORIES(
-    ${GDWTCORE_INCLUDE_DIRS}
     ${JSONCPP_INCLUDE_DIR}
     ${ZMQ_INCLUDE_DIR}
     ${FAM_INCLUDE_DIR}
@@ -129,12 +105,10 @@ INCLUDE_DIRECTORIES(
 
 SET ( APP_LIBRARIES
     dl
-    ${GDWTCORE_LIBRARIES}
     ${JSONCPP_LIBRARIES}
     ${ZMQ_LIBRARY}
     ${FAM_LIBRARY}
     ${ZLIB_LIBRARY}
-    WsModule
     )
 
    SET ( APP_LIBRARIES
@@ -143,13 +117,9 @@ SET ( APP_LIBRARIES
     )
 
 SUBDIRS (
-    src/WsModule
-    src/WsModules
     src/WsSearchModules
     src/WsAuthModules
-    src/FhtmlEditor
-    src/FsDaemon/
     )
 
-INCLUDE(${CMAKE_ROOT}/Modules/gdcmake/install_webapp.cmake)
+INCLUDE(${CMAKE_ROOT}/Modules/gdcmake/install_libs.cmake)
 
