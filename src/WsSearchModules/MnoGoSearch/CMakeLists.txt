@@ -1,6 +1,10 @@
 cmake_minimum_required(VERSION 2.8.3)
 SET(APPNAME "WsModMnoGoSearch")
-PROJECT($APPNAME)
+PROJECT(${APPNAME})
+
+INCLUDE(../../../cmake/FindMnoGoSearch.cmake)
+
+IF(MnoGoSearch_FOUND)
 
 SET ( APPNAME_SRCS 
      src/WsMnoGoSearch.cpp
@@ -57,9 +61,7 @@ IF(NOT FAM_FOUND)
   MESSAGE(FATAL_ERROR "** these program needs fam libraries... Abord.")
 ENDIF(NOT FAM_FOUND)
 
-IF(NOT MnoGoSearch_FOUND)
-  MESSAGE(FATAL_ERROR "** these program needs mnogosearch libraries... Abord.")
-ENDIF(NOT MnoGoSearch_FOUND)
+  
 
 INCLUDE_DIRECTORIES(
 	${CMAKE_CURRENT_SOURCE_DIR}
@@ -77,3 +79,5 @@ SET ( APP_LIBRARIES
     )
 
 INCLUDE(${CMAKE_ROOT}/Modules/gdcmake/install_libs.cmake)
+
+ENDIF(MnoGoSearch_FOUND)

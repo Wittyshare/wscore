@@ -8,7 +8,7 @@ PROJECT(wscore)
 #set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -std=gnu++11")
 #set(CMAKE_CSS_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -std=gnu++11")
 
-set(CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH} ${HARU_PREFIX} ${GDCORE_PREFIX} ${GDWTCORE_PREFIX})
+set(CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH} )
 
 ADD_DEFINITIONS(-DHAS_DAEMON)
 
@@ -111,9 +111,8 @@ SET ( APP_LIBRARIES
     ${ZLIB_LIBRARY}
     )
 
-   SET ( APP_LIBRARIES
+SET ( APP_LIBRARIES
       ${APP_LIBRARIES}
-      WsModule
     )
 
 SUBDIRS (
@@ -121,5 +120,5 @@ SUBDIRS (
     src/WsAuthModules
     )
 
-INCLUDE(${CMAKE_ROOT}/Modules/gdcmake/install_libs.cmake)
+INCLUDE(./cmake/install_libs.cmake)
 
