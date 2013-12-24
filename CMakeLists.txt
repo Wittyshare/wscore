@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 2.8.3)
-SET(APPNAME wscore)
+IF(NOT DEFINED ${APPNAME})
+  SET(APPNAME wscore)
+ENDIF(NOT DEFINED ${APPNAME})
 SET(CMAKE_INSTALL_PREFIX  /usr/local/wscore)
 PROJECT(wscore)
 
