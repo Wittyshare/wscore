@@ -33,7 +33,7 @@ public:
   WsBasicAuth();
 
   /**
-   * @brief authenticate the user 
+   * @brief authenticate the user
    * this function is a basic function and will authenticate any user and add the group "Guest to his groups"
    *
    * @param uid the uid of the user

@@ -224,8 +224,8 @@ protected:
    * The modification date of the node
    */
   time_t m_modifyTime;
-  
-  boost::mutex *m_mutexSort;
+
+  boost::mutex* m_mutexSort;
 
 };
 
