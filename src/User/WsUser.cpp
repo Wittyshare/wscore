@@ -79,46 +79,62 @@ NodePtr WsUser::getMenuRoot()
 
 int WsUser::getPermissions(const string& p)
 {
-  return m_client->getPermissions(p);
+  string newPath = p;
+  boost::algorithm::replace_all(newPath, "//","/");
+  return m_client->getPermissions(newPath);
 }
 
 const WsNodeProperties* WsUser::getProperties(const string& p)
 {
-  return m_client->getProperties(p);
+  string newPath = p;
+  boost::algorithm::replace_all(newPath, "//","/");
+  return m_client->getProperties(newPath);
 }
 
 string WsUser::getProperty(const string& path, const string& section, const string& attr, const string& def)
 {
+  string newPath = path;
+  boost::algorithm::replace_all(newPath, "//","/");
   /* Return the property found if not empty string otherwise return def */
-  string ret = m_client->getProperty(section, path, attr);
+  string ret = m_client->getProperty(section, newPath, attr);
   if ( ret.size() > 0 ) return ret;
   return def;
 }
 
 int WsUser::saveProperty(const string& path, const string& section, const string& attr, const string& val)
 {
-  return m_client->saveProperty(path, section, attr, val);
+  string newPath = path;
+  boost::algorithm::replace_all(newPath, "//","/");
+  return m_client->saveProperty(newPath, section, attr, val);
 }
 
 
 int WsUser::createNode(const string& path, NodeType type)
 {
+  string newPath = path;
+  boost::algorithm::replace_all(newPath, "//","/");
   switch (type) {
   case File:
-    return m_client->createNode(path, 0);
+    return m_client->createNode(newPath, 0);
   case Directory:
-    return m_client->createNode(path, 1);
+    return m_client->createNode(newPath, 1);
   }
 }
 
 int WsUser::deleteNode(const string& path)
 {
-  return m_client->deleteNode(path);
+  string newPath = path;
+  boost::algorithm::replace_all(newPath, "//","/");
+  return m_client->deleteNode(newPath);
 }
 
 int WsUser::renameNode(const string& path, const string& newPath)
 {
-  return m_client->renameNode(path, newPath);
+  string npath = path;
+  boost::algorithm::replace_all(npath, "//","/");
+  string nnewPath = newPath;
+  boost::algorithm::replace_all(nnewPath, "//","/");
+  return m_client->renameNode(npath, nnewPath);
 }
 
 NodePtr WsUser::getMenuRoot(const set<string>& exclNames, const set<string>& exclExt)
@@ -144,7 +160,9 @@ set<string> WsUser::getAllGroups()
 
 int WsUser::saveProperties(WsNodeProperties* props, const string& path)
 {
-  return m_client->saveProperties(props, path);
+  string newPath = path;
+  boost::algorithm::replace_all(newPath, "//","/");
+  return m_client->saveProperties(props, newPath);
 }
 
 bool WsUser::isEditor()
@@ -159,5 +177,7 @@ bool WsUser::isAdministrator()
 
 vector<string> WsUser::getTemplatesList(const string& path)
 {
-  return m_client->getTemplatesList(path);
+  string newPath = path;
+  boost::algorithm::replace_all(newPath, "//","/");
+  return m_client->getTemplatesList(newPath);
 }
