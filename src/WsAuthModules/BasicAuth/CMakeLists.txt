@@ -12,7 +12,7 @@ SET ( APPNAME_SRCS
   )
 
 INCLUDE_DIRECTORIES(
-    ../..
-	)
+../..
+)
 
 INCLUDE(${CMAKE_ROOT}/Modules/gdcmake/install_libs.cmake)

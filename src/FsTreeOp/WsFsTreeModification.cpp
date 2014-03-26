@@ -100,7 +100,7 @@ int WsFsTreeModification::createNode( const std::set<std::string>& groups, const
     return FAILURE;
   }
   /* Check if new node already exit */
-  if ( boost::filesystem::exists(root / p) ) {
+  if(ft->eatPath(p).get() != 0){
     LOG(INFO) << "WsFsTreeClient::createNode() : Node already exist" << p;
     return FAILURE;
   }

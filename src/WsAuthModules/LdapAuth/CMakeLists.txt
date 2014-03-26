@@ -2,7 +2,6 @@ cmake_minimum_required(VERSION 2.8.3)
 SET(APPNAME "WsModAuth")
 PROJECT(${APPNAME})
 
-IF(GDCORE_FOUND)
 
 SET ( APPNAME_SRCS 
   src/WsLdapAuth.cpp
@@ -21,5 +20,4 @@ INCLUDE_DIRECTORIES(
 
 INCLUDE(${CMAKE_ROOT}/Modules/gdcmake/install_libs.cmake)
 
-ENDIF(GDCORE_FOUND)
 
