@@ -131,6 +131,7 @@ WsMenuTree* WsFsTreeConsultation::getMenuTree( const std::set<std::string>& grou
 
 int WsFsTreeConsultation::getLock(const std::set<std::string> groups, const std::string& uid, const std::string& path)
 {
+    boost::mutex::scoped_lock lock(m_lockEditMutex);
     int ld = 0;
     try {
         ld = boost::lexical_cast<int>(m_conf->get("global", "lock_duration", "3600"));
@@ -191,6 +192,7 @@ int WsFsTreeConsultation::getLock(const std::set<std::string> groups, const std:
 
   int WsFsTreeConsultation::putLock(const std::set<std::string> groups, const std::string& uid, const std::string& path)
 {
+    boost::mutex::scoped_lock lock(m_lockEditMutex);
     int ld = 0;
     try {
         ld = boost::lexical_cast<int>(m_conf->get("global", "lock_duration", "3600"));
@@ -251,6 +253,7 @@ int WsFsTreeConsultation::getLock(const std::set<std::string> groups, const std:
 
 int WsFsTreeConsultation::isLocked(const std::set<std::string> groups, const std::string& uid, const std::string& path, std::string& id)
 {
+    boost::mutex::scoped_lock lock(m_lockEditMutex);
     int ld = 0;
     try {
         ld = boost::lexical_cast<int>(m_conf->get("global", "lock_duration", "3600"));

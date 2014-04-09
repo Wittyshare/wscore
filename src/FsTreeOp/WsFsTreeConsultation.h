@@ -20,6 +20,7 @@
 #include <Search/WsResultItem.h>
 #include <Updater/WsFsTreeUpdater.h>
 
+#include <boost/thread/mutex.hpp>
 
 /**
  * @brief Encapsulates consultation of tree (no modification)
@@ -159,6 +160,7 @@ public:
 private:
   WsFsTreeUpdater* m_updater;
   WsGlobalProperties* m_conf;
+  boost::mutex m_lockEditMutex;
   
   long getTimeMs();
 

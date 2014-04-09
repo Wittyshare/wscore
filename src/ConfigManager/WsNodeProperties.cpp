@@ -51,11 +51,11 @@ string WsNodeProperties::get(const string& section, const string& id, const stri
       if (parse(p) == FAILURE)
         return string();
     }
+    Value val = m_root[section][id];
+    if (val == Value::null || val.asString() == "null") {
+        return def;
+    } else return val.asString();
   }
-  Value val = m_root[section][id];
-  if (val == Value::null || val.asString() == "null") {
-    return def;
-  } else return val.asString();
 }
 
 
@@ -69,7 +69,6 @@ std::set<string> WsNodeProperties::getGroups()
       if (parse(p) == FAILURE)
         return grp;
     }
-  }
   const Value groups = m_root["global"]["groups"];
   if (groups != Value::null) {
     for ( int i = 0; i < groups.size(); ++i) {
@@ -77,6 +76,7 @@ std::set<string> WsNodeProperties::getGroups()
     }
   }
   return grp;
+  }
 }
 
 bool WsNodeProperties::isAllowed(std::set<string> gids)
@@ -89,7 +89,6 @@ bool WsNodeProperties::isAllowed(std::set<string> gids)
       if (parse(p) == FAILURE)
         return false;
     }
-  }
   WsGlobalProperties* props = WsGlobalProperties::instance();
   string admgrp = props->get("global", "admin_group", "");
   /* Admin has access to everything */
@@ -128,6 +127,7 @@ bool WsNodeProperties::isAllowed(std::set<string> gids)
   /* No similar entries found. Group has no access */
   LOG(DEBUG) << "WsNodeProperties :: User has no access ";
   return false;
+  }
 }
 
 Value WsNodeProperties::getRoot()
@@ -139,8 +139,8 @@ Value WsNodeProperties::getRoot()
       if (parse(p) == FAILURE)
         return Value();
     }
-  }
   return m_root;
+  }
 }
 
 void WsNodeProperties::setRoot(Json::Value root)
