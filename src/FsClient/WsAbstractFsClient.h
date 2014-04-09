@@ -82,6 +82,26 @@ public:
   virtual NodePtr getMenuRoot( const bool& forceUpdate = false) = 0;
 
   /**
+   * @brief tries to acquire the lock for the path. 
+   * @ return 0 if the lock cannot be aquired because is detented by someone else. -1 if an error occured and a positive value with the duration in seconds of the lock is returned otherwise.
+   */
+  virtual int getLock(const std::string& path) = 0;
+  
+  /**
+   * @brief releases the lock for the path. 
+   * @return 0 if path cannot be unlocked, -1 if error and >0 if unlock successful
+   */
+  virtual int putLock(const std::string& path) = 0;
+
+  /**
+   * @brief check is the path is already locked
+   * @return 1 if the path is unlocked
+   * @return 0 if the file is locked and the uid of the user who locked it will be stored in uid
+   * return -1 if an error occured
+   */
+  virtual int isLocked(const std::string& path, std::string& uid)=0;
+
+  /**
    * @brief return the root node of the access tree
    * @return NULL if the user does not have access to the root or if an error occured
    * @param rootPath the path to the root

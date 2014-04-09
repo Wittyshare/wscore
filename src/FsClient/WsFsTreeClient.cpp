@@ -91,7 +91,20 @@ int WsFsTreeClient::authentify()
 
 NodePtr WsFsTreeClient::getMenuRoot(const bool& forceUpdate)
 {
-  return m_operation->getMenuTree(m_groups)->getRoot();
+    return m_operation->getMenuTree(m_groups)->getRoot();
+}
+
+int WsFsTreeClient::getLock(const std::string& path){
+    return m_operation->getLock(m_groups, m_uid, path);
+}
+
+int WsFsTreeClient::putLock(const std::string& path){
+    return m_operation->putLock(m_groups, m_uid, path);
+}
+
+int WsFsTreeClient::isLocked(const std::string& path, std::string& uid)
+{
+    return m_operation->isLocked(m_groups, m_uid, path, uid);
 }
 
 NodePtr WsFsTreeClient::getAccessRoot(const bool& forceUpdate)

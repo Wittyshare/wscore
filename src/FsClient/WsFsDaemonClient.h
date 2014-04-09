@@ -88,6 +88,21 @@ public:
    * @copydoc WsAbstractFsClient::getMenuRoot()
    */
   NodePtr getMenuRoot(const bool& forceUpdate = false);
+  
+  /**
+   * @copydoc WsAbstractFsClient::getLock();
+   */
+  int getLock(const std::string& path);
+  
+  /**
+   * @copydoc WsAbstractFsClient::putLock();
+   */
+  int putLock(const std::string& path);
+
+  /**
+   * @copydoc WsAbstractFsClient::isLocked();
+   */
+  int isLocked(const std::string& path, std::string& uid);
 
   /**
    * @copydoc WsAbstractFsClient::getAccessRoot()
@@ -202,6 +217,12 @@ private:
    * @return true or false depending on the answer received
    */
   bool receiveBoolean();
+
+  /**
+   * @brief receive an int after a request that returns an int
+   * @return an int
+   */
+  int receiveInt();
 
   /**
    * @brief receive a string after a request that returns a string

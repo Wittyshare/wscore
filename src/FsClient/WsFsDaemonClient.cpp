@@ -268,6 +268,49 @@ NodePtr WsFsDaemonClient::getMenuRoot(const bool& forceUpdate)
   return receiveMenuItems();
 }
 
+int WsFsDaemonClient::getLock(const std::string& path){
+  Value v;
+  v[RequestField::Type] = GetLock;
+  v[RequestField::Uid] = m_uid;
+  v[RequestField::Pass] = m_pass;
+  v[RequestField::Ip] = m_ip;
+  v[RequestField::Path] = path;
+  if (send(v.toStyledString()) == FAILURE)
+    return -1;
+  return receiveInt();
+}
+
+int WsFsDaemonClient::isLocked(const std::string& path, std::string& uid)
+{
+  Value v;
+  v[RequestField::Type] = IsLocked;
+  v[RequestField::Uid] = m_uid;
+  v[RequestField::Pass] = m_pass;
+  v[RequestField::Ip] = m_ip;
+  v[RequestField::Path] = path;
+  if (send(v.toStyledString()) == FAILURE)
+    return -1;
+  std::string ret = receiveString();
+  if( ret == "")
+      return 1;
+  else {
+      uid = ret;
+      return 0;
+  }
+}
+
+int WsFsDaemonClient::putLock(const std::string& path){
+  Value v;
+  v[RequestField::Type] = PutLock;
+  v[RequestField::Uid] = m_uid;
+  v[RequestField::Pass] = m_pass;
+  v[RequestField::Ip] = m_ip;
+  v[RequestField::Path] = path;
+  if (send(v.toStyledString()) == FAILURE)
+    return -1;
+  return receiveInt();
+}
+
 NodePtr WsFsDaemonClient::getAccessRoot( const bool& forceUpdate)
 {
   /* Lock the mutex to avoid context error with zmq as 2 threads are accessing the same socket */
@@ -450,6 +493,22 @@ bool WsFsDaemonClient::receiveBoolean()
   if (resp == "true")
     return true;
   return false;
+}
+
+int WsFsDaemonClient::receiveInt()
+{
+  string resp;
+  if (receive( resp) == FAILURE) {
+    return -1;
+  }
+
+  try{
+    int ret = boost::lexical_cast<int>(resp);
+    return ret;
+  } catch (boost::bad_lexical_cast&) {
+    LOG(ERROR) << "WsFsDaemonClient::receiveInt() : Could not cast received data to int";
+    return -1;
+  }
 }
 
 const string WsFsDaemonClient::receiveString()

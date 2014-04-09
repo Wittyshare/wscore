@@ -83,6 +83,21 @@ public:
   NodePtr getMenuRoot(const bool& forceUpdate = false);
 
   /**
+   * @copydoc WsAbstractFsClient::getLock();
+   */
+  int getLock(const std::string& path);
+  
+  /**
+   * @copydoc WsAbstractFsClient::putLock();
+   */
+  int putLock(const std::string& path);
+  
+  /**
+   * @copydoc WsAbstractFsClient::isLocked();
+   */
+  int isLocked(const std::string& path, std::string& uid);
+
+  /**
    * @copydoc WsAbstractFsClient::getAccessRoot()
    */
   NodePtr getAccessRoot( const bool& forceUpdate = false);

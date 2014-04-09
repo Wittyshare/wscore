@@ -40,13 +40,14 @@ const std::string CrashLogPath = "/tmp/crashLogWs.log";
 const std::string PathToLockFile             =       "/.config/freezetree";
 const std::string PathToConfig               =       "/.config/";
 const std::string PathToNodeProperties       =       "/.config/nodes/";
+const std::string PathToNodeLock             =       "/.config/locks/";
 const std::string PathToDirProperties        =       "/.config/properties.json";
 const std::string PathToImages               =       "/ws.res/images/";
 const std::string PathToTemplates            =       "/.config/templates/";
 const std::string PathToIcones               =       "/ws.res/icones/";
 const std::string ConfExt                    =       ".json";
-const int         NbItems                    =        2;
-const std::string SubFolders[NbItems]        =       {PathToConfig, PathToNodeProperties};
+const int         NbItems                    =        3;
+const std::string SubFolders[NbItems]        =       {PathToConfig, PathToNodeProperties, PathToNodeLock};
 }
 
 

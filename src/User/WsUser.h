@@ -97,6 +97,26 @@ public :
   NodePtr getMenuRoot();
 
   /**
+   * @brief tries to acquire the lock for the path. 
+   * @ return 0 if the lock cannot be aquired because is detented by someone else. -1 if an error occured and a positive value with the duration in seconds of the lock is returned otherwise.
+   */
+  int getLock(const std::string& path);
+
+  /**
+   * @brief releases the lock for the path. 
+   * @return 0 if path cannot be unlocked, -1 if error and >0 if unlock successful
+   */
+  int putLock(const std::string& path);
+
+  /**
+   * @brief check is the path is already locked
+   * @return 1 if the path is unlocked
+   * @return 0 if the file is locked and the uid of the user who locked it will be stored in uid
+   * return -1 if an error occured
+   */
+  int isLocked(const std::string& path, std::string& uid);
+
+  /**
    * @brief returns the root of the menu. The root is an instance of WsDirNode. This is the same mehod as WsFsTreeClient::getMenuRoot() but it excluded specific nodes
    * @param exclNames the node name to excluded (name without path)
    * @param exclExt the node extension to exclude
@@ -205,6 +225,9 @@ public :
   std::vector<std::string> getTemplatesList(const std::string& path);
 
 private:
+
+  std::string cleanPath(const std::string& path);
+
   /**
    * @brief this will be an instance of WsFsTreeClient if not using daemon or WsFsDaemonClient if using daemon
    */

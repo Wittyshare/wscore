@@ -61,7 +61,10 @@ enum RequestType {
   SaveProp,
   CreateNode,
   DeleteNode,
-  RenameNode
+  RenameNode,
+  GetLock,
+  PutLock,
+  IsLocked
 };
 
 #endif
