@@ -34,13 +34,12 @@ int WsFsTreeModification::saveProperties( const std::set<std::string>& groups, c
     /* No access */
     return FAILURE;
   }
-
-  if(!canEdit(n, groups)) return FAILURE;
+  if (!canEdit(n, groups)) return FAILURE;
   /* Set the root of the properties to the new Json */
   n.get()->getProperties().get()->setRoot(json);
   /* save it */
   if (n.get()->getProperties().get()->save() == FAILURE ) {
-      return FAILURE;
+    return FAILURE;
   }
   return SUCCESS;
 }
@@ -54,12 +53,12 @@ int WsFsTreeModification::saveProperty( const std::set<std::string>& groups, con
     /* No access */
     return FAILURE;
   }
-  if(!canEdit(n, groups)) return FAILURE;
+  if (!canEdit(n, groups)) return FAILURE;
   /* Set property */
   n.get()->getProperties().get()->set(section, attr, val);
   /* save it */
   if (n.get()->getProperties().get()->save() == FAILURE ) {
-      return FAILURE;
+    return FAILURE;
   }
   return SUCCESS;
 }
@@ -152,7 +151,7 @@ int WsFsTreeModification::deleteNode( const std::set<std::string>& groups, const
     LOG(ERROR) << "WsFsTreeClient::deleteNode() : Node not found " << p;
     return FAILURE;
   }
-  if(!canEdit(n, groups)) return FAILURE;
+  if (!canEdit(n, groups)) return FAILURE;
   /* Check if file or directory exist */
   if ( !boost::filesystem::exists(ft->getRootPath() / p)) {
     LOG(ERROR) << "WsFsTreeClient::deleteNode() : Node do not exist" << p;
@@ -207,7 +206,7 @@ int WsFsTreeModification::renameNode( const std::set<std::string>& groups, const
     LOG(DEBUG) << "WsFsDaemon::renameNode() : Rename dest parent not a dir";
     return FAILURE;
   }
-  if(!canEdit(n, groups)) return FAILURE;
+  if (!canEdit(n, groups)) return FAILURE;
   /* Check if node exist */
   if ( !boost::filesystem::exists(root / p)) {
     LOG(ERROR) << "WsFsTreeClient::renameNode() : Node do not exist" << p;
@@ -284,7 +283,7 @@ bool WsFsTreeModification::canEdit(NodePtr node, std::set<std::string> groups)
 {
   /* If allowed and editor or if admin return true */
   if ((node.get()->isAllowed(groups) && groups.count(m_conf->get("global", "editor_group", "editor")) >  0)
-          || groups.count(m_conf->get("global", "admin_group", "administrator")) > 0)
-      return true;
+      || groups.count(m_conf->get("global", "admin_group", "administrator")) > 0)
+    return true;
   return false;
 }
