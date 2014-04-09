@@ -107,8 +107,18 @@ public:
 
 
 private:
+  /**
+   * @brief return true if the user can edit false otherwise
+   * @return true if the user can edit false otherwise
+   * @param node The node to test edit
+   * @param groups the user's groups
+   */
+  bool canEdit(NodePtr node, std::set<std::string> groups);
+
   WsFsTreeUpdater* m_updater;
   WsGlobalProperties* m_conf;
+
+
 
 
 };

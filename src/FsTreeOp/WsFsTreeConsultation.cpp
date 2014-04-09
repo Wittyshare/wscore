@@ -46,6 +46,7 @@ int WsFsTreeConsultation::getPermissions( const std::set<std::string>& groups, c
   }
   /* Check if user is allowed */
   if (n.get()->isAllowed(groups)) {
+    /* Editor can edit only nodes where he has access */
     if (groups.count(m_conf->get("global", "editor_group", "editor")) > 0) {
       /* user is editor. read write perms */
       return GlobalConfig::ReadWrite;
