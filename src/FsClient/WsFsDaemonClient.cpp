@@ -268,7 +268,8 @@ NodePtr WsFsDaemonClient::getMenuRoot(const bool& forceUpdate)
   return receiveMenuItems();
 }
 
-int WsFsDaemonClient::getLock(const std::string& path){
+int WsFsDaemonClient::getLock(const std::string& path)
+{
   Value v;
   v[RequestField::Type] = GetLock;
   v[RequestField::Uid] = m_uid;
@@ -291,15 +292,16 @@ int WsFsDaemonClient::isLocked(const std::string& path, std::string& uid)
   if (send(v.toStyledString()) == FAILURE)
     return -1;
   std::string ret = receiveString();
-  if( ret == "")
-      return 1;
+  if ( ret == "")
+    return 1;
   else {
-      uid = ret;
-      return 0;
+    uid = ret;
+    return 0;
   }
 }
 
-int WsFsDaemonClient::putLock(const std::string& path){
+int WsFsDaemonClient::putLock(const std::string& path)
+{
   Value v;
   v[RequestField::Type] = PutLock;
   v[RequestField::Uid] = m_uid;
@@ -501,8 +503,7 @@ int WsFsDaemonClient::receiveInt()
   if (receive( resp) == FAILURE) {
     return -1;
   }
-
-  try{
+  try {
     int ret = boost::lexical_cast<int>(resp);
     return ret;
   } catch (boost::bad_lexical_cast&) {

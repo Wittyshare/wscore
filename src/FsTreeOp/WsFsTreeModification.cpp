@@ -100,7 +100,7 @@ int WsFsTreeModification::createNode( const std::set<std::string>& groups, const
     return FAILURE;
   }
   /* Check if new node already exit */
-  if(ft->eatPath(p).get() != 0){
+  if (ft->eatPath(p).get() != 0) {
     LOG(INFO) << "WsFsTreeClient::createNode() : Node already exist" << p;
     return FAILURE;
   }
@@ -176,22 +176,22 @@ int WsFsTreeModification::deleteNode( const std::set<std::string>& groups, const
   }
   if ( n.get()->isRegularFile()) {
     /* Remove config file if it exists */
-    std::string propFileName=n.get()->getName()+".json";
+    std::string propFileName = n.get()->getName() + ".json";
     if (exists(ft->getRootPath() / n.get()->getPath().parent_path() / GlobalConfig::PathToNodeProperties / propFileName)) {
       try {
         boost::filesystem::remove_all(ft->getRootPath() / n.get()->getPath().parent_path() / GlobalConfig::PathToNodeProperties / propFileName );
       } catch (std::exception& e) {
-        LOG(ERROR) << "WsFsTreeClient::deleteNode() : could not delete node "<<propFileName<<" : " << e.what();
+        LOG(ERROR) << "WsFsTreeClient::deleteNode() : could not delete node " << propFileName << " : " << e.what();
         return FAILURE;
       }
       LOG(INFO) << "WsFsTreeClient::deleteNode() : Removing config files for " << p;
     }
-    std::string lockFileName=n.get()->getName()+".lock";
+    std::string lockFileName = n.get()->getName() + ".lock";
     if (exists(ft->getRootPath() / n.get()->getPath().parent_path() / GlobalConfig::PathToNodeLock / lockFileName)) {
       try {
         boost::filesystem::remove_all(ft->getRootPath() / n.get()->getPath().parent_path() / GlobalConfig::PathToNodeLock / lockFileName );
       } catch (std::exception& e) {
-        LOG(ERROR) << "WsFsTreeClient::deleteNode() : could not delete node "<<lockFileName<<" : " << e.what();
+        LOG(ERROR) << "WsFsTreeClient::deleteNode() : could not delete node " << lockFileName << " : " << e.what();
         return FAILURE;
       }
       LOG(INFO) << "WsFsTreeClient::deleteNode() : Removing lock files for " << p;

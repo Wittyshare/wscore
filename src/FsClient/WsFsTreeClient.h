@@ -86,12 +86,12 @@ public:
    * @copydoc WsAbstractFsClient::getLock();
    */
   int getLock(const std::string& path);
-  
+
   /**
    * @copydoc WsAbstractFsClient::putLock();
    */
   int putLock(const std::string& path);
-  
+
   /**
    * @copydoc WsAbstractFsClient::isLocked();
    */

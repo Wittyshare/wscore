@@ -53,7 +53,7 @@ string WsNodeProperties::get(const string& section, const string& id, const stri
     }
     Value val = m_root[section][id];
     if (val == Value::null || val.asString() == "null") {
-        return def;
+      return def;
     } else return val.asString();
   }
 }
@@ -69,13 +69,13 @@ std::set<string> WsNodeProperties::getGroups()
       if (parse(p) == FAILURE)
         return grp;
     }
-  const Value groups = m_root["global"]["groups"];
-  if (groups != Value::null) {
-    for ( int i = 0; i < groups.size(); ++i) {
-      grp.insert(groups[i].asString());
+    const Value groups = m_root["global"]["groups"];
+    if (groups != Value::null) {
+      for ( int i = 0; i < groups.size(); ++i) {
+        grp.insert(groups[i].asString());
+      }
     }
-  }
-  return grp;
+    return grp;
   }
 }
 
@@ -89,44 +89,44 @@ bool WsNodeProperties::isAllowed(std::set<string> gids)
       if (parse(p) == FAILURE)
         return false;
     }
-  WsGlobalProperties* props = WsGlobalProperties::instance();
-  string admgrp = props->get("global", "admin_group", "");
-  /* Admin has access to everything */
-  if (gids.count(admgrp) > 0 ) {
-    LOG(DEBUG) << "WsNodeProperties::isAllowed() :  User is Admin. Access allowed for " << getPath();
-    return true;
-  }
-  std::set<string>::iterator itGids;
-  /* Iterate over the list of users allowed and check */
-  /* if there is a similar entry in the gids list */
-  for (itGids = gids.begin(); itGids != gids.end(); ++itGids) {
-    if (nodeGroups.count(*itGids) > 0) {
-      /* We found a similar entry, we need to check publish date */
-      /* Editor has access to node even if not published yet */
-      string edtgrp = props->get("global", "editor_group", "");
-      if (gids.count(edtgrp) > 0 ) {
-        LOG(DEBUG) << "WsNodeProperties::isAllowed() User is Editor. Access allowed for " << getPath();
-        return true;
-      }
-      LOG(DEBUG) << "WsNodeProperties::isAllowed() : User not editor";
-      try {
-        time_t pnode = boost::lexical_cast<time_t>(this->get("global", "publish_date", "0"));
-        time_t pnow  = time(NULL);
-        if (pnode <=  pnow) {
+    WsGlobalProperties* props = WsGlobalProperties::instance();
+    string admgrp = props->get("global", "admin_group", "");
+    /* Admin has access to everything */
+    if (gids.count(admgrp) > 0 ) {
+      LOG(DEBUG) << "WsNodeProperties::isAllowed() :  User is Admin. Access allowed for " << getPath();
+      return true;
+    }
+    std::set<string>::iterator itGids;
+    /* Iterate over the list of users allowed and check */
+    /* if there is a similar entry in the gids list */
+    for (itGids = gids.begin(); itGids != gids.end(); ++itGids) {
+      if (nodeGroups.count(*itGids) > 0) {
+        /* We found a similar entry, we need to check publish date */
+        /* Editor has access to node even if not published yet */
+        string edtgrp = props->get("global", "editor_group", "");
+        if (gids.count(edtgrp) > 0 ) {
+          LOG(DEBUG) << "WsNodeProperties::isAllowed() User is Editor. Access allowed for " << getPath();
           return true;
-        } else {
-          LOG(DEBUG) << "WsNodeProperties::isAllowed() : File is not published yet. Access Denied for " << getPath();
+        }
+        LOG(DEBUG) << "WsNodeProperties::isAllowed() : User not editor";
+        try {
+          time_t pnode = boost::lexical_cast<time_t>(this->get("global", "publish_date", "0"));
+          time_t pnow  = time(NULL);
+          if (pnode <=  pnow) {
+            return true;
+          } else {
+            LOG(DEBUG) << "WsNodeProperties::isAllowed() : File is not published yet. Access Denied for " << getPath();
+            return false;
+          }
+        } catch (boost::bad_lexical_cast&) {
+          LOG(ERROR) << "WsNodeProperties::isAllowed() : Cannot parse publish date for " << this->getPath();
           return false;
         }
-      } catch (boost::bad_lexical_cast&) {
-        LOG(ERROR) << "WsNodeProperties::isAllowed() : Cannot parse publish date for " << this->getPath();
-        return false;
       }
     }
-  }
-  /* No similar entries found. Group has no access */
-  LOG(DEBUG) << "WsNodeProperties :: User has no access ";
-  return false;
+    /* No similar entries found. Group has no access */
+    LOG(DEBUG) << "WsNodeProperties :: User has no access ";
+    return false;
   }
 }
 
@@ -139,7 +139,7 @@ Value WsNodeProperties::getRoot()
       if (parse(p) == FAILURE)
         return Value();
     }
-  return m_root;
+    return m_root;
   }
 }
 

@@ -66,17 +66,17 @@ WsMenuTree* WsFsTreeOperations::getMenuTree( const std::set<std::string>& groups
 
 int WsFsTreeOperations::getLock(const std::set<std::string> groups, const std::string& uid, const std::string& path)
 {
-    return m_consultation->getLock(groups, uid, path);
+  return m_consultation->getLock(groups, uid, path);
 }
 
 int WsFsTreeOperations::putLock(const std::set<std::string> groups, const std::string& uid, const std::string& path)
 {
-    return m_consultation->putLock(groups, uid, path);
+  return m_consultation->putLock(groups, uid, path);
 }
 
 int WsFsTreeOperations::isLocked(const std::set<std::string> groups, const std::string& uid, const std::string& path, std::string& id)
 {
-    return m_consultation->isLocked(groups, uid, path, id);
+  return m_consultation->isLocked(groups, uid, path, id);
 }
 
 WsMenuTree* WsFsTreeOperations::getMenuTree( const std::set<std::string>& groups, const std::set<string>& exclNames, const std::set<string>& exclExt)

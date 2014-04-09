@@ -127,194 +127,189 @@ WsMenuTree* WsFsTreeConsultation::getMenuTree( const std::set<std::string>& grou
   }
   return tree;
 }
-  
+
 
 int WsFsTreeConsultation::getLock(const std::set<std::string> groups, const std::string& uid, const std::string& path)
 {
-    boost::mutex::scoped_lock lock(m_lockEditMutex);
-    int ld = 0;
-    try {
-        ld = boost::lexical_cast<int>(m_conf->get("global", "lock_duration", "3600"));
-    } catch (boost::bad_lexical_cast&) {
-        LOG(ERROR) << "WsFsTreeConsultation::getLock() : Cannot cast lock_duration to int. Check conf value";
-        ld = 3600;
+  boost::mutex::scoped_lock lock(m_lockEditMutex);
+  int ld = 0;
+  try {
+    ld = boost::lexical_cast<int>(m_conf->get("global", "lock_duration", "3600"));
+  } catch (boost::bad_lexical_cast&) {
+    LOG(ERROR) << "WsFsTreeConsultation::getLock() : Cannot cast lock_duration to int. Check conf value";
+    ld = 3600;
+  }
+  FileSystemTreePtr ft = m_updater->getLastTree();
+  NodePtr n;
+  n = ft->eatPath(path);
+  if (n.get() == 0) {
+    /* Path not found */
+    LOG(INFO) << "WsFsTreeConsultation::getLock : No such file or directory :" << path;
+    return -1;
+  }
+  // Check if lock already exist and if yes if it is owned by this user
+  boost::filesystem::path root = m_updater->getLastTree()->getRootPath();
+  boost::filesystem::path p;
+  if (n.get()->isDirectory()) return -1; //Cannot lock directory
+  else p = n.get()->getPath().parent_path();
+  std::string name = n.get()->getName() + ".lock";
+  p = root / p / GlobalConfig::PathToNodeLock / name;
+  LOG(DEBUG) << "WsFsTreeConsultation::getLock() : path is " << p.string();
+  std::string id = "";
+  std::string ts = "";
+  Json::Reader reader;
+  Json::Value v;
+  //Conf file exist
+  if (boost::filesystem::exists(p)) {
+    std::ifstream lock(p.c_str(), std::ifstream::binary);
+    bool bOk = reader.parse(lock, v, false);
+    lock.close();
+    if ( !bOk )
+      boost::filesystem::remove(p);
+    else {
+      id = v["uid"].asString();
+      ts = v["timestamp"].asString();
+      // File is already locked by someone else
+      if ( id != uid)
+        if (boost::lexical_cast<long>(ts) > getTimeMs() - (ld * 1000) )
+          return 0;
+        else boost::filesystem::remove(p); //timeout
     }
-    FileSystemTreePtr ft = m_updater->getLastTree();
-    NodePtr n;
-    n = ft->eatPath(path);
-    if (n.get() == 0) {
-        /* Path not found */
-        LOG(INFO) << "WsFsTreeConsultation::getLock : No such file or directory :" << path;
-        return -1;
-    }
-    // Check if lock already exist and if yes if it is owned by this user
-    boost::filesystem::path root = m_updater->getLastTree()->getRootPath();
-    boost::filesystem::path p;
-    if(n.get()->isDirectory()) return -1; //Cannot lock directory
-    else p = n.get()->getPath().parent_path();
-    std::string name = n.get()->getName()+".lock";
-    p = root/p/GlobalConfig::PathToNodeLock/name;
-    LOG(DEBUG)<<"WsFsTreeConsultation::getLock() : path is "<<p.string();
-    std::string id = "";
-    std::string ts = "";
-    Json::Reader reader;
-    Json::Value v;
-    //Conf file exist
-    if(boost::filesystem::exists(p)){
-        std::ifstream lock(p.c_str(), std::ifstream::binary);
-        bool bOk = reader.parse(lock, v, false);
-        lock.close();
-        if ( !bOk )
-            boost::filesystem::remove(p);
-        else {
-            id = v["uid"].asString();
-            ts = v["timestamp"].asString();
-            // File is already locked by someone else
-            if( id != uid)
-                if(boost::lexical_cast<long>(ts) > getTimeMs() - (ld*1000) )
-                    return 0;
-                else boost::filesystem::remove(p); //timeout 
-        }
-    }
-    // write updated data to file
-    long millis = getTimeMs();
-    ts = boost::lexical_cast<string>(millis);
-    v["uid"] = uid;
-    v["timestamp"] =ts;
-    ofstream out;
-    out.open(p.string().c_str(), ios::out | ios::trunc | ios::binary);
-    if (out.is_open()) {
-        out << v.toStyledString();
-        out.close();
-        return ld;
-    }else return -1;
+  }
+  // write updated data to file
+  long millis = getTimeMs();
+  ts = boost::lexical_cast<string>(millis);
+  v["uid"] = uid;
+  v["timestamp"] = ts;
+  ofstream out;
+  out.open(p.string().c_str(), ios::out | ios::trunc | ios::binary);
+  if (out.is_open()) {
+    out << v.toStyledString();
+    out.close();
+    return ld;
+  } else return -1;
 }
 
-  int WsFsTreeConsultation::putLock(const std::set<std::string> groups, const std::string& uid, const std::string& path)
+int WsFsTreeConsultation::putLock(const std::set<std::string> groups, const std::string& uid, const std::string& path)
 {
-    boost::mutex::scoped_lock lock(m_lockEditMutex);
-    int ld = 0;
-    try {
-        ld = boost::lexical_cast<int>(m_conf->get("global", "lock_duration", "3600"));
-    } catch (boost::bad_lexical_cast&) {
-        LOG(ERROR) << "WsFsTreeConsultation::getLock() : Cannot cast lock_duration to int. Check conf value";
-        ld = 3600;
-    }
-    FileSystemTreePtr ft = m_updater->getLastTree();
-    NodePtr n;
-    n = ft->eatPath(path);
-    if (n.get() == 0) {
-        /* Path not found */
-        LOG(INFO) << "WsFsTreeConsultation::putLock : No such file or directory :" << path;
-        return -1;
-    }
-    // Check if lock already exist and if yes if it is owned by this user
-    boost::filesystem::path root = m_updater->getLastTree()->getRootPath();
-    boost::filesystem::path p;
-    if(n.get()->isDirectory()) return -1; //Cannot unlock directory
-    else p = n.get()->getPath().parent_path();
-    std::string name = n.get()->getName()+".lock";
-    p = root/p/GlobalConfig::PathToNodeLock/name;
-    LOG(DEBUG)<<"WsFsTreeConsultation::putLock() : path is "<<p.string();
-    std::string id = "";
-    std::string ts = "";
-    Json::Reader reader;
-    Json::Value v;
-    //Conf file exist
-    if(boost::filesystem::exists(p)){
-        std::ifstream lock(p.c_str(), std::ifstream::binary);
-        bool bOk = reader.parse(lock, v, false);
-        lock.close();
-        if ( !bOk ){
-            boost::filesystem::remove(p);
-            return 1;
-        }
+  boost::mutex::scoped_lock lock(m_lockEditMutex);
+  int ld = 0;
+  try {
+    ld = boost::lexical_cast<int>(m_conf->get("global", "lock_duration", "3600"));
+  } catch (boost::bad_lexical_cast&) {
+    LOG(ERROR) << "WsFsTreeConsultation::getLock() : Cannot cast lock_duration to int. Check conf value";
+    ld = 3600;
+  }
+  FileSystemTreePtr ft = m_updater->getLastTree();
+  NodePtr n;
+  n = ft->eatPath(path);
+  if (n.get() == 0) {
+    /* Path not found */
+    LOG(INFO) << "WsFsTreeConsultation::putLock : No such file or directory :" << path;
+    return -1;
+  }
+  // Check if lock already exist and if yes if it is owned by this user
+  boost::filesystem::path root = m_updater->getLastTree()->getRootPath();
+  boost::filesystem::path p;
+  if (n.get()->isDirectory()) return -1; //Cannot unlock directory
+  else p = n.get()->getPath().parent_path();
+  std::string name = n.get()->getName() + ".lock";
+  p = root / p / GlobalConfig::PathToNodeLock / name;
+  LOG(DEBUG) << "WsFsTreeConsultation::putLock() : path is " << p.string();
+  std::string id = "";
+  std::string ts = "";
+  Json::Reader reader;
+  Json::Value v;
+  //Conf file exist
+  if (boost::filesystem::exists(p)) {
+    std::ifstream lock(p.c_str(), std::ifstream::binary);
+    bool bOk = reader.parse(lock, v, false);
+    lock.close();
+    if ( !bOk ) {
+      boost::filesystem::remove(p);
+      return 1;
+    } else {
+      id = v["uid"].asString();
+      ts = v["timestamp"].asString();
+      // File is already locked by someone else
+      if ( id != uid) {
+        if (boost::lexical_cast<long>(ts) > getTimeMs() - (ld * 1000) )
+          return 0;
         else {
-            id = v["uid"].asString();
-            ts = v["timestamp"].asString();
-            // File is already locked by someone else
-            if( id != uid){
-                if(boost::lexical_cast<long>(ts) > getTimeMs() - (ld*1000) )
-                    return 0;
-                else
-                {
-                    boost::filesystem::remove(p); //timeout existing lock
-                    return 1;
-                }
-            }
-            boost::filesystem::remove(p); //Lock is hold by current user so we can delete it
-            return 1;
+          boost::filesystem::remove(p); //timeout existing lock
+          return 1;
         }
+      }
+      boost::filesystem::remove(p); //Lock is hold by current user so we can delete it
+      return 1;
     }
-    // No lock found
-    return 1;
+  }
+  // No lock found
+  return 1;
 }
 
 
 int WsFsTreeConsultation::isLocked(const std::set<std::string> groups, const std::string& uid, const std::string& path, std::string& id)
 {
-    boost::mutex::scoped_lock lock(m_lockEditMutex);
-    int ld = 0;
-    try {
-        ld = boost::lexical_cast<int>(m_conf->get("global", "lock_duration", "3600"));
-    } catch (boost::bad_lexical_cast&) {
-        LOG(ERROR) << "WsFsTreeConsultation::isLocked() : Cannot cast lock_duration to int. Check conf value";
-        ld = 3600;
-    }
-    FileSystemTreePtr ft = m_updater->getLastTree();
-    NodePtr n;
-    n = ft->eatPath(path);
-    if (n.get() == 0) {
-        /* Path not found */
-        LOG(INFO) << "WsFsTreeConsultation:isLocked : No such file or directory :" << path;
-        return -1;
-    }
-    // Check if lock already exist and if yes if it is owned by this user
-    boost::filesystem::path root = m_updater->getLastTree()->getRootPath();
-    boost::filesystem::path p;
-    if(n.get()->isDirectory()) return -1; //Cannot lock directory
-    else p = n.get()->getPath().parent_path();
-    std::string name = n.get()->getName()+".lock";
-    p = root/p/GlobalConfig::PathToNodeLock/name;
-    LOG(DEBUG)<<"WsFsTreeConsultation::isLocked() : path is "<<p.string();
-    std::string lid = "";
-    std::string ts = "";
-    Json::Reader reader;
-    Json::Value v;
-    //Conf file exist
-    if(boost::filesystem::exists(p)){
-        std::ifstream lock(p.c_str(), std::ifstream::binary);
-        bool bOk = reader.parse(lock, v, false);
-        lock.close();
-        if ( !bOk ){
-            boost::filesystem::remove(p);
-            return 1;
+  boost::mutex::scoped_lock lock(m_lockEditMutex);
+  int ld = 0;
+  try {
+    ld = boost::lexical_cast<int>(m_conf->get("global", "lock_duration", "3600"));
+  } catch (boost::bad_lexical_cast&) {
+    LOG(ERROR) << "WsFsTreeConsultation::isLocked() : Cannot cast lock_duration to int. Check conf value";
+    ld = 3600;
+  }
+  FileSystemTreePtr ft = m_updater->getLastTree();
+  NodePtr n;
+  n = ft->eatPath(path);
+  if (n.get() == 0) {
+    /* Path not found */
+    LOG(INFO) << "WsFsTreeConsultation:isLocked : No such file or directory :" << path;
+    return -1;
+  }
+  // Check if lock already exist and if yes if it is owned by this user
+  boost::filesystem::path root = m_updater->getLastTree()->getRootPath();
+  boost::filesystem::path p;
+  if (n.get()->isDirectory()) return -1; //Cannot lock directory
+  else p = n.get()->getPath().parent_path();
+  std::string name = n.get()->getName() + ".lock";
+  p = root / p / GlobalConfig::PathToNodeLock / name;
+  LOG(DEBUG) << "WsFsTreeConsultation::isLocked() : path is " << p.string();
+  std::string lid = "";
+  std::string ts = "";
+  Json::Reader reader;
+  Json::Value v;
+  //Conf file exist
+  if (boost::filesystem::exists(p)) {
+    std::ifstream lock(p.c_str(), std::ifstream::binary);
+    bool bOk = reader.parse(lock, v, false);
+    lock.close();
+    if ( !bOk ) {
+      boost::filesystem::remove(p);
+      return 1;
+    } else {
+      lid = v["uid"].asString();
+      ts = v["timestamp"].asString();
+      // File is already locked by someone else
+      if ( lid != uid) {
+        if (boost::lexical_cast<long>(ts) > getTimeMs() - (ld * 1000) ) {
+          id = lid;
+          return 0;
+        } else {
+          boost::filesystem::remove(p); //timeout existing lock
+          return 1;
         }
-        else {
-            lid = v["uid"].asString();
-            ts = v["timestamp"].asString();
-            // File is already locked by someone else
-            if( lid != uid){
-                if(boost::lexical_cast<long>(ts) > getTimeMs() - (ld*1000) ){
-                    id = lid;
-                    return 0;
-                }
-                else
-                {
-                    boost::filesystem::remove(p); //timeout existing lock
-                    return 1;
-                }
-            }
-            boost::filesystem::remove(p); //Lock is hold by current user so we can delete it
-            return 1;
-        }
+      }
+      boost::filesystem::remove(p); //Lock is hold by current user so we can delete it
+      return 1;
     }
-    // No lock found
-    return 1;
-    
+  }
+  // No lock found
+  return 1;
 }
 
-long WsFsTreeConsultation::getTimeMs(){
+long WsFsTreeConsultation::getTimeMs()
+{
   timeval time;
   gettimeofday(&time, 0);
   return (time.tv_sec * 1000) + (time.tv_usec / 1000);

@@ -76,7 +76,7 @@ public:
   WsMenuTree* getMenuTree( const std::set<std::string>& groups) ;
 
   /**
-   * @brief tries to acquire the lock for the path. 
+   * @brief tries to acquire the lock for the path.
    * @ return 0 if the lock cannot be aquired because is detented by someone else. -1 if an error occured and a positive value with the duration in seconds of the lock is returned otherwise.
    * @param groups the groups of the user
    * @param uid the uid of the user
@@ -85,7 +85,7 @@ public:
   int getLock(const std::set<std::string> groups, const std::string& uid, const std::string& path);
 
   /**
-   * @brief unlocks the file by deleting the .config/locks/filename.lock file 
+   * @brief unlocks the file by deleting the .config/locks/filename.lock file
    * Only the owner of the lock can unlock the path.
    * @return 1 if the lock has been successfully released
    *         1 if no lock are currently hold on the path

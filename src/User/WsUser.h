@@ -97,13 +97,13 @@ public :
   NodePtr getMenuRoot();
 
   /**
-   * @brief tries to acquire the lock for the path. 
+   * @brief tries to acquire the lock for the path.
    * @ return 0 if the lock cannot be aquired because is detented by someone else. -1 if an error occured and a positive value with the duration in seconds of the lock is returned otherwise.
    */
   int getLock(const std::string& path);
 
   /**
-   * @brief releases the lock for the path. 
+   * @brief releases the lock for the path.
    * @return 0 if path cannot be unlocked, -1 if error and >0 if unlock successful
    */
   int putLock(const std::string& path);

@@ -89,15 +89,15 @@ public:
    */
   WsMenuTree* getMenuTree( const std::set<std::string>& groups, const std::set<string>& exclNames, const std::set<string>& exclExt) ;
 
-  
+
   /**
-   * @brief tries to acquire the lock for the path. A lock file will be stored in the .config/locks of the current directory containing the timestamp of the lock and the uid of the user who locked it 
+   * @brief tries to acquire the lock for the path. A lock file will be stored in the .config/locks of the current directory containing the timestamp of the lock and the uid of the user who locked it
    * @ return 0 if the lock cannot be aquired because is detented by someone else. -1 if an error occured and a positive value with the duration in seconds of the lock is returned otherwise.
    */
   int getLock(const std::set<std::string> groups, const std::string& uid, const std::string& path);
 
   /**
-   * @brief unlocks the file by deleting the .config/locks/filename.lock file 
+   * @brief unlocks the file by deleting the .config/locks/filename.lock file
    * Only the owner of the lock can unlock the path.
    * @return 1 if the lock has been successfully released
    *         1 if no lock are currently hold on the path
@@ -105,7 +105,7 @@ public:
    *         -1 if an error occured
    */
   int putLock(const std::set<std::string> groups, const std::string& uid, const std::string& path);
-  
+
   /**
    * @brief check is the path is already locked
    * @return 1 if the path is unlocked
@@ -161,7 +161,7 @@ private:
   WsFsTreeUpdater* m_updater;
   WsGlobalProperties* m_conf;
   boost::mutex m_lockEditMutex;
-  
+
   long getTimeMs();
 
 

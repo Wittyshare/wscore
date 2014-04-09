@@ -88,12 +88,12 @@ public:
    * @copydoc WsAbstractFsClient::getMenuRoot()
    */
   NodePtr getMenuRoot(const bool& forceUpdate = false);
-  
+
   /**
    * @copydoc WsAbstractFsClient::getLock();
    */
   int getLock(const std::string& path);
-  
+
   /**
    * @copydoc WsAbstractFsClient::putLock();
    */
