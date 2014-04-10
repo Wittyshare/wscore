@@ -50,8 +50,6 @@ enum RequestType {
   Property,
   Search,
   ClearCache,
-  MenuItems,
-  MenuItemsEx,
   AccessItems,
   IsEditor,
   IsAdmin,
