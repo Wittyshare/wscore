@@ -90,6 +90,8 @@ public :
    */
   const std::string& getEmail() const;
 
+  const std::string& getUid() const;
+
   /**
    * @brief tries to acquire the lock for the path.
    * @ return 0 if the lock cannot be aquired because is detented by someone else. -1 if an error occured and a positive value with the duration in seconds of the lock is returned otherwise.

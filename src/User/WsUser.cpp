@@ -72,6 +72,11 @@ const string& WsUser::getEmail() const
   return m_client->getEmail();
 }
 
+const string& WsUser::getUid() const
+{
+  return m_uid;
+}
+
 int WsUser::getPermissions(const string& p)
 {
   return m_client->getPermissions(cleanPath(p));
