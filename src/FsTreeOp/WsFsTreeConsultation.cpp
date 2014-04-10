@@ -39,11 +39,6 @@ int WsFsTreeConsultation::getPermissions( const std::set<std::string>& groups, c
     /* user is admin , readwrite perms*/
     return GlobalConfig::ReadWrite;
   }
-  WsGlobalProperties* props = WsGlobalProperties::instance();
-  if (props->get("global", "public_site", "false") == "true") {
-    /* Public site read access granted */
-    return GlobalConfig::Read;
-  }
   /* Check if user is allowed */
   if (n.get()->isAllowed(groups)) {
     /* Editor can edit only nodes where he has access */
@@ -55,10 +50,14 @@ int WsFsTreeConsultation::getPermissions( const std::set<std::string>& groups, c
       return GlobalConfig::Read;
     }
   } else {
-    /* no access */
-    return GlobalConfig::NoAccess;
+      WsGlobalProperties* props = WsGlobalProperties::instance();
+      if (props->get("global", "public_site", "false") == "true") {
+          /* Public site read access granted */
+          return GlobalConfig::Read;
+      }
   }
-  return FAILURE;
+    /* no access */
+  return GlobalConfig::NoAccess;
 }
 
 WsNodeProperties* WsFsTreeConsultation::getProperties ( const std::set<std::string>& groups, const std::string& p)

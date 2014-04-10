@@ -23,7 +23,6 @@ SET (APPNAME_SRCS
     ../../src/FileSystemTree/WsFileNode.cpp
     ../../src/FileSystemTree/WsAbstractNode.cpp
     ../../src/Tree/WsAbstractTree.cpp
-    ../../src/Tree/WsMenuTree.cpp
     ../../src/Tree/WsAccessTree.cpp
     ../../src/Serializer/WsTreeDeserializer.cpp
     ../../src/Serializer/WsArrayDeserializer.cpp

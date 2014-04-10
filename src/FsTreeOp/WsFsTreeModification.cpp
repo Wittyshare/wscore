@@ -280,7 +280,10 @@ bool WsFsTreeModification::canEdit(NodePtr node, std::set<std::string> groups)
 {
   /* If allowed and editor or if admin return true */
   if ((node.get()->isAllowed(groups) && groups.count(m_conf->get("global", "editor_group", "editor")) >  0)
-      || groups.count(m_conf->get("global", "admin_group", "administrator")) > 0)
+      || groups.count(m_conf->get("global", "admin_group", "administrator")) > 0){
+      LOG(DEBUG)<<"WsFsTreeModification::canEdit() : user can edit ";
     return true;
+  }
+  LOG(DEBUG)<<"WsFsTreeModification::canEdit() : user cannot edit ";
   return false;
 }
