@@ -16,13 +16,6 @@
 using namespace Json;
 
 
-WsTreeSerializer::WsTreeSerializer(WsMenuTree* tree):
-  m_rootNode(tree->getRoot()),
-  m_rootPath(tree->getRootPath()),
-  m_stamp(tree->getStamp())
-{
-}
-
 WsTreeSerializer::WsTreeSerializer(WsAccessTree* tree):
   m_rootNode(tree->getRoot()),
   m_rootPath(tree->getRootPath()),

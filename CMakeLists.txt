@@ -42,7 +42,6 @@ SET (APPNAME_SRCS
    src/FsTreeOp/WsFsTreeConsultation.cpp
    src/FsTreeOp/WsFsTreeModification.cpp
 
-   src/Tree/WsMenuTree.cpp
    src/Tree/WsAccessTree.cpp
    src/Tree/WsAbstractTree.cpp
 

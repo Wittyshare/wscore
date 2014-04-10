@@ -14,7 +14,6 @@
 #define WS_FSTREE_OPERATIONS
 
 #include <Tree/WsAccessTree.h>
-#include <Tree/WsMenuTree.h>
 #include <Search/WsResultItem.h>
 #include "WsFsTreeConsultation.h"
 #include "WsFsTreeModification.h"
@@ -66,16 +65,6 @@ public:
   std::string getProperty( const std::set<std::string>& groups, const std::string& section, const std::string& p, const std::string& prop) ;
 
   /**
-   * @brief Get the menu tree starting from rootPath
-   *
-   * @param groups the groups of the user to test access
-   * @param rootPath the starting path of the menu, default is "/" and will return the menu tree starting from the root
-   *
-   * @return a WsMenuTree containing the nodes of the menu. if an error occured or no access, the root of the WsMenuTree will be NULL
-   */
-  WsMenuTree* getMenuTree( const std::set<std::string>& groups) ;
-
-  /**
    * @brief tries to acquire the lock for the path.
    * @ return 0 if the lock cannot be aquired because is detented by someone else. -1 if an error occured and a positive value with the duration in seconds of the lock is returned otherwise.
    * @param groups the groups of the user
@@ -108,17 +97,6 @@ public:
    * @param id an empty string
    */
   int isLocked(const std::set<std::string> groups, const std::string& uid, const std::string& path, std::string& id);
-
-
-  /**
-   * @brief Get the menu tree starting from rootPath and exclude files patterns and/or extensions
-   *
-   * @param groups the groups of the user to test access
-   * @param rootPath the starting path of the menu, default is "/" and will return the menu tree starting from the root
-   *
-   * @return a WsMenuTree containing the nodes of the menu. if an error occured or no access, the root of the WsMenuTree will be NULL
-   */
-  WsMenuTree* getMenuTree( const std::set<std::string>& groups, const std::set<string>& exclNames, const std::set<string>& exclExt) ;
 
   /**
    * @brief Get the access tree starting from rootPath

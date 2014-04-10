@@ -88,12 +88,6 @@ int WsFsTreeClient::authentify()
   return SUCCESS;
 }
 
-
-NodePtr WsFsTreeClient::getMenuRoot(const bool& forceUpdate)
-{
-  return m_operation->getMenuTree(m_groups)->getRoot();
-}
-
 int WsFsTreeClient::getLock(const std::string& path)
 {
   return m_operation->getLock(m_groups, m_uid, path);
@@ -112,11 +106,6 @@ int WsFsTreeClient::isLocked(const std::string& path, std::string& uid)
 NodePtr WsFsTreeClient::getAccessRoot(const bool& forceUpdate)
 {
   return m_operation->getAccessTree(m_groups)->getRoot();
-}
-
-NodePtr WsFsTreeClient::getMenuRoot(const set<string>& exclNames, const set<string>& exclExt)
-{
-  return m_operation->getMenuTree(m_groups, exclNames, exclExt)->getRoot();
 }
 
 vector<WsResultItem> WsFsTreeClient::getSearchResults(const string& terms)

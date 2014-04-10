@@ -72,11 +72,6 @@ const string& WsUser::getEmail() const
   return m_client->getEmail();
 }
 
-NodePtr WsUser::getMenuRoot()
-{
-  return m_client->getMenuRoot();
-}
-
 int WsUser::getPermissions(const string& p)
 {
   return m_client->getPermissions(cleanPath(p));
@@ -119,11 +114,6 @@ int WsUser::deleteNode(const string& path)
 int WsUser::renameNode(const string& path, const string& newPath)
 {
   return m_client->renameNode(cleanPath(path), cleanPath(newPath));
-}
-
-NodePtr WsUser::getMenuRoot(const set<string>& exclNames, const set<string>& exclExt)
-{
-  return m_client->getMenuRoot(exclNames, exclExt);
 }
 
 int WsUser::getLock(const std::string& path)

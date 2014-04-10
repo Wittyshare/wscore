@@ -85,11 +85,6 @@ public:
   const std::string& getEmail() const;
 
   /**
-   * @copydoc WsAbstractFsClient::getMenuRoot()
-   */
-  NodePtr getMenuRoot(const bool& forceUpdate = false);
-
-  /**
    * @copydoc WsAbstractFsClient::getLock();
    */
   int getLock(const std::string& path);
@@ -108,13 +103,6 @@ public:
    * @copydoc WsAbstractFsClient::getAccessRoot()
    */
   NodePtr getAccessRoot(const bool& forceUpdate = false);
-
-
-  /**
-   * @copydoc WsAbstractFsClient::getMenuRoot()
-   */
-  NodePtr getMenuRoot(const std::set<string>& exclNames, const std::set<string>& exclExti);
-
 
   /**
    * @copydoc WsAbstractFsClient::getSearchResults()
@@ -243,12 +231,6 @@ private:
    * @returns the received property as a string or an empty string if failure
    */
   const std::string receiveProperty();
-
-  /**
-   * @brief receive the menu items after a getMenuRoot request
-   * @see WsAbstractFsClient::getMenuRoot()
-   */
-  NodePtr receiveMenuItems();
 
   /**
    * @brief receive the access tree items after a getAccessRoot request

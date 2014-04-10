@@ -87,49 +87,6 @@ std::string WsFsTreeConsultation::getProperty( const std::set<std::string>& grou
   return props->get(section, prop, "");
 }
 
-WsMenuTree* WsFsTreeConsultation::getMenuTree( const std::set<std::string>& groups)
-{
-  FileSystemTreePtr ft = m_updater->getLastTree();
-  int depth;
-  try {
-    depth = boost::lexical_cast<int>(m_conf->get("global", "max_menu_depth", "0"));
-  } catch (boost::bad_lexical_cast&) {
-    LOG(ERROR) << "WsFsTreeConsultation::getMenuTree() : Cannot cast depth to int. Check conf value. Assuming depth is unlimited";
-    depth = 0;
-  }
-  NodePtr n;
-  n = ft->getRoot();
-  if (n.get() == 0)
-    return 0;
-  WsMenuTree* tree = new WsMenuTree(n, groups, depth, ft->getRootPath(), ft->getStamp());
-  if (tree->build() == FAILURE) {
-    return 0;
-  }
-  return tree;
-}
-
-WsMenuTree* WsFsTreeConsultation::getMenuTree( const std::set<std::string>& groups, const std::set<string>& exclNames, const std::set<string>& exclExt)
-{
-  FileSystemTreePtr ft = m_updater->getLastTree();
-  int depth;
-  try {
-    depth = boost::lexical_cast<int>(m_conf->get("global", "max_menu_depth", "0"));
-  } catch (boost::bad_lexical_cast&) {
-    LOG(ERROR) << "WsFsTreeConsultation::getMenuTree() : Cannot cast depth to int. Check conf value. Assuming depth is unlimited";
-    depth = 0;
-  }
-  NodePtr n;
-  n = ft->getRoot();
-  if (n.get() == 0)
-    return 0;
-  WsMenuTree* tree = new WsMenuTree(n, groups, depth, exclNames, exclExt, ft->getRootPath(), ft->getStamp());
-  if (tree->build() == FAILURE) {
-    return 0;
-  }
-  return tree;
-}
-
-
 int WsFsTreeConsultation::getLock(const std::set<std::string> groups, const std::string& uid, const std::string& path)
 {
   boost::mutex::scoped_lock lock(m_lockEditMutex);

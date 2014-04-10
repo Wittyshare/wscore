@@ -15,7 +15,6 @@
 #define WS_FS_TREE_CLIENT_H__
 
 #include <Updater/WsFsTreeUpdater.h>
-#include <Tree/WsMenuTree.h>
 #include <FsTreeOp/WsFsTreeOperations.h>
 #include <Tree/WsAccessTree.h>
 #include <Auth/WsAuthenticator.h>
@@ -78,11 +77,6 @@ public:
   const std::string& getEmail() const;
 
   /**
-   * @copydoc WsAbstractFsClient::getMenuRoot()
-   */
-  NodePtr getMenuRoot(const bool& forceUpdate = false);
-
-  /**
    * @copydoc WsAbstractFsClient::getLock();
    */
   int getLock(const std::string& path);
@@ -101,12 +95,6 @@ public:
    * @copydoc WsAbstractFsClient::getAccessRoot()
    */
   NodePtr getAccessRoot( const bool& forceUpdate = false);
-
-
-  /**
-   * @copydoc WsAbstractFsClient::getMenuRoot()
-   */
-  NodePtr getMenuRoot(const std::set<string>& exclNames, const std::set<string>& exclExt);
 
   /**
    * @copydoc WsAbstractFsClient::getSearchResults()

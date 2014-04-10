@@ -21,8 +21,6 @@
 #include <json/reader.h>
 #include <json/value.h>
 
-
-#include <Tree/WsMenuTree.h>
 #include <Tree/WsAccessTree.h>
 
 /**
@@ -34,11 +32,6 @@
 class WsTreeSerializer {
 
 public:
-  /**
-   * @brief Constructor
-   * @param tree the WsMenuTree to serialize
-   **/
-  WsTreeSerializer(WsMenuTree* tree);
 
   /**
    * @brief Constructor

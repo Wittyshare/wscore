@@ -16,7 +16,6 @@
 #define WS_FSTREE_MODIFICATION_H__
 
 #include <Tree/WsAccessTree.h>
-#include <Tree/WsMenuTree.h>
 #include <Search/WsResultItem.h>
 #include <Updater/WsFsTreeUpdater.h>
 

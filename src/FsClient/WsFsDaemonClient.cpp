@@ -253,21 +253,6 @@ int WsFsDaemonClient::clearServerCache()
   return SUCCESS;
 }
 
-NodePtr WsFsDaemonClient::getMenuRoot(const bool& forceUpdate)
-{
-  /* Lock the mutex to avoid context error with zmq as 2 threads are accessing the same socket */
-  if (!forceUpdate && m_menuRoot.get() != 0)
-    return m_menuRoot;
-  Value v;
-  v[RequestField::Type] = MenuItems;
-  v[RequestField::Uid] = m_uid;
-  v[RequestField::Pass] = m_pass;
-  v[RequestField::Ip] = m_ip;
-  if (send(v.toStyledString()) == FAILURE)
-    return NodePtr();
-  return receiveMenuItems();
-}
-
 int WsFsDaemonClient::getLock(const std::string& path)
 {
   Value v;
@@ -328,24 +313,6 @@ NodePtr WsFsDaemonClient::getAccessRoot( const bool& forceUpdate)
   return receiveAccessItems();
 }
 
-NodePtr WsFsDaemonClient::getMenuRoot(const set<string>& exclNames, const set<string>& exclExt)
-{
-  Value v;
-  int i;
-  set<string>::iterator it;
-  v[RequestField::Type] = MenuItemsEx;
-  v[RequestField::Uid] = m_uid;
-  v[RequestField::Pass] = m_pass;
-  v[RequestField::Ip] = m_ip;
-  for (it = exclNames.begin(), i = 0; it != exclNames.end(); ++it, ++i )
-    v[RequestField::ExclNames][i] = *it;
-  for (it = exclExt.begin(), i = 0; it != exclExt.end(); ++it, ++i )
-    v[RequestField::ExclExt][i] = *it;
-  if (send(v.toStyledString()) == FAILURE)
-    return NodePtr();
-  return receiveMenuItems();
-}
-
 const string WsFsDaemonClient::getRootPath()
 {
   /* Avoid fetching path each time */
@@ -360,26 +327,6 @@ const string WsFsDaemonClient::getRootPath()
     return "";;
   m_rootPath = receiveString();
   return m_rootPath;
-}
-
-NodePtr WsFsDaemonClient::receiveMenuItems()
-{
-  string resp;
-  if (	receive(resp) == FAILURE)
-    return NodePtr();
-  /* Check if no error occured server-side */
-  if (resp == RequestField::Failure || resp == "notlogged")
-    return NodePtr();
-  /* Deserialize menu items */
-  WsTreeDeserializer des(resp);
-  if (des.deserialize() == FAILURE) {
-    LOG(ERROR) << "WsFsDaemonClient::receiveMenuItems() : receiveMenuItems deserialize error " << endl;
-    return NodePtr();
-  }
-  /* Set the new menuTree and it's stamp */
-  m_menuRoot = des.getMenuRoot();
-  m_menuTreeStamp = des.getStamp();
-  return m_menuRoot;
 }
 
 NodePtr WsFsDaemonClient::receiveAccessItems()
@@ -654,7 +601,6 @@ int WsFsDaemonClient::createNode(const string& p, int type)
     return FAILURE;
   if (receiveSuccessCode() == SUCCESS) {
     getAccessRoot(true);
-    getMenuRoot( true);
     return SUCCESS;
   }
   return FAILURE;
@@ -672,7 +618,6 @@ int WsFsDaemonClient::deleteNode(const string& p)
     return FAILURE;
   if (receiveSuccessCode() == SUCCESS) {
     getAccessRoot(true);
-    getMenuRoot(true);
     return SUCCESS;
   }
   return FAILURE;
@@ -691,7 +636,6 @@ int WsFsDaemonClient::renameNode(const string& p, const string& newPath)
     return FAILURE;
   if (receiveSuccessCode() == SUCCESS) {
     getAccessRoot(true);
-    getMenuRoot(true);
     return SUCCESS;
   }
 }
@@ -769,8 +713,6 @@ int WsFsDaemonClient::threadUpdate()
       string v = receiveString();
       if ( v != m_accessTreeStamp )
         getAccessRoot(true);
-      if ( v != m_menuTreeStamp )
-        getMenuRoot(true);
       boost::this_thread::sleep(boost::posix_time::milliseconds(delay * 1000));
     } catch (std::exception& e) {
       LOG(ERROR) << "WsFsDaemonClient::threadUpdate :" << e.what();

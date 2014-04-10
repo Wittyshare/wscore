@@ -16,7 +16,6 @@
 #define WS_FSTREE_CONSULTATION_H__
 
 #include <Tree/WsAccessTree.h>
-#include <Tree/WsMenuTree.h>
 #include <Search/WsResultItem.h>
 #include <Updater/WsFsTreeUpdater.h>
 
@@ -69,28 +68,6 @@ public:
   std::string getProperty( const std::set<std::string>& groups, const std::string& section, const std::string& p, const std::string& prop) ;
 
   /**
-   * @brief Get the menu tree starting from rootPath
-   *
-   * @param groups the groups of the user to test access
-   * @param rootPath the starting path of the menu, default is "/" and will return the menu tree starting from the root
-   *
-   * @return a WsMenuTree containing the nodes of the menu. if an error occured or no access, the root of the WsMenuTree will be NULL
-   */
-  WsMenuTree* getMenuTree( const std::set<std::string>& groups) ;
-
-
-  /**
-   * @brief Get the menu tree starting from rootPath and exclude files patterns and/or extensions
-   *
-   * @param groups the groups of the user to test access
-   * @param rootPath the starting path of the menu, default is "/" and will return the menu tree starting from the root
-   *
-   * @return a WsMenuTree containing the nodes of the menu. if an error occured or no access, the root of the WsMenuTree will be NULL
-   */
-  WsMenuTree* getMenuTree( const std::set<std::string>& groups, const std::set<string>& exclNames, const std::set<string>& exclExt) ;
-
-
-  /**
    * @brief tries to acquire the lock for the path. A lock file will be stored in the .config/locks of the current directory containing the timestamp of the lock and the uid of the user who locked it
    * @ return 0 if the lock cannot be aquired because is detented by someone else. -1 if an error occured and a positive value with the duration in seconds of the lock is returned otherwise.
    */
@@ -125,7 +102,7 @@ public:
    * @param groups the groups of the user to test access
    * @param rootPath the starting path of the access tree, default is "/" and will return the access tree starting from the root
    *
-   * @return a WsMenuTree containing the nodes of the access tree. if an error occured or no access, the root of the WsAccessTree will be NULL
+   * @return a WsAccessTree containing the nodes of the access tree. if an error occured or no access, the root of the WsAccessTree will be NULL
    */
   WsAccessTree* getAccessTree( const std::set<std::string>& groups) ;
 

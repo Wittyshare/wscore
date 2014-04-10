@@ -13,7 +13,7 @@
 
 #ifndef WS_MENU_TREE_DESERIALIZER_H__
 #define WS_MENU_TREE_DESERIALIZER_H__
-#include <Tree/WsMenuTree.h>
+#include <Tree/WsAccessTree.h>
 
 #include <json/json.h>
 #include <json/reader.h>

@@ -81,12 +81,9 @@ int WsFsTreeModification::createNode( const std::set<std::string>& groups, const
     LOG(ERROR) << "WsFsTreeClient::createNode() : Parent Node is not a directory " << parent.string();
     return FAILURE;
   }
-  /* If not allowed and is not editor nor admin return failure */
-  /* FIXME editor has right to edit something he doesen't have access to ? */
-  if (!n.get()->isAllowed(groups) && (!isEditor(groups) || !isAdministrator(groups) )) {
-    LOG(ERROR) << "WsFsTreeClient::createNode() : User " << uid << " not allowed to edit " << parent.string();
-    return FAILURE;
-  }
+
+  if (!canEdit(n, groups)) return FAILURE;
+
   /* Check if new node already exit */
   if (ft->eatPath(p).get() != 0) {
     LOG(INFO) << "WsFsTreeClient::createNode() : Node already exist" << p;

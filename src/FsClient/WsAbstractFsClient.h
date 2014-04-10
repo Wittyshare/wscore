@@ -74,14 +74,6 @@ public:
   virtual const std::string& getEmail() const = 0;
 
   /**
-   * @brief get the root node of the menu
-   * The root node contains as children all the menu items
-   * @param forceUpdate Force the update of the tree or no
-   * @return a NodePtr to the root or en empty one if no access, failure
-   */
-  virtual NodePtr getMenuRoot( const bool& forceUpdate = false) = 0;
-
-  /**
    * @brief tries to acquire the lock for the path.
    * @ return 0 if the lock cannot be aquired because is detented by someone else. -1 if an error occured and a positive value with the duration in seconds of the lock is returned otherwise.
    */
@@ -109,17 +101,6 @@ public:
    * @return a NodePtr to the root or en empty one if no access, failure
    */
   virtual NodePtr getAccessRoot( const bool& forceUpdate = false) = 0;
-
-  /**
-   * @brief returns the root of the menu. The root is an instance of WsDirNode. This is the same mehod as WsFsTreeClient::getMenuRoot() but it excluded specific nodes
-   * @param exclNames the node name to excluded (name without path)
-   * @param exclExt the node extension to exclude
-   * @param rootPath the path to the root
-   * The names and extensions are case sensitive
-   * @return a NodePtr to the root or en empty one if no access, failure
-   */
-  virtual NodePtr getMenuRoot(const std::set<string>& exclNames, const std::set<string>& exclExt) = 0;
-
 
   /**
    * @brief  get search results,

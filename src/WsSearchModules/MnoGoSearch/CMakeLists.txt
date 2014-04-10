@@ -32,7 +32,6 @@ SET ( APPNAME_SRCS
      ../../Updater/WsMonitor.cpp
      ../../ConfigManager/WsAbstractProperties.cpp
      ../../ConfigManager/WsNodeProperties.cpp
-     ../../Tree/WsMenuTree.cpp
      ../../Tree/WsAbstractTree.cpp
      ../../Serializer/WsTreeDeserializer.cpp
      ../../TreeTraversal/WsTreeTraversal.cpp

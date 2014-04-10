@@ -52,6 +52,7 @@ public :
    * @brief Load infos of the user
    *
    * Loads the name, surname, email, groups ..
+   * @return SUCCESS if load is completed successfully, FAILURE otherwise
    */
   int load();
 
@@ -90,13 +91,6 @@ public :
   const std::string& getEmail() const;
 
   /**
-   * @brief returns the root of the menu. The root is an instance of WsDirNode
-   * @param rootPath the path to the root
-   * @return a NodePtr to the root or en empty one if no access, failure
-   */
-  NodePtr getMenuRoot();
-
-  /**
    * @brief tries to acquire the lock for the path.
    * @ return 0 if the lock cannot be aquired because is detented by someone else. -1 if an error occured and a positive value with the duration in seconds of the lock is returned otherwise.
    */
@@ -115,16 +109,6 @@ public :
    * return -1 if an error occured
    */
   int isLocked(const std::string& path, std::string& uid);
-
-  /**
-   * @brief returns the root of the menu. The root is an instance of WsDirNode. This is the same mehod as WsFsTreeClient::getMenuRoot() but it excluded specific nodes
-   * @param exclNames the node name to excluded (name without path)
-   * @param exclExt the node extension to exclude
-   * The names and extensions are case sensitive
-   * @param rootPath the path to the root
-   * @return a NodePtr to the root or en empty one if no access, failure
-   */
-  NodePtr getMenuRoot(const std::set<std::string>& exclNames, const std::set<std::string>& exclExt);
 
   /**
    * @brief return the permissions on specific node
