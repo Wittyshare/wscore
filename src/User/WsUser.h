@@ -130,6 +130,7 @@ public :
    * @brief return the permissions on specific node
    * @param p the node path (relative)
    * @return READ if only read READ_WRITE if read write perm or NO_ACCESS
+   * @return NotFound if path not found
    */
   int getPermissions(const std::string& p);
 
