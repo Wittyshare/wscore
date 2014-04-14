@@ -27,7 +27,7 @@ long WsDecompressor::decompress(const char* data, size_t size,  string& uncompre
   char* to = new char[unCompSize];
   if (uncompress((Bytef*)to, &unCompSize, (const Bytef*)data, size) != Z_OK) {
     LOG(ERROR) << "WsDecompressor :: Decompression failed";
-    return FAILURE;
+    return ErrorCode::Failure;
   }
   uncompressedData = string(to, unCompSize);
   delete[] to;

@@ -38,7 +38,7 @@ int WsFsTreeModification::saveProperties( const std::set<std::string>& groups, c
   /* Set the root of the properties to the new Json */
   n.get()->getProperties().get()->setRoot(json);
   /* save it */
-  if (n.get()->getProperties().get()->save() == FAILURE ) {
+  if (n.get()->getProperties().get()->save() == ErrorCode::Failure ) {
     return ErrorCode::Failure;
   }
   return ErrorCode::Success;
@@ -57,7 +57,7 @@ int WsFsTreeModification::saveProperty( const std::set<std::string>& groups, con
   /* Set property */
   n.get()->getProperties().get()->set(section, attr, val);
   /* save it */
-  if (n.get()->getProperties().get()->save() == FAILURE ) {
+  if (n.get()->getProperties().get()->save() == ErrorCode::Failure ) {
     return ErrorCode::Failure;
   }
   return ErrorCode::Success;
@@ -95,7 +95,7 @@ int WsFsTreeModification::createNode( const std::set<std::string>& groups, const
       /* Create the file on disk */
       f.open( string(root.string() + p).c_str(), ios::out );
       if (!f.is_open())
-        return FAILURE;
+        return ErrorCode::Failure;
       f.close();
       /* Create Node and properties */
       WsFileNode* fn = new WsFileNode(root / p, root);
@@ -148,7 +148,7 @@ int WsFsTreeModification::deleteNode( const std::set<std::string>& groups, const
     LOG(ERROR) << "WsFsTreeClient::deleteNode() : Node not found " << p;
     return ErrorCode::NotFound;
   }
-  if (!canEdit(n, groups)) return FAILURE;
+  if (!canEdit(n, groups)) return ErrorCode::Failure;
   /* Check if file or directory exist */
   if ( !boost::filesystem::exists(ft->getRootPath() / p)) {
     LOG(ERROR) << "WsFsTreeClient::deleteNode() : Node do not exist" << p;
@@ -203,7 +203,7 @@ int WsFsTreeModification::renameNode( const std::set<std::string>& groups, const
     LOG(DEBUG) << "WsFsDaemon::renameNode() : Rename dest parent not a dir";
     return ErrorCode::Failure;
   }
-  if (!canEdit(n, groups)) return FAILURE;
+  if (!canEdit(n, groups)) return ErrorCode::Failure;
   /* Check if node exist */
   if ( !boost::filesystem::exists(root / p)) {
     LOG(ERROR) << "WsFsTreeClient::renameNode() : Node do not exist" << p;
@@ -245,7 +245,7 @@ int WsFsTreeModification::renameNode( const std::set<std::string>& groups, const
       dn->setProperties(props);
       NodePtr nn = NodePtr(dn);
       /* Insert it in tree */
-      if ( m_updater->getLastTree()->insertNode(nn) == FAILURE)
+      if ( m_updater->getLastTree()->insertNode(nn) == ErrorCode::Failure)
         return ErrorCode::Failure;
       return ErrorCode::Success;
     } else {
@@ -255,7 +255,7 @@ int WsFsTreeModification::renameNode( const std::set<std::string>& groups, const
       dn->setProperties(props);
       NodePtr nn = NodePtr(dn);
       /* Insert it in tree */
-      if ( m_updater->getLastTree()->insertNode(nn) == FAILURE)
+      if ( m_updater->getLastTree()->insertNode(nn) == ErrorCode::Failure)
         return ErrorCode::Failure;
       return ErrorCode::Success;
     }

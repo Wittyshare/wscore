@@ -102,13 +102,13 @@ int WsMonitor::startCallBack()
   m_frp = (FAMRequest*)malloc(m_paths.size() * sizeof * m_frp);
   if (!m_frp) {
     LOG(ERROR) << "WsMonitor::startCallBack() : Malloc failed for Fam";
-    return FAILURE;
+    return ErrorCode::Failure;
   }
   m_fc = (FAMConnection*)malloc(sizeof(m_fc));
   /* Open fam connection */
   if ((FAMOpen(m_fc)) < 0) {
     LOG(ERROR) << "WsMonitor::startCallBack() : Fam open failed";
-    return FAILURE;
+    return ErrorCode::Failure;
   }
   /* Request monitoring for each program argument */
   for (nmon = 0, i = 0; i < m_paths.size(); i++) {
@@ -122,7 +122,7 @@ int WsMonitor::startCallBack()
   /* If nmon == 0, nothing to monitor */
   if (!nmon) {
     LOG(ERROR) << "WsMonitor::startCallBack() : Fam nothing to monitor." << endl;
-    return FAILURE;
+    return ErrorCode::Failure;
   }
   /* Initialize select data structure */
   fam_fd = FAMCONNECTION_GETFD(m_fc);
@@ -133,7 +133,7 @@ int WsMonitor::startCallBack()
     if (select(fam_fd + 1, &readfds,
                0, 0, 0) < 0) {
       LOG(ERROR) << "WsMonitor::startCallBack() : Select failed" << endl;
-      return FAILURE;
+      return ErrorCode::Failure;
     }
     if (FD_ISSET(fam_fd, &readfds)) {
       if (FAMNextEvent(m_fc, &fe) < 0) {
@@ -155,13 +155,13 @@ int WsMonitor::startCallBackConfOnly()
   m_frp2 = (FAMRequest*)malloc(m_paths.size() * sizeof * m_frp2);
   if (!m_frp2) {
     LOG(ERROR) << "WsMonitor::startCallBackConfOnly() : Malloc failed for Fam";
-    return FAILURE;
+    return ErrorCode::Failure;
   }
   m_fc2 = (FAMConnection*)malloc(sizeof(m_fc2));
   /* Open fam connection */
   if ((FAMOpen(m_fc2)) < 0) {
     LOG(ERROR) << "WsMonitor::startCallBackConfOnly() Fam open failed";
-    return FAILURE;
+    return ErrorCode::Failure;
   }
   /* Request monitoring for each program argument */
   for (nmon = 0, i = 0; i < m_paths.size(); i++) {
@@ -179,7 +179,7 @@ int WsMonitor::startCallBackConfOnly()
   }
   if (!nmon) {
     LOG(ERROR) << "WsMonitor::startCallBackConfOnly() : Fam nothing to monitor." << endl;
-    return FAILURE;
+    return ErrorCode::Failure;
   }
   /* Initialize select data structure */
   fam_fd = FAMCONNECTION_GETFD(m_fc2);
@@ -190,7 +190,7 @@ int WsMonitor::startCallBackConfOnly()
     if (select(fam_fd + 1, &readfds,
                0, 0, 0) < 0) {
       LOG(ERROR) << "WsMonitor::startCallBackConfOnly() : Select failed" << endl;
-      return FAILURE;
+      return ErrorCode::Failure;
     }
     if (FD_ISSET(fam_fd, &readfds)) {
       if (FAMNextEvent(m_fc2, &fe) < 0) {
@@ -210,7 +210,7 @@ int WsMonitor::signal(const string& filename, const int& code)
   ifstream fconf(temp.c_str());
   if (fconf.good()) {
     LOG(DEBUG) << "WsMonitor::signal() : Lock File is present. Not updating";
-    return SUCCESS;
+    return ErrorCode::Success;
   }
   switch (code) {
   case FAMDeleted:
@@ -222,7 +222,7 @@ int WsMonitor::signal(const string& filename, const int& code)
     m_updated = true;
     break;
   }
-  return SUCCESS;
+  return ErrorCode::Success;
 }
 
 int WsMonitor::signalConf(const string& filename, const int& code)
@@ -233,7 +233,7 @@ int WsMonitor::signalConf(const string& filename, const int& code)
   ifstream fconf(temp.c_str());
   if (fconf.good()) {
     LOG(DEBUG) << "WsMonitor::signalConf() : Lock File is present. Not updating";
-    return SUCCESS;
+    return ErrorCode::Success;
   }
   switch (code) {
   case FAMDeleted:

@@ -28,7 +28,7 @@ long WsCompressor::compress(const string& data, char** compressedData)
   if (compress2((Bytef*)*compressedData, (uLongf*)&compBufSize, (const Bytef*)from, (uLongf)data.size(), Z_BEST_COMPRESSION) != Z_OK) {
     LOG(ERROR) << "WsCompressor :: Compression failed";
     delete[] from;
-    return FAILURE;
+    return ErrorCode::Failure;
   }
   delete[] from;
   return compBufSize;

@@ -27,7 +27,7 @@ int WsTreeSerializer::serialize()
 {
   /* Avoid Segfault if user has access to nothing */
   if (m_rootNode.get() == 0)
-    return SUCCESS;
+    return ErrorCode::Success;
   /* Serialize the rootPath */
   m_root["root_path"] = m_rootPath.string();
   m_root["stamp"] = m_stamp;
@@ -62,9 +62,9 @@ int WsTreeSerializer::addSub(Value& v, NodePtr n)
     }
   } else {
     LOG(ERROR) << "WsTreeTraversal::addSub() : Node is a file ";
-    return FAILURE;
+    return ErrorCode::Failure;
   }
-  return SUCCESS;
+  return ErrorCode::Success;
 }
 
 const string WsTreeSerializer::getSerializedForm()

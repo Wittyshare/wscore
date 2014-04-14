@@ -56,6 +56,6 @@ void WsNodeResources::add(Type t, const string& value)
 
 int WsNodeResources::createResourcesDirectories()
 {
-  return SUCCESS;
+  return ErrorCode::Success;
 }
 

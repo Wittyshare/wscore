@@ -30,20 +30,20 @@ int WsTreeTraversal::traverse(NodePtr n)
 {
   if (n.get() == 0) {
     LOG(ERROR) << "TreeTraversal::traverse() : Could not traverse : Node is NULL" << endl;
-    return FAILURE;
+    return ErrorCode::Failure;
   }
   /* Start to traverse the directory */
-  if (beginTraverseDir(n) == SUCCESS) {
+  if (beginTraverseDir(n) == ErrorCode::Success) {
     /* Traverse sub folders */
     int r1 = traverseDirNodes(n.get()->getDirectories());
-    if (r1 == FAILURE) return FAILURE;
+    if (r1 == ErrorCode::Failure) return ErrorCode::Failure;
     /* Traverse sub files */
     int r2 = traverseFileNodes(n.get()->getFiles());
-    if (r2 == FAILURE) return FAILURE;
+    if (r2 == ErrorCode::Failure) return ErrorCode::Failure;
     /* End traverse of the dir */
     return endTraverseDir(n);
   }
-  return SUCCESS;
+  return ErrorCode::Success;
 }
 
 int WsTreeTraversal::traverseDirNodes(vector<NodePtr> l)
@@ -51,10 +51,10 @@ int WsTreeTraversal::traverseDirNodes(vector<NodePtr> l)
   /* Iterate on all the nodes and call traverse */
   for (vector<NodePtr>::iterator it = l.begin(); it != l.end(); it++) {
     int r = traverse(*it);
-    if (r == FAILURE)
-      return FAILURE;
+    if (r == ErrorCode::Failure)
+      return ErrorCode::Failure;
   }
-  return SUCCESS;
+  return ErrorCode::Success;
 }
 
 int WsTreeTraversal::traverseFileNodes(vector<NodePtr> l)
@@ -63,9 +63,9 @@ int WsTreeTraversal::traverseFileNodes(vector<NodePtr> l)
   /* A proper action to traverse file is implemented in the derived class */
   for (vector<NodePtr>::iterator it = l.begin(); it != l.end(); it++) {
     int r = traverseFile(*it);
-    if (r == FAILURE)
-      return FAILURE;
+    if (r == ErrorCode::Failure)
+      return ErrorCode::Failure;
   }
-  return SUCCESS;
+  return ErrorCode::Success;
 }
 

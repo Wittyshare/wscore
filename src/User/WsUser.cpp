@@ -42,7 +42,7 @@ int WsUser::load()
   LOG(DEBUG) << "WsUser::load() : Getting PropertiesConfig::Daemon property OK";
 #endif //HAS_DAEMON
   /* load */
-  if (m_client->load() == FAILURE)
+  if (m_client->load() == ErrorCode::Failure)
     return ErrorCode::Failure;
   return ErrorCode::Success;
 }

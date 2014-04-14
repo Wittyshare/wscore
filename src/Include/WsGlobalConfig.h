@@ -33,10 +33,6 @@ namespace GlobalConfig {
 const int Read                          =       2;
 const int ReadWrite                     =       6;
 
-const int NotAvail                      =       -2;
-const int NotFound                      =       -3;
-const int NoAccess                      =       -4;
-const int NotLogged                     =       -5;
 const int On                            =       1;
 const int Off                           =       0;
 const int Delay                         =       30;

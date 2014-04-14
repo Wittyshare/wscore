@@ -36,11 +36,11 @@ int WsFsTreeClient::load()
 {
   m_conf = WsGlobalProperties::instance();
   m_operation = new WsFsTreeOperations();
-  if ( m_operation->update() == FAILURE)
-    return FAILURE;
+  if ( m_operation->update() == ErrorCode::Failure)
+    return ErrorCode::Failure;
   int refresh;
-  if (authentify() ==  FAILURE)
-    return FAILURE;
+  if (authentify() ==  ErrorCode::Failure)
+    return ErrorCode::Failure;
 }
 
 int WsFsTreeClient::getPermissions(const string& p)
@@ -76,8 +76,8 @@ const string& WsFsTreeClient::getEmail() const
 int WsFsTreeClient::authentify()
 {
   WsAuthenticator connector;
-  if (connector.authentify(m_uid, m_pass, m_ip) != SUCCESS)
-    return FAILURE;
+  if (connector.authentify(m_uid, m_pass, m_ip) != ErrorCode::Success)
+    return ErrorCode::Failure;
   m_uid = connector.getUid();
   m_sn  = connector.getSurname();
   m_givenName = connector.getFirstName();
@@ -85,7 +85,7 @@ int WsFsTreeClient::authentify()
   /* We add the uid to the groups, it allows to give access to a dir to only one user  */
   m_groups.insert(m_uid);
   m_email = connector.getEmail();
-  return SUCCESS;
+  return ErrorCode::Success;
 }
 
 int WsFsTreeClient::getLock(const std::string& path)

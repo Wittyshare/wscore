@@ -53,13 +53,13 @@ int WsFsTreeUpdater::update()
     if (m_fsTree.get()) {
       new boost::thread(boost::bind(&WsFsTreeUpdater::threadUpdate, this));
       m_updateMutex.unlock();
-      return SUCCESS;
+      return ErrorCode::Success;
     }
     /* Create the new Tree */
     WsFileSystemTree* newTree = new WsFileSystemTree(m_rootPath, m_isMonitor);
-    if (newTree->start() == FAILURE) {
+    if (newTree->start() == ErrorCode::Failure) {
       m_updateMutex.unlock();
-      return FAILURE;
+      return ErrorCode::Failure;
     }
     /* Start the monitor is activated */
     if (m_isMonitor && m_monitor == 0) {
@@ -75,10 +75,10 @@ int WsFsTreeUpdater::update()
     /* Put it on the top of the stack */
     m_fsTree = FileSystemTreePtr(newTree);
     m_updateMutex.unlock();
-    return SUCCESS;
+    return ErrorCode::Success;
   } else
     LOG(DEBUG) << "WsFsTreeUpdater::update() : Update already in progress";
-  return FAILURE;
+  return ErrorCode::Failure;
 }
 
 bool WsFsTreeUpdater::isLastVersion(FileSystemTreePtr fs)
@@ -90,16 +90,16 @@ int WsFsTreeUpdater::threadUpdate()
 {
   /* Create new tree */
   WsFileSystemTree* newTree = new WsFileSystemTree(m_rootPath, m_isMonitor);
-  if (newTree->start() == FAILURE)
-    return FAILURE;
+  if (newTree->start() == ErrorCode::Failure)
+    return ErrorCode::Failure;
   m_fsTree = FileSystemTreePtr(newTree);
-  return SUCCESS;
+  return ErrorCode::Success;
 }
 
 int WsFsTreeUpdater::startRegularUpdate()
 {
   if (m_delay == 0) {
-    return SUCCESS;
+    return ErrorCode::Success;
   }
   LOG(INFO) << "WsFsTreeUpdater::startRegularUpdate() : Monitoring is on. Will update the tree every " << m_delay << " s.";
   /* Endless loop that will update the tree every m_delay seconds */

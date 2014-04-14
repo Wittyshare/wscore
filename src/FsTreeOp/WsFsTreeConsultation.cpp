@@ -286,7 +286,7 @@ WsAccessTree* WsFsTreeConsultation::getAccessTree( const std::set<std::string>& 
   if (n.get() == 0)
     return 0;
   WsAccessTree* tree = new WsAccessTree(n, groups, depth, ft->getRootPath(), ft->getStamp());
-  if (tree->build() == FAILURE) {
+  if (tree->build() == ErrorCode::Failure) {
     return 0;
   }
   return tree;

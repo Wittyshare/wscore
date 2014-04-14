@@ -43,7 +43,7 @@ int WsFileSystemTree::start()
   LOG(INFO) << "WsFileSystemTree::start() : Building FsTree for path " << m_p;
   /* Start Crawling */
   int r = WsDirectoryCrawler::start();
-  if (r == FAILURE)
+  if (r == ErrorCode::Failure)
     LOG(ERROR) << "WsFileSystemTree::start() : Error while building FsTree for path " << m_p;
   else {
     LOG(INFO) << "WsFileSystemTree::start() :  FsTree built with success for path " << m_p;
@@ -74,7 +74,7 @@ int WsFileSystemTree::applyFile(const path& filePath)
   }
   if (m_root == 0)
     m_root = m_current;
-  return SUCCESS;
+  return ErrorCode::Success;
 }
 
 const path& WsFileSystemTree::getRootPath() const
@@ -90,8 +90,8 @@ int WsFileSystemTree::applyDirectory(const path& dirPath)
   }
   WsNodeResources* resources = new WsNodeResources(dirPath);
   /* Create  .config/{nodes, images, templates, ..} if not already here */
-  if (resources->createResourcesDirectories() == FAILURE )
-    return FAILURE;
+  if (resources->createResourcesDirectories() == ErrorCode::Failure )
+    return ErrorCode::Failure;
   /* Create a dir node */
   NodePtr n(new WsDirNode(dirPath, m_rootPath));
   std::time_t t = boost::filesystem::last_write_time( dirPath ) ;
@@ -112,7 +112,7 @@ int WsFileSystemTree::applyDirectory(const path& dirPath)
   }
   if (m_root == 0)
     m_root = m_current;
-  return SUCCESS;
+  return ErrorCode::Success;
 }
 
 void WsFileSystemTree::beginChild(const path& p)
@@ -171,23 +171,23 @@ int WsFileSystemTree::insertNode(NodePtr newNode)
   path p = newNode.get()->getPath();
   NodePtr parent = eatPath(p.parent_path().string());
   if (parent.get() == 0)
-    return FAILURE;
+    return ErrorCode::Failure;
   /* Parent is here, check if it's a DIR */
   if ( !parent.get()->isDirectory() )
-    return FAILURE;
+    return ErrorCode::Failure;
   if ( newNode.get()->isRegularFile()) {
-    if ( parent.get()->addChildFile(newNode) == FAILURE)
-      return FAILURE;
+    if ( parent.get()->addChildFile(newNode) == ErrorCode::Failure)
+      return ErrorCode::Failure;
   } else {
-    if ( parent.get()->addChildDirectory(newNode) == FAILURE)
-      return FAILURE;
+    if ( parent.get()->addChildDirectory(newNode) == ErrorCode::Failure)
+      return ErrorCode::Failure;
   }
-  if ( parent.get()->addChildNode(newNode) == FAILURE)
-    return FAILURE;
+  if ( parent.get()->addChildNode(newNode) == ErrorCode::Failure)
+    return ErrorCode::Failure;
   LOG(DEBUG) << "WsFileSystemTree::insertNode() : Node " << p.string() << " inserted in FileSystemTree";
   /* Create new stamp */
   createStamp();
-  return SUCCESS;
+  return ErrorCode::Success;
 }
 
 void WsFileSystemTree::incrementUseCount()

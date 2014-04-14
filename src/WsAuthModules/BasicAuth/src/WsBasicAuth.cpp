@@ -43,7 +43,7 @@ int WsBasicAuth::authentify(const string& uid, const string& pass, const std::st
   int ran = rand() % 10000000 + 1;
   m_uid = m_uid + "-" + boost::lexical_cast<string>(ran);
   m_groups.insert(guest);
-  return SUCCESS;
+  return ErrorCode::Success;
 }
 
 string WsBasicAuth::getUid()

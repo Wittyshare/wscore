@@ -80,13 +80,13 @@ int WsAbstractTree::beginTraverseDir(NodePtr n)
   if (m_root.get() == 0 ) {
     /* Check if user has access to root node */
     if (!dynamic_cast<WsDirNode*>(n.get())->isAllowed(m_gid)) {
-      return FAILURE;
+      return ErrorCode::Failure;
     }
     /* We create a new node because children are not necessarly the same for each user, depends on rights */
     m_root = NodePtr(new WsDirNode(WsTreeTraversal::m_root->getFullPath(), rootPath));
     m_root.get()->setProperties(dynamic_cast<WsDirNode*>(WsTreeTraversal::m_root.get())->getProperties());
     m_current = m_root;
-    return SUCCESS;
+    return ErrorCode::Success;
   }
   if (m_maxDepth == 0 || m_currentDepth < m_maxDepth) {
     /* Check if user can access this node */
@@ -94,28 +94,28 @@ int WsAbstractTree::beginTraverseDir(NodePtr n)
       /* Check if this name is excluded */
       if (m_exclNames.count(n.get()->getFullPath().stem().string()) > 0) {
         LOG(DEBUG) << "WsAbstractTree::beginTraverseDir() : Excluding node " << n.get()->getFullPath();
-        return FAILURE;
+        return ErrorCode::Failure;
       }
       NodePtr nn(new WsDirNode(n.get()->getFullPath(), rootPath));
       nn.get()->setProperties(n.get()->getProperties());
-      if (m_current->addChildDirectory(nn) == FAILURE) {
+      if (m_current->addChildDirectory(nn) == ErrorCode::Failure) {
         LOG(DEBUG) << "WsAbstractTree::beginTraverseDir() :  Excluding node " << n.get()->getFullPath();
-        return FAILURE;
+        return ErrorCode::Failure;
       }
       nn.get()->setParent(m_current);
       m_current = nn;
     }
-    /* The user cannot access this node, return FAILURE
+    /* The user cannot access this node, return ErrorCode::Failure
      * to stop recursion inside subdirs */
     else {
       LOG(DEBUG) << "WsAbstractTree::beginTraverseDir() : Not allowed to access " << n->getPath();
-      return FAILURE;
+      return ErrorCode::Failure;
     }
     m_currentDepth++;
   } else
     /* Return Failure to stop recursion into subdirs */
-    return FAILURE;
-  return SUCCESS;
+    return ErrorCode::Failure;
+  return ErrorCode::Success;
 }
 
 int WsAbstractTree::endTraverseDir(NodePtr n)
@@ -123,7 +123,7 @@ int WsAbstractTree::endTraverseDir(NodePtr n)
   if (m_current.get() != 0 && m_current.get()->getParent() != 0) {
     m_current = m_current.get()->getParent();
   }
-  return SUCCESS;
+  return ErrorCode::Success;
 }
 
 int WsAbstractTree::traverseFile(NodePtr n)
@@ -132,11 +132,11 @@ int WsAbstractTree::traverseFile(NodePtr n)
   /* Check if the filename or extension is excluded */
   if (m_exclNames.count(n.get()->getFullPath().stem().string()) > 0) {
     LOG(DEBUG) << "WsAbstractTree::traverseFile() :  Excluding node " << n.get()->getFullPath();
-    return SUCCESS;
+    return ErrorCode::Success;
   }
   if (m_exclExt.count(n.get()->getFullPath().extension().string()) > 0) {
     LOG(DEBUG) << "WsAbstractTree::traverseFile() : Excluding node " << n.get()->getFullPath();
-    return SUCCESS;
+    return ErrorCode::Success;
   }
   NodePtr nn(new WsFileNode(n.get()->getFullPath(), rootPath));
   nn.get()->setProperties(n.get()->getProperties());
@@ -146,12 +146,12 @@ int WsAbstractTree::traverseFile(NodePtr n)
   /* Check if there is no root */
   if (m_root.get() == 0) {
     m_root = nn;
-    return SUCCESS;
+    return ErrorCode::Success;
   }
-  if (m_current->addChildFile(nn) == FAILURE)
-    return FAILURE;
+  if (m_current->addChildFile(nn) == ErrorCode::Failure)
+    return ErrorCode::Failure;
   nn->setParent(m_current);
-  return SUCCESS;
+  return ErrorCode::Success;
 }
 
 path& WsAbstractTree::getRootPath()

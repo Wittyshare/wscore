@@ -20,8 +20,8 @@ WsTreeDeserializer::WsTreeDeserializer(const string& contents): m_contents(conte
 
 int WsTreeDeserializer::deserialize()
 {
-  if (parse() == FAILURE)
-    return FAILURE;
+  if (parse() == ErrorCode::Failure)
+    return ErrorCode::Failure;
   /* Get the rootPath */
   m_rootPath = m_root["root_path"].asString();
   m_stamp = m_root["stamp"].asString();
@@ -63,7 +63,7 @@ int WsTreeDeserializer::addSub(const Value& v, NodePtr n)
       temp.get()->setSize(v1["size"].asDouble());
     }
   }
-  return SUCCESS;
+  return ErrorCode::Success;
 }
 
 const string& WsTreeDeserializer::getStamp()
@@ -76,9 +76,9 @@ int WsTreeDeserializer::parse()
 {
   if (!m_reader.parse(m_contents, m_root, false)) {
     LOG(ERROR) << "WsTreeDeserializer::parse() : Could not parse received input" << endl;
-    return FAILURE;
+    return ErrorCode::Failure;
   }
-  return SUCCESS;
+  return ErrorCode::Success;
 }
 
 NodePtr WsTreeDeserializer::getMenuRoot()

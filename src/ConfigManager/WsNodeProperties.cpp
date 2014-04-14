@@ -48,7 +48,7 @@ string WsNodeProperties::get(const string& section, const string& id, const stri
     boost::mutex::scoped_lock lock(m_mutex);
     if (!m_parsed) {
       string p = getPath();
-      if (parse(p) == FAILURE)
+      if (parse(p) == ErrorCode::Failure)
         return string();
     }
     Value val = m_root[section][id];
@@ -66,7 +66,7 @@ std::set<string> WsNodeProperties::getGroups()
     boost::mutex::scoped_lock lock(m_mutex);
     if (!m_parsed) {
       string p = getPath();
-      if (parse(p) == FAILURE)
+      if (parse(p) == ErrorCode::Failure)
         return grp;
     }
     const Value groups = m_root["global"]["groups"];
@@ -86,7 +86,7 @@ bool WsNodeProperties::isAllowed(std::set<string> gids)
     boost::mutex::scoped_lock lock(m_mutex);
     if (!m_parsed) {
       string p = getPath();
-      if (parse(p) == FAILURE)
+      if (parse(p) == ErrorCode::Failure)
         return false;
     }
     WsGlobalProperties* props = WsGlobalProperties::instance();
@@ -136,7 +136,7 @@ Value WsNodeProperties::getRoot()
     boost::mutex::scoped_lock lock(m_mutex);
     if (!m_parsed) {
       string p = getPath();
-      if (parse(p) == FAILURE)
+      if (parse(p) == ErrorCode::Failure)
         return Value();
     }
     return m_root;
@@ -169,7 +169,7 @@ void WsNodeProperties::set(const string& section, const string& key, const strin
     boost::mutex::scoped_lock lock(m_mutex);
     if (!m_parsed) {
       string p = getPath();
-      if (parse(p) == FAILURE)
+      if (parse(p) == ErrorCode::Failure)
         return;
     }
     m_root[section][key] = value;
@@ -182,7 +182,7 @@ void WsNodeProperties::setGroups(std::set<string> grps)
     boost::mutex::scoped_lock lock(m_mutex);
     if (!m_parsed) {
       string p = getPath();
-      if (parse(p) == FAILURE)
+      if (parse(p) == ErrorCode::Failure)
         return;
     }
     m_root["global"]["groups"].clear();
@@ -206,12 +206,12 @@ int WsNodeProperties::createPropertiesDirectories()
           LOG(DEBUG) << "WsNodeProperties::createPropertiesDirectories() : Creating Config dir " << (p / GlobalConfig::SubFolders[i]).string();
         }
       }
-      return SUCCESS;
+      return ErrorCode::Success;
     } catch (exception& e) {
       LOG(ERROR) << "WsNodeProperties::createPropertiesDirectories() : " << e.what();
     }
   }
-  return SUCCESS;
+  return ErrorCode::Success;
 }
 
 int WsNodeProperties::save()
@@ -223,9 +223,9 @@ int WsNodeProperties::save()
   if (conf.is_open()) {
     conf << m_root.toStyledString();
     conf.close();
-    return SUCCESS;
+    return ErrorCode::Success;
   }
-  return FAILURE;
+  return ErrorCode::Failure;
 }
 
 string WsNodeProperties::getPath()

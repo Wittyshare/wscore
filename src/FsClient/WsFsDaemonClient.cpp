@@ -347,18 +347,18 @@ int WsFsDaemonClient::receivePermissions()
 {
   string resp;
   if (receive( resp) == ErrorCode::Failure)
-    return GlobalConfig::NoAccess;
+    return ErrorCode::NoAccess;
   if (resp == RequestField::Failure)
-    return GlobalConfig::NoAccess;
+    return ErrorCode::NoAccess;
   if (resp == "notlogged")
-    return GlobalConfig::NotLogged;
+    return ErrorCode::NotLogged;
   try {
     return boost::lexical_cast<int>(resp);
   } catch (boost::bad_lexical_cast&) {
     LOG(ERROR) << "WsFsDaemonClient::receivePermissions() : Cannot cast received permissions to int. Possible transmission problem.";
-    return GlobalConfig::NoAccess;
+    return ErrorCode::NoAccess;
   }
-  return GlobalConfig::NoAccess;
+  return ErrorCode::NoAccess;
 }
 
 const WsNodeProperties* WsFsDaemonClient::receiveProperties()
@@ -488,7 +488,7 @@ int WsFsDaemonClient::getPermissions(const string& p)
   v[RequestField::Ip] = m_ip;
   v[RequestField::Path] = p;
   if (send(v.toStyledString()) == ErrorCode::Failure)
-    return GlobalConfig::NoAccess;
+    return ErrorCode::NoAccess;
   return receivePermissions();
 }
 

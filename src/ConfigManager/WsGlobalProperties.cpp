@@ -38,7 +38,7 @@ WsGlobalProperties* WsGlobalProperties::instance()
 std::string WsGlobalProperties::get(const std::string& section, const std::string& id, const std::string& def)
 {
   if (!m_parsed) {
-    if (parse(GlobalConfig::GlobalPropertiesPath) == FAILURE) {
+    if (parse(GlobalConfig::GlobalPropertiesPath) == ErrorCode::Failure) {
       cerr << "ERROR: WsGlobalProperties :: Could not parse main wittyshare-global.json file... Exiting application" << endl;
       exit(-1);
     }
@@ -52,7 +52,7 @@ std::string WsGlobalProperties::get(const std::string& section, const std::strin
 std::string WsGlobalProperties::getAndReplace(const std::string& section, const std::string& id, const std::string& newVal, const std::string& def)
 {
   if (!m_parsed) {
-    if (parse(GlobalConfig::GlobalPropertiesPath) == FAILURE) {
+    if (parse(GlobalConfig::GlobalPropertiesPath) == ErrorCode::Failure) {
       cerr << "ERROR: WsGlobalProperties :: Could not parse main wittyshare-global.json file... Exiting application";
       exit(-1);
     }
@@ -70,7 +70,7 @@ std::string WsGlobalProperties::getAndReplace(const std::string& section, const 
 void WsGlobalProperties::set(const std::string& section, std::string key, std::string value)
 {
   if (!m_parsed)
-    if (parse(GlobalConfig::GlobalPropertiesPath) == FAILURE) {
+    if (parse(GlobalConfig::GlobalPropertiesPath) == ErrorCode::Failure) {
       cerr << "ERROR: WsGlobalProperties :: Could not parse main wittyshare-global.json file... Exiting application";
       exit(-1);
     }

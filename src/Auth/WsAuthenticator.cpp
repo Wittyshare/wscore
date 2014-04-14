@@ -32,17 +32,17 @@ WsAuthenticator::~WsAuthenticator()
 
 int WsAuthenticator::authentify(const string& uid, const string& pass, const std::string& ip)
 {
-  if (loadModule() == FAILURE)
-    return FAILURE;
+  if (loadModule() == ErrorCode::Failure)
+    return ErrorCode::Failure;
   m_uid = uid;
   m_pass = pass;
   m_ip = ip;
-  if (m_auth->authentify(m_uid, m_pass, ip) == FAILURE) {
+  if (m_auth->authentify(m_uid, m_pass, ip) == ErrorCode::Failure) {
     LOG(ERROR) << "WsAuthenticator::authentify() :  Could not authentify " << m_uid << " : " << ip;
-    return FAILURE;
+    return ErrorCode::Failure;
   }
   LOG(INFO) << "WsAuthenticator::authentify() : Authentication success for " << m_uid << " : " << ip;
-  return SUCCESS;
+  return ErrorCode::Success;
 }
 
 string WsAuthenticator::getUid()
@@ -82,7 +82,7 @@ set<string> WsAuthenticator::getUserGroups()
 
 set<string> WsAuthenticator::getAllGroups()
 {
-  if (loadModule() == FAILURE)
+  if (loadModule() == ErrorCode::Failure)
     return set<string>();
   return m_auth->getAllGroups();
 }
@@ -96,7 +96,7 @@ int WsAuthenticator::loadModule()
   void* hndl = dlopen(libName.c_str(), RTLD_LAZY);
   if ( hndl == NULL ) {
     LOG(ERROR) << "WsAuthenticator::loadModule() : load ERROR " << dlerror();
-    return FAILURE;
+    return ErrorCode::Failure;
   }
   LOG(DEBUG) << "WsAuthenticator :: Building module";
   /* Call the buildmodule function of the loaded so file */

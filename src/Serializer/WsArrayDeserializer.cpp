@@ -22,14 +22,14 @@ WsArrayDeserializer::WsArrayDeserializer(const string& json):
 int WsArrayDeserializer::deserialize()
 {
   /* Parse the received Json */
-  if (parse() == FAILURE) {
-    return FAILURE;
+  if (parse() == ErrorCode::Failure) {
+    return ErrorCode::Failure;
   }
   /* Deserialize each item and put it in vector*/
   for (int i = 0; i < m_root["array"].size(); ++i) {
     m_contents.insert(m_root["array"][i].asString());
   }
-  return SUCCESS;
+  return ErrorCode::Success;
 }
 
 const set<string> WsArrayDeserializer::getContents()
@@ -42,7 +42,7 @@ int WsArrayDeserializer::parse()
 {
   if (!m_reader.parse(m_json, m_root, false)) {
     LOG(ERROR) << "WsArrayDeserializer::parse() : Could not parse received input" << endl;
-    return FAILURE;
+    return ErrorCode::Failure;
   }
-  return SUCCESS;
+  return ErrorCode::Success;
 }

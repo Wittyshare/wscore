@@ -26,7 +26,7 @@ int WsArraySerializer::serialize()
   for (set<string>::iterator it = m_array.begin(); it != m_array.end(); ++it, ++i) {
     m_root["array"][i] = *it;
   }
-  return SUCCESS;
+  return ErrorCode::Success;
 }
 
 const string WsArraySerializer::getSerializedForm()

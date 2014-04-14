@@ -29,11 +29,11 @@ int WsDirectoryCrawler::start()
   /* Avoid browsing current and hidden directories (avoid endless loops) */
   if (thePath.filename().string().find_first_of(".") == 0 && thePath.filename().string() != "." ) {
     LOG(ERROR) << "DirCrawler::start() :  Root cannot be hidden (" << thePath << ")" << endl;
-    return FAILURE;
+    return ErrorCode::Failure;
   }
   /* Browse current path */
   int r = this->browse(thePath);
-  if (r ==  SUCCESS)
+  if (r ==  ErrorCode::Success)
     m_isLoaded = true;
   return r;
 }
@@ -49,8 +49,8 @@ int WsDirectoryCrawler::browse(const path& p)
       } else if (is_directory(p)) {
         /* it's a directory, we call the virtual functuin applyDirectory */
         int r = applyDirectory(p);
-        if (r == FAILURE)
-          return FAILURE;
+        if (r == ErrorCode::Failure)
+          return ErrorCode::Failure;
         directory_iterator endItr;
         /* We iterate on all the entries of the directory */
         for (directory_iterator dItr(p); dItr != endItr; ++dItr) {
@@ -62,8 +62,8 @@ int WsDirectoryCrawler::browse(const path& p)
           int r = browse(dItr->path());
           /* Notify that crawling over the childs is done */
           endChild(dItr->path());
-          if (r == FAILURE)
-            return FAILURE;
+          if (r == ErrorCode::Failure)
+            return ErrorCode::Failure;
         }
       } else {
         LOG(ERROR) << "DirCrawler::browse() : This is not a regular File nor a directory : " << p.string() << endl;
@@ -71,11 +71,11 @@ int WsDirectoryCrawler::browse(const path& p)
     } else {
       LOG(ERROR) << "DirCrawler::browse() : The file does not exist : " << p << endl;
       if (p == m_p)
-        return FAILURE;
+        return ErrorCode::Failure;
     }
   } catch (const filesystem_error& ex) {
     LOG(ERROR) << "DirCrawler :: " << ex.what() << endl;
   }
-  return SUCCESS;
+  return ErrorCode::Success;
 }
 

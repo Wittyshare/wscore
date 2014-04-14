@@ -46,7 +46,7 @@ int WsLdapAuth::authentify(const string& uid, const string& pass, const std::str
       int ran = rand() % 10000000 + 1;
       m_uid = m_uid + "-" + boost::lexical_cast<string>(ran);
       m_groups.insert(guest);
-      return SUCCESS;
+      return ErrorCode::Success;
     }
   }
   m_ldapStatus = notLoaded;
@@ -77,7 +77,7 @@ int WsLdapAuth::authentify(const string& uid, const string& pass, const std::str
     for (int i = 0; i < cWitchAttrs.size(); ++i) {
       delete cWitchAttrs[i];
     }
-    return FAILURE;
+    return ErrorCode::Failure;
   }
   if ( cEntries.size() != 1 ) {
     LOG(ERROR) << "WsLdapAuth::authentify() : Null or too much entries when querying LDAP !" << endl;
@@ -85,7 +85,7 @@ int WsLdapAuth::authentify(const string& uid, const string& pass, const std::str
     for (int i = 0; i < cWitchAttrs.size(); ++i) {
       delete cWitchAttrs[i];
     }
-    return FAILURE;
+    return ErrorCode::Failure;
   }
   /* Retrive uid related data */
   for (int nEntry = 0; nEntry < cEntries.size(); nEntry++) {
@@ -116,7 +116,7 @@ int WsLdapAuth::authentify(const string& uid, const string& pass, const std::str
     if ( !cLdapServer.Connect() ) {
       LOG(DEBUG) << "WsLdapAuth::authentify() : Cannot connect with uid " << m_uid;
       m_ldapStatus = onError;
-      return FAILURE;
+      return ErrorCode::Failure;
     } else
       LOG(DEBUG) << "WsLdapAuth :: Connected with dn " << m_dn;
   }
@@ -134,7 +134,7 @@ int WsLdapAuth::authentify(const string& uid, const string& pass, const std::str
     for (int i = 0 ; i < cWitchAttrs2.size(); ++i) {
       delete cWitchAttrs[i];
     }
-    return FAILURE;
+    return ErrorCode::Failure;
   }
   LOG(DEBUG) << "WsLdapAuth::authentify() : groups entries size : " << cEntries2.size();
   for (int nEntry = 0; nEntry < cEntries2.size(); nEntry++) {
@@ -151,7 +151,7 @@ int WsLdapAuth::authentify(const string& uid, const string& pass, const std::str
     delete cWitchAttrs[i];
   }
   m_ldapStatus = loaded;
-  return SUCCESS;
+  return ErrorCode::Success;
 }
 
 string WsLdapAuth::getUid()

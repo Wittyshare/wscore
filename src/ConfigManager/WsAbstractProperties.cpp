@@ -32,16 +32,16 @@ int WsAbstractProperties::parse(const std::string& path)
   if (! conf.good()) {
     LOG(DEBUG) << "WsAbstractProperties::parse() : Conf file not found : " << path;
     m_parsed = true;
-    return SUCCESS;
+    return ErrorCode::Success;
   }
   bool bOk = reader.parse(conf, m_root, false);
   conf.close();
   if ( !bOk ) {
     /* Parse failed */
-    return FAILURE;
+    return ErrorCode::Failure;
   } else {
     m_parsed = true;
-    return SUCCESS;
+    return ErrorCode::Success;
   }
 }
 

@@ -52,9 +52,9 @@ int WsNode::addChildDirectory(NodePtr f)
     m_dirVect.push_back(f);
   } catch (bad_alloc e) {
     LOG(ERROR) << "WsNode::addChildDirectory() : " << e.what() << endl;
-    return FAILURE;
+    return ErrorCode::Failure;
   }
-  return SUCCESS;
+  return ErrorCode::Success;
 }
 
 int WsNode::addChildFile(NodePtr f)
@@ -65,9 +65,9 @@ int WsNode::addChildFile(NodePtr f)
     m_fileVect.push_back(f);
   } catch (bad_alloc e) {
     LOG(ERROR) << "WsNode::addChildFile() : " << e.what() << endl;
-    return FAILURE;
+    return ErrorCode::Failure;
   }
-  return SUCCESS;
+  return ErrorCode::Success;
 }
 
 int WsNode::addChildNode(NodePtr n)
@@ -75,9 +75,9 @@ int WsNode::addChildNode(NodePtr n)
   try {
     m_combinedVect.push_back(n);
   } catch (bad_alloc e) {
-    return FAILURE;
+    return ErrorCode::Failure;
   }
-  return SUCCESS;
+  return ErrorCode::Success;
 }
 
 void WsNode::setParent(NodePtr n)
