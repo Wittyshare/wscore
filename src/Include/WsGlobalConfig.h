@@ -13,20 +13,17 @@
 #ifndef WS_GLOBAL_H__
 #define WS_GLOBAL_H__
 
-#define SUCCESS 0
-#define FAILURE -1
-
 
 #include <iostream>
 
-enum ErrorCode {
-    Success = 0,
-    Failure = -1,
-    NoAccess= -4,
-    NotLogged = -5,
-    NotFound = -3,
-    Locked = -2
-};
+namespace ErrorCode {
+    const int Success = 0;
+    const int Failure = -1;
+    const int NoAccess= -4;
+    const int NotLogged = -5;
+    const int NotFound = -3;
+    const int Locked = -2;
+}
 
 namespace GlobalConfig {
 

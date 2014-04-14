@@ -7,8 +7,8 @@ PROJECT(wscore)
 
 # pour support de std::tr1
 # http://www.johndcook.com/cpp_regex.html
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -std=gnu++11")
-set(CMAKE_CSS_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -std=gnu++11")
+#set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -std=gnu++11")
+#set(CMAKE_CSS_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -std=gnu++11")
 
 set(CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH} )
 

@@ -166,7 +166,8 @@ int WsUser::writeFile(const std::string path, const std::string& text){
         return ErrorCode::NoAccess;
 
     ofstream myfile;
-    myfile.open (path.c_str());
+    std::string p = getRootPath() + "/"+path;
+    myfile.open (p.c_str());
     if(myfile.is_open()){
         myfile << text;
         myfile.close();

@@ -156,7 +156,7 @@ public :
    * @brief save the properties of the node on disk. The user must have access and edit rights for the node.
    * @param props the properties to save
    * @param path the path to the node (relative path)
-   * @return ErrorCode::Success if ok, ErrorCode::Failure otherwise
+   * @return ErrorCode::Success if ok, ErrorCode::NotFound if path is not found, ErrorCode::NoAccess if access denied and ErrorCode::Failure otherwise
    **/
   int saveProperties(WsNodeProperties* props, const std::string& path);
 
@@ -166,7 +166,7 @@ public :
    * @param section the section of the property
    * @param attr the key of the property
    * @param val the value to set
-   * @return ErrorCode::Success if ok, ErrorCode::Failure otherwise
+   * @return ErrorCode::Success if ok, ErrorCode::NotFound if path is not found, ErrorCode::NoAccess if access denied and ErrorCode::Failure otherwise
    **/
   int saveProperty(const std::string& path, const std::string& section, const std::string& attr, const std::string& val);
 
@@ -175,7 +175,7 @@ public :
    * it will be only accessible to the Admin and the editor who created the node
    * @param path the relative path starting from root
    * @param type a NodeType enum { File, Directory }
-   * @return ErrorCode::Success if ok ErrorCode::Failure if no access, path not found or error
+   * @return ErrorCode::Success if ok, ErrorCode::NotFound if path is not found, ErrorCode::NoAccess if access denied and ErrorCode::Failure otherwise
    */
   int createNode(const string& path, NodeType type);
 
@@ -183,7 +183,7 @@ public :
    * @brief delete a node. The user must be an Admin on editor to remove the node
    * In case of a WsDirNode, all the contents of the directory and the directory will be deleted
    * @param path the path to the node
-   * @return ErrorCode::Success if ok ErrorCode::Failure if no access, path not found or error
+   * @return ErrorCode::Success if ok, ErrorCode::NotFound if path is not found, ErrorCode::NoAccess if access denied and ErrorCode::Failure otherwise
    */
   int deleteNode(const string& path);
 
@@ -192,7 +192,7 @@ public :
    * In case of a WsDirNode, all the contents of the directory and the directory will be moved
    * @param path the path to the node from the root
    * @param newPath new path from the root
-   * @return ErrorCode::Success if ok ErrorCode::Failure if no access, path not found or error
+   * @return ErrorCode::Success if ok, ErrorCode::NotFound if path is not found, ErrorCode::NoAccess if access denied and ErrorCode::Failure otherwise
    */
   int renameNode(const string& path, const string& newPath);
 
@@ -201,7 +201,8 @@ public :
    * @brief writes the text to the file
    *
    * If the file does not exist, it is created. If the file already exists it is overwritten.
-   *
+   * @param path  the relative path to the node
+   * @param text the text to write
    * @return ErrorCode::Success,  or ErrorCode::NoAccess or ErrorCode::Failure
    */
   int writeFile(const std::string path, const std::string& text);
