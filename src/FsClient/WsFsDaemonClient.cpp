@@ -101,13 +101,13 @@ int WsFsDaemonClient::load()
     m_sock->connect((m_proto + "://" + m_host + ":" + m_port).c_str());
   } catch (zmq::error_t e) {
     LOG(ERROR) << "WsFsDaemonClient::load() : Could not connect to host" << endl;
-    return FAILURE;
+    return ErrorCode::Failure;
   }
-  if ( authentify() == FAILURE)
-    return FAILURE;
+  if ( authentify() == ErrorCode::Failure)
+    return ErrorCode::Failure;
   //Launch Thread that will download the tree if updated
   m_updateThread = new boost::thread(boost::bind(&WsFsDaemonClient::threadUpdate, this));
-  return SUCCESS;
+  return ErrorCode::Success;
 }
 
 int WsFsDaemonClient::authentify()
@@ -119,11 +119,11 @@ int WsFsDaemonClient::authentify()
   v[RequestField::Pass] = m_pass;
   v[RequestField::Ip] = m_ip;
   //Send request
-  if (send(v.toStyledString()) == FAILURE)
-    return FAILURE;
-  if (receiveAuthAnswer() == FAILURE)
-    return FAILURE;
-  return SUCCESS;
+  if (send(v.toStyledString()) == ErrorCode::Failure)
+    return ErrorCode::Failure;
+  if (receiveAuthAnswer() == ErrorCode::Failure)
+    return ErrorCode::Failure;
+  return ErrorCode::Success;
 }
 
 int WsFsDaemonClient::receive(string& receivedData)
@@ -134,11 +134,11 @@ int WsFsDaemonClient::receive(string& receivedData)
   } catch (zmq::error_t e) {
     LOG(ERROR) << "WsFsDaemonClient::receive() : Could not receive on socket" << endl;
     m_sendMutex->unlock();
-    return FAILURE;
+    return ErrorCode::Failure;
   }
   receivedData = rawDataToString(reply);
   m_sendMutex->unlock();
-  return SUCCESS;
+  return ErrorCode::Success;
 }
 
 int WsFsDaemonClient::send(const string& s)
@@ -150,20 +150,20 @@ int WsFsDaemonClient::send(const string& s)
         /* Compress data */
         char* data;
         long r = m_compressor->compress(s, &data);
-        if (r == FAILURE)
-          return FAILURE;
+        if (r == ErrorCode::Failure)
+          return ErrorCode::Failure;
         message_t reply(r);
         /* Copy contents of the message */
         if (memcpy ((void*) reply.data (), data, r) == NULL) {
           LOG(ERROR) << "WsFsDaemonClient::send() : Could not memcpy in Server" << endl;
           m_sendMutex->unlock();
-          return FAILURE;
+          return ErrorCode::Failure;
         }
         /* Send the message */
         if (m_sock->send (reply) < 0) {
           LOG(ERROR) << "WsFsDaemonClient::send() : Could not send on socket " << endl;
           m_sendMutex->unlock();
-          return FAILURE;
+          return ErrorCode::Failure;
         }
       } else {
         /* Send without compression */
@@ -171,38 +171,38 @@ int WsFsDaemonClient::send(const string& s)
         if (memcpy ((void*) reply.data (), s.c_str(), s.length()) == NULL) {
           LOG(ERROR) << "WsFsDaemonClient::send() : Could not memcpy in Server" << endl;
           m_sendMutex->unlock();
-          return FAILURE;
+          return ErrorCode::Failure;
         }
         if (m_sock->send (reply) < 0) {
           LOG(ERROR) << "WsFsDaemonClient::send() : Could not send on socket " << endl;
           m_sendMutex->unlock();
-          return FAILURE;
+          return ErrorCode::Failure;
         }
       }
-      return SUCCESS;
+      return ErrorCode::Success;
     } catch (zmq::error_t e) {
       LOG(ERROR) << "WsFsDaemonClienti::send():  Could not send on socket" << endl;
       m_sendMutex->unlock();
-      return FAILURE;
+      return ErrorCode::Failure;
     }
   } catch (boost::thread_resource_error e) {
-    return FAILURE;
+    return ErrorCode::Failure;
   }
-  return SUCCESS;
+  return ErrorCode::Success;
 }
 
 int WsFsDaemonClient::receiveAuthAnswer()
 {
   string resp;
-  if (receive(resp) == FAILURE)
-    return FAILURE;
+  if (receive(resp) == ErrorCode::Failure)
+    return ErrorCode::Failure;
   if (resp == RequestField::Failure || resp == "notlogged") {
     LOG(ERROR) << "WsFsDaemon::receiveAuthAnswer() : Could not authenticate on server " << m_uid;
-    return FAILURE;
+    return ErrorCode::Failure;
   }
-  if (parse(resp) == FAILURE) {
+  if (parse(resp) == ErrorCode::Failure) {
     LOG(ERROR) << "WsFsDaemon::receiveAuthAnswer() : Could not parse server response ";
-    return FAILURE;
+    return ErrorCode::Failure;
   }
   Value v = m_root[RequestField::Uid];
   if (v != Value::null)
@@ -216,26 +216,26 @@ int WsFsDaemonClient::receiveAuthAnswer()
   v = m_root[RequestField::Email];
   if (v != Value::null)
     m_email = v.asString();
-  return SUCCESS;
+  return ErrorCode::Success;
 }
 
 int WsFsDaemonClient::parse(const string& s)
 {
   if (!m_reader.parse(s, m_root, false)) {
     LOG(ERROR) << "WsFsDaemonClient::parse() : Could not parse received input" << endl;
-    return FAILURE;
+    return ErrorCode::Failure;
   }
-  return SUCCESS;
+  return ErrorCode::Success;
 }
 
 int WsFsDaemonClient::receiveSuccessCode()
 {
   string resp;
-  if (	receive(resp) == FAILURE)
-    return FAILURE;
+  if (	receive(resp) == ErrorCode::Failure)
+    return ErrorCode::Failure;
   if (resp == "success")
-    return SUCCESS;
-  return FAILURE;
+    return ErrorCode::Success;
+  return ErrorCode::Failure;
 }
 
 
@@ -246,11 +246,11 @@ int WsFsDaemonClient::clearServerCache()
   v[RequestField::Uid] = m_uid;
   v[RequestField::Pass] = m_pass;
   v[RequestField::Ip] = m_ip;
-  if (send(v.toStyledString()) == FAILURE)
-    return FAILURE;
-  if (receiveSuccessCode() == FAILURE)
-    return FAILURE;
-  return SUCCESS;
+  if (send(v.toStyledString()) == ErrorCode::Failure)
+    return ErrorCode::Failure;
+  if (receiveSuccessCode() == ErrorCode::Failure)
+    return ErrorCode::Failure;
+  return ErrorCode::Success;
 }
 
 int WsFsDaemonClient::getLock(const std::string& path)
@@ -261,8 +261,8 @@ int WsFsDaemonClient::getLock(const std::string& path)
   v[RequestField::Pass] = m_pass;
   v[RequestField::Ip] = m_ip;
   v[RequestField::Path] = path;
-  if (send(v.toStyledString()) == FAILURE)
-    return -1;
+  if (send(v.toStyledString()) == ErrorCode::Failure)
+    return ErrorCode::Failure;
   return receiveInt();
 }
 
@@ -274,15 +274,9 @@ int WsFsDaemonClient::isLocked(const std::string& path, std::string& uid)
   v[RequestField::Pass] = m_pass;
   v[RequestField::Ip] = m_ip;
   v[RequestField::Path] = path;
-  if (send(v.toStyledString()) == FAILURE)
-    return -1;
-  std::string ret = receiveString();
-  if ( ret == "")
-    return 1;
-  else {
-    uid = ret;
-    return 0;
-  }
+  if (send(v.toStyledString()) == ErrorCode::Failure)
+    return ErrorCode::Failure;
+  return receiveIsLockedStatus(uid);
 }
 
 int WsFsDaemonClient::putLock(const std::string& path)
@@ -293,8 +287,8 @@ int WsFsDaemonClient::putLock(const std::string& path)
   v[RequestField::Pass] = m_pass;
   v[RequestField::Ip] = m_ip;
   v[RequestField::Path] = path;
-  if (send(v.toStyledString()) == FAILURE)
-    return -1;
+  if (send(v.toStyledString()) == ErrorCode::Failure)
+    return ErrorCode::Failure;
   return receiveInt();
 }
 
@@ -308,7 +302,7 @@ NodePtr WsFsDaemonClient::getAccessRoot( const bool& forceUpdate)
   v[RequestField::Uid] = m_uid;
   v[RequestField::Pass] = m_pass;
   v[RequestField::Ip] = m_ip;
-  if (send( v.toStyledString()) == FAILURE)
+  if (send( v.toStyledString()) == ErrorCode::Failure)
     return NodePtr();
   return receiveAccessItems();
 }
@@ -323,7 +317,7 @@ const string WsFsDaemonClient::getRootPath()
   v[RequestField::Uid] = m_uid;
   v[RequestField::Pass] = m_pass;
   v[RequestField::Ip] = m_ip;
-  if (send(v.toStyledString()) == FAILURE)
+  if (send(v.toStyledString()) == ErrorCode::Failure)
     return "";;
   m_rootPath = receiveString();
   return m_rootPath;
@@ -332,14 +326,14 @@ const string WsFsDaemonClient::getRootPath()
 NodePtr WsFsDaemonClient::receiveAccessItems()
 {
   string resp;
-  if (receive(resp) == FAILURE)
+  if (receive(resp) == ErrorCode::Failure)
     return NodePtr();
   /* Check if no error occured server-side */
   if (resp == RequestField::Failure || resp == "notlogged")
     return NodePtr();
   /* Deserialize the tree */
   WsTreeDeserializer des(resp);
-  if (des.deserialize() == FAILURE) {
+  if (des.deserialize() == ErrorCode::Failure) {
     LOG(ERROR) << "WsFsDaemonClient::receiveAccessItems() : receiveMenuItems deserialize error " << endl;
     return NodePtr();
   }
@@ -352,7 +346,7 @@ NodePtr WsFsDaemonClient::receiveAccessItems()
 int WsFsDaemonClient::receivePermissions()
 {
   string resp;
-  if (receive( resp) == FAILURE)
+  if (receive( resp) == ErrorCode::Failure)
     return GlobalConfig::NoAccess;
   if (resp == RequestField::Failure)
     return GlobalConfig::NoAccess;
@@ -372,7 +366,7 @@ const WsNodeProperties* WsFsDaemonClient::receiveProperties()
   Value root;
   Reader reader;
   string resp;
-  if (receive( resp) == FAILURE)
+  if (receive( resp) == ErrorCode::Failure)
     return NULL;
   if (resp == RequestField::Failure || resp == "notlogged")
     return NULL;
@@ -388,7 +382,7 @@ const string WsFsDaemonClient::receiveProperty()
   Value root;
   Reader reader;
   string resp;
-  if (receive( resp) == FAILURE)
+  if (receive( resp) == ErrorCode::Failure)
     return "";
   if (resp == RequestField::Failure || resp == "notlogged")
     return "";
@@ -401,7 +395,7 @@ vector<WsResultItem> WsFsDaemonClient::receiveSearchResults()
   vector<WsResultItem> l;
   Reader reader;
   string resp;
-  if (receive( resp) == FAILURE) {
+  if (receive( resp) == ErrorCode::Failure) {
     return l;
   }
   if (resp == RequestField::Failure || resp == "notlogged")
@@ -421,14 +415,27 @@ vector<WsResultItem> WsFsDaemonClient::receiveSearchResults()
   return l;
 }
 
+int WsFsDaemonClient::receiveIsLockedStatus(std::string uid){
+    Value root;
+    Reader reader;
+    string resp;
+    if(receive(resp) == ErrorCode::Failure)
+        return ErrorCode::Failure;
+    if (!reader.parse(resp, root, false))
+        return ErrorCode::Failure;
+    int v = root[RequestField::Value].asInt();
+    uid = root[RequestField::Uid].asString();
+    return v;
+}
+
 set<string> WsFsDaemonClient::receiveAllGroups()
 {
   string resp;
-  if (receive( resp) == FAILURE) {
+  if (receive( resp) == ErrorCode::Failure) {
     return set<string>();
   }
   WsArrayDeserializer s(resp);
-  if ( s.deserialize() == FAILURE)
+  if ( s.deserialize() == ErrorCode::Failure)
     return set<string>();
   return s.getContents();
 }
@@ -436,7 +443,7 @@ set<string> WsFsDaemonClient::receiveAllGroups()
 bool WsFsDaemonClient::receiveBoolean()
 {
   string resp;
-  if (receive( resp) == FAILURE) {
+  if (receive( resp) == ErrorCode::Failure) {
     return false;
   }
   if (resp == "true")
@@ -447,15 +454,15 @@ bool WsFsDaemonClient::receiveBoolean()
 int WsFsDaemonClient::receiveInt()
 {
   string resp;
-  if (receive( resp) == FAILURE) {
-    return -1;
+  if (receive( resp) == ErrorCode::Failure) {
+    return ErrorCode::Failure;
   }
   try {
     int ret = boost::lexical_cast<int>(resp);
     return ret;
   } catch (boost::bad_lexical_cast&) {
     LOG(ERROR) << "WsFsDaemonClient::receiveInt() : Could not cast received data to int";
-    return -1;
+    return ErrorCode::Failure;
   }
 }
 
@@ -464,7 +471,7 @@ const string WsFsDaemonClient::receiveString()
   Value root;
   Reader reader;
   string resp;
-  if (receive(resp) == FAILURE)
+  if (receive(resp) == ErrorCode::Failure)
     return "";
   if (resp == RequestField::Failure || resp == "notlogged")
     return "";
@@ -480,7 +487,7 @@ int WsFsDaemonClient::getPermissions(const string& p)
   v[RequestField::Pass] = m_pass;
   v[RequestField::Ip] = m_ip;
   v[RequestField::Path] = p;
-  if (send(v.toStyledString()) == FAILURE)
+  if (send(v.toStyledString()) == ErrorCode::Failure)
     return GlobalConfig::NoAccess;
   return receivePermissions();
 }
@@ -493,7 +500,7 @@ const WsNodeProperties* WsFsDaemonClient::getProperties(const string& p)
   v[RequestField::Pass] = m_pass;
   v[RequestField::Ip] = m_ip;
   v[RequestField::Path] = p;
-  if (send(v.toStyledString()) == FAILURE) {
+  if (send(v.toStyledString()) == ErrorCode::Failure) {
     LOG(DEBUG) << "WsAbstractProperties :: Could not send on socket";
     return NULL;
   }
@@ -510,7 +517,7 @@ string WsFsDaemonClient::getProperty(const std::string& section, const string& p
   v[RequestField::Path] = p;
   v[RequestField::Section] = section;
   v[RequestField::Property] = prop;
-  if (send(v.toStyledString()) == FAILURE) {
+  if (send(v.toStyledString()) == ErrorCode::Failure) {
     LOG(DEBUG) << "WsAbstractProperties::getProperty() : Could not send on socket";
     return NULL;
   }
@@ -541,7 +548,7 @@ vector<WsResultItem> WsFsDaemonClient::getSearchResults(const string& terms)
   v[RequestField::Ip] = m_ip;
   v[RequestField::Terms] = terms;
   vector<WsResultItem> l;
-  if (send( v.toStyledString()) == FAILURE)
+  if (send( v.toStyledString()) == ErrorCode::Failure)
     return l;
   return receiveSearchResults();
 }
@@ -553,7 +560,7 @@ set<string> WsFsDaemonClient::getAllGroups()
   v[RequestField::Uid] = m_uid;
   v[RequestField::Pass] = m_pass;
   v[RequestField::Ip] = m_ip;
-  if (send(v.toStyledString()) == FAILURE)
+  if (send(v.toStyledString()) == ErrorCode::Failure)
     return set<string>();
   return receiveAllGroups();
 }
@@ -567,8 +574,8 @@ int WsFsDaemonClient::saveProperties(WsNodeProperties* props, const string& p)
   v[RequestField::Ip] = m_ip;
   v[RequestField::Path] = p;
   v[RequestField::Property] = props->getRoot();
-  if (send( v.toStyledString()) == FAILURE)
-    return FAILURE;
+  if (send( v.toStyledString()) == ErrorCode::Failure)
+    return ErrorCode::Failure;
   return receiveSuccessCode();
 }
 
@@ -583,8 +590,8 @@ int WsFsDaemonClient::saveProperty(const std::string& p, const std::string& sect
   v[RequestField::Section] = section;
   v[RequestField::Key] = attr;
   v[RequestField::Value] = val;
-  if (send( v.toStyledString()) == FAILURE)
-    return FAILURE;
+  if (send( v.toStyledString()) == ErrorCode::Failure)
+    return ErrorCode::Failure;
   return receiveSuccessCode();
 }
 
@@ -597,13 +604,13 @@ int WsFsDaemonClient::createNode(const string& p, int type)
   v[RequestField::Ip] = m_ip;
   v[RequestField::Path] = p;
   v[RequestField::NodeType] = type;
-  if (send( v.toStyledString()) == FAILURE)
-    return FAILURE;
-  if (receiveSuccessCode() == SUCCESS) {
+  if (send( v.toStyledString()) == ErrorCode::Failure)
+    return ErrorCode::Failure;
+  if (receiveSuccessCode() == ErrorCode::Success) {
     getAccessRoot(true);
-    return SUCCESS;
+    return ErrorCode::Success;
   }
-  return FAILURE;
+  return ErrorCode::Failure;
 }
 
 int WsFsDaemonClient::deleteNode(const string& p)
@@ -614,13 +621,13 @@ int WsFsDaemonClient::deleteNode(const string& p)
   v[RequestField::Pass] = m_pass;
   v[RequestField::Ip] = m_ip;
   v[RequestField::Path] = p;
-  if (send(v.toStyledString()) == FAILURE)
-    return FAILURE;
-  if (receiveSuccessCode() == SUCCESS) {
+  if (send(v.toStyledString()) == ErrorCode::Failure)
+    return ErrorCode::Failure;
+  if (receiveSuccessCode() == ErrorCode::Success) {
     getAccessRoot(true);
-    return SUCCESS;
+    return ErrorCode::Success;
   }
-  return FAILURE;
+  return ErrorCode::Failure;
 }
 
 int WsFsDaemonClient::renameNode(const string& p, const string& newPath)
@@ -632,11 +639,11 @@ int WsFsDaemonClient::renameNode(const string& p, const string& newPath)
   v[RequestField::Ip] = m_ip;
   v[RequestField::Path] = p;
   v[RequestField::NewPath] = newPath;
-  if (send(v.toStyledString()) == FAILURE)
-    return FAILURE;
-  if (receiveSuccessCode() == SUCCESS) {
+  if (send(v.toStyledString()) == ErrorCode::Failure)
+    return ErrorCode::Failure;
+  if (receiveSuccessCode() == ErrorCode::Success) {
     getAccessRoot(true);
-    return SUCCESS;
+    return ErrorCode::Success;
   }
 }
 
@@ -649,7 +656,7 @@ bool WsFsDaemonClient::isEditor()
   v[RequestField::Uid] = m_uid;
   v[RequestField::Pass] = m_pass;
   v[RequestField::Ip] = m_ip;
-  if (send( v.toStyledString()) == FAILURE)
+  if (send( v.toStyledString()) == ErrorCode::Failure)
     return false;
   bool r = receiveBoolean();
   m_isEditor = r ? 1 : 0;
@@ -665,7 +672,7 @@ bool WsFsDaemonClient::isAdministrator()
   v[RequestField::Uid] = m_uid;
   v[RequestField::Pass] = m_pass;
   v[RequestField::Ip] = m_ip;
-  if (send( v.toStyledString()) == FAILURE)
+  if (send( v.toStyledString()) == ErrorCode::Failure)
     return false;
   bool r = receiveBoolean();
   m_isAdmin = r ? 1 : 0;
@@ -706,17 +713,17 @@ int WsFsDaemonClient::threadUpdate()
     try {
       //Socket is closed
       if (!m_sock || !m_listen)
-        return SUCCESS;
+        return ErrorCode::Success;
       //Send the request
-      if (send(v.toStyledString()) == FAILURE)
-        return FAILURE;
+      if (send(v.toStyledString()) == ErrorCode::Failure)
+        return ErrorCode::Failure;
       string v = receiveString();
       if ( v != m_accessTreeStamp )
         getAccessRoot(true);
       boost::this_thread::sleep(boost::posix_time::milliseconds(delay * 1000));
     } catch (std::exception& e) {
       LOG(ERROR) << "WsFsDaemonClient::threadUpdate :" << e.what();
-      return FAILURE;
+      return ErrorCode::Failure;
     }
   }
 }

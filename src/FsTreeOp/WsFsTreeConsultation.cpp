@@ -33,7 +33,7 @@ int WsFsTreeConsultation::getPermissions( const std::set<std::string>& groups, c
   if (n.get() == 0) {
     /* Path not found */
     LOG(INFO) << "WsFsTreeConsultation::getPermissions() : No such file or directory :" << p;
-    return GlobalConfig::NotFound;
+    return ErrorCode::NotFound;
   }
   if (groups.count(m_conf->get("global", "admin_group", "administrator")) > 0) {
     /* user is admin , readwrite perms*/
@@ -57,7 +57,7 @@ int WsFsTreeConsultation::getPermissions( const std::set<std::string>& groups, c
       }
   }
     /* no access */
-  return GlobalConfig::NoAccess;
+  return ErrorCode::NoAccess;
 }
 
 WsNodeProperties* WsFsTreeConsultation::getProperties ( const std::set<std::string>& groups, const std::string& p)
@@ -102,7 +102,7 @@ int WsFsTreeConsultation::getLock(const std::set<std::string> groups, const std:
   if (n.get() == 0) {
     /* Path not found */
     LOG(INFO) << "WsFsTreeConsultation::getLock : No such file or directory :" << path;
-    return -1;
+    return ErrorCode::NotFound;
   }
   // Check if lock already exist and if yes if it is owned by this user
   boost::filesystem::path root = m_updater->getLastTree()->getRootPath();
@@ -111,7 +111,6 @@ int WsFsTreeConsultation::getLock(const std::set<std::string> groups, const std:
   else p = n.get()->getPath().parent_path();
   std::string name = n.get()->getName() + ".lock";
   p = root / p / GlobalConfig::PathToNodeLock / name;
-  LOG(DEBUG) << "WsFsTreeConsultation::getLock() : path is " << p.string();
   std::string id = "";
   std::string ts = "";
   Json::Reader reader;
@@ -129,7 +128,7 @@ int WsFsTreeConsultation::getLock(const std::set<std::string> groups, const std:
       // File is already locked by someone else
       if ( id != uid)
         if (boost::lexical_cast<long>(ts) > getTimeMs() - (ld * 1000) )
-          return 0;
+          return ErrorCode::Locked;
         else boost::filesystem::remove(p); //timeout
     }
   }
@@ -144,7 +143,7 @@ int WsFsTreeConsultation::getLock(const std::set<std::string> groups, const std:
     out << v.toStyledString();
     out.close();
     return ld;
-  } else return -1;
+  } else return ErrorCode::Failure;
 }
 
 int WsFsTreeConsultation::putLock(const std::set<std::string> groups, const std::string& uid, const std::string& path)
@@ -163,7 +162,7 @@ int WsFsTreeConsultation::putLock(const std::set<std::string> groups, const std:
   if (n.get() == 0) {
     /* Path not found */
     LOG(INFO) << "WsFsTreeConsultation::putLock : No such file or directory :" << path;
-    return -1;
+    return ErrorCode::NotFound;
   }
   // Check if lock already exist and if yes if it is owned by this user
   boost::filesystem::path root = m_updater->getLastTree()->getRootPath();
@@ -184,17 +183,17 @@ int WsFsTreeConsultation::putLock(const std::set<std::string> groups, const std:
     lock.close();
     if ( !bOk ) {
       boost::filesystem::remove(p);
-      return 1;
+      return ErrorCode::Success;
     } else {
       id = v["uid"].asString();
       ts = v["timestamp"].asString();
       // File is already locked by someone else
       if ( id != uid) {
         if (boost::lexical_cast<long>(ts) > getTimeMs() - (ld * 1000) )
-          return 0;
+          return ErrorCode::Locked;
         else {
           boost::filesystem::remove(p); //timeout existing lock
-          return 1;
+          return ErrorCode::Success;
         }
       }
       boost::filesystem::remove(p); //Lock is hold by current user so we can delete it
@@ -222,7 +221,7 @@ int WsFsTreeConsultation::isLocked(const std::set<std::string> groups, const std
   if (n.get() == 0) {
     /* Path not found */
     LOG(INFO) << "WsFsTreeConsultation:isLocked : No such file or directory :" << path;
-    return -1;
+    return ErrorCode::NotFound;
   }
   // Check if lock already exist and if yes if it is owned by this user
   boost::filesystem::path root = m_updater->getLastTree()->getRootPath();
@@ -251,7 +250,7 @@ int WsFsTreeConsultation::isLocked(const std::set<std::string> groups, const std
       if ( lid != uid) {
         if (boost::lexical_cast<long>(ts) > getTimeMs() - (ld * 1000) ) {
           id = lid;
-          return 0;
+          return ErrorCode::Locked;
         } else {
           boost::filesystem::remove(p); //timeout existing lock
           return 1;

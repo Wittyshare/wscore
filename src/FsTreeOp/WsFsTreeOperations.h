@@ -66,20 +66,23 @@ public:
 
   /**
    * @brief tries to acquire the lock for the path.
-   * @ return 0 if the lock cannot be aquired because is detented by someone else. -1 if an error occured and a positive value with the duration in seconds of the lock is returned otherwise.
+   * @ return ErrorCode::Locked if the lock cannot be aquired because is detented by someone else. 
+   *          ErrorCode::Failure if an error occured 
+   *          A positive value with the duration in seconds of the lock is returned otherwise.
    * @param groups the groups of the user
    * @param uid the uid of the user
    * @param path the path to the node
+   *
    */
   int getLock(const std::set<std::string> groups, const std::string& uid, const std::string& path);
 
   /**
    * @brief unlocks the file by deleting the .config/locks/filename.lock file
    * Only the owner of the lock can unlock the path.
-   * @return 1 if the lock has been successfully released
-   *         1 if no lock are currently hold on the path
-   *         0 if the lock is owned by someone else
-   *         -1 if an error occured
+   * @return ErrorCode::Success if the lock has been successfully released
+   *         ErrorCode::Success if no lock are currently hold on the path
+   *         ErrorCode::Locked if the lock is owned by someone else
+   *         ErrorCode::Failure if an error occured
    * @param groups the groups of the user
    * @param uid the uid of the user
    * @param path the path to the node
@@ -89,8 +92,8 @@ public:
   /**
    * @brief check is the path is already locked
    * @return 1 if the path is unlocked
-   * @return 0 if the file is locked and the uid of the user who locked it will be stored in uid
-   * return -1 if an error occured
+   * @return ErrorCode::Locked if the file is locked and the uid of the user who locked it will be stored in uid
+   * return ErrorCode::Failure if an error occured
    * @param groups the groups of the user
    * @param uid the uid of the user
    * @param path the path to the node

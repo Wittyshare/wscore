@@ -52,7 +52,7 @@ public :
    * @brief Load infos of the user
    *
    * Loads the name, surname, email, groups ..
-   * @return SUCCESS if load is completed successfully, FAILURE otherwise
+   * @return ErrorCode::Success if load is completed successfully, ErrorCode::Failure otherwise
    */
   int load();
 
@@ -94,29 +94,30 @@ public :
 
   /**
    * @brief tries to acquire the lock for the path.
-   * @ return 0 if the lock cannot be aquired because is detented by someone else. -1 if an error occured and a positive value with the duration in seconds of the lock is returned otherwise.
+   * @ return ErrorCode::Locked if the lock cannot be aquired because is detented by someone else. ErrorCode::Failure if an error occured. ErrorCode::NotFound if the path does not exist and a positive value with the duration in seconds of the lock is returned otherwise.
    */
   int getLock(const std::string& path);
 
   /**
    * @brief releases the lock for the path.
-   * @return 0 if path cannot be unlocked, -1 if error and >0 if unlock successful
+   * @return ErrorCode::Locked if path cannot be unlocked, ErrorCode::Failure if error. ErrorCode::NotFound if the path does not exist and ErrorCode::Success if unlock successful
    */
   int putLock(const std::string& path);
 
   /**
    * @brief check is the path is already locked
    * @return 1 if the path is unlocked
-   * @return 0 if the file is locked and the uid of the user who locked it will be stored in uid
-   * return -1 if an error occured
+   * @return ErrorCode::Locked if the file is locked and the uid of the user who locked it will be stored in uid
+   * @return ErrorCode::NotFound if the path does not exist
+   * @return ErrorCode::Failure if an error occured
    */
   int isLocked(const std::string& path, std::string& uid);
 
   /**
    * @brief return the permissions on specific node
    * @param p the node path (relative)
-   * @return READ if only read READ_WRITE if read write perm or NO_ACCESS
-   * @return NotFound if path not found
+   * @return GlobalConfig::Read if only read GlobalConfig::ReadWrite if read write perm or ErrorCode::NoAccess
+   * @return ErrorCode::NotFound if path not found
    */
   int getPermissions(const std::string& p);
 
@@ -155,7 +156,7 @@ public :
    * @brief save the properties of the node on disk. The user must have access and edit rights for the node.
    * @param props the properties to save
    * @param path the path to the node (relative path)
-   * @return SUCCESS if ok, FAILURE otherwise
+   * @return ErrorCode::Success if ok, ErrorCode::Failure otherwise
    **/
   int saveProperties(WsNodeProperties* props, const std::string& path);
 
@@ -165,7 +166,7 @@ public :
    * @param section the section of the property
    * @param attr the key of the property
    * @param val the value to set
-   * @return SUCCESS if ok, FAILURE otherwise
+   * @return ErrorCode::Success if ok, ErrorCode::Failure otherwise
    **/
   int saveProperty(const std::string& path, const std::string& section, const std::string& attr, const std::string& val);
 
@@ -174,7 +175,7 @@ public :
    * it will be only accessible to the Admin and the editor who created the node
    * @param path the relative path starting from root
    * @param type a NodeType enum { File, Directory }
-   * @return SUCCESS if ok FAILURE if no access, path not found or error
+   * @return ErrorCode::Success if ok ErrorCode::Failure if no access, path not found or error
    */
   int createNode(const string& path, NodeType type);
 
@@ -182,7 +183,7 @@ public :
    * @brief delete a node. The user must be an Admin on editor to remove the node
    * In case of a WsDirNode, all the contents of the directory and the directory will be deleted
    * @param path the path to the node
-   * @return SUCCESS if ok FAILURE if no access, path not found or error
+   * @return ErrorCode::Success if ok ErrorCode::Failure if no access, path not found or error
    */
   int deleteNode(const string& path);
 
@@ -191,9 +192,19 @@ public :
    * In case of a WsDirNode, all the contents of the directory and the directory will be moved
    * @param path the path to the node from the root
    * @param newPath new path from the root
-   * @return SUCCESS if ok FAILURE if no access, path not found or error
+   * @return ErrorCode::Success if ok ErrorCode::Failure if no access, path not found or error
    */
   int renameNode(const string& path, const string& newPath);
+
+
+  /**
+   * @brief writes the text to the file
+   *
+   * If the file does not exist, it is created. If the file already exists it is overwritten.
+   *
+   * @return ErrorCode::Success,  or ErrorCode::NoAccess or ErrorCode::Failure
+   */
+  int writeFile(const std::string path, const std::string& text);
 
   /**
    * @return true if the actual user is an admin

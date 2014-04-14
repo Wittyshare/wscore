@@ -33,74 +33,37 @@ public:
   WsFsTreeModification(WsFsTreeUpdater* updater);
 
   /**
-   * @brief save the properties of the node. The user must have access and edit rights for the node.
-   *
-   * @param groups the groups of the user to test access
-   * @param json a string containing the Json file contents
-   * @param path the path to the node
-   *
-   * @return SUCCESS or FAILURE if no access, non exitent path, invalid Json
+   * @copydoc WsFsTreeOperations::saveProperties()
    */
   int saveProperties( const std::set<std::string>& groups, const std::string& json, const std::string& path) ;
 
   /**
-   * @brief save a property of the node. The user must have access and edit rights for the node.
-   *
-   * @param groups the groups of the user to test access
-   * @param path the path to the node
-   * @param section the section of the property in the Json file
-   * @param attr the key of the property
-   * @param val the value to set
-   *
-   * @return SUCCESS or FAILURE if no access, path not found
+   * @copydoc WsFsTreeOperations::saveProperty()
    */
   int saveProperty( const std::set<std::string>& groups, const std::string& path, const std::string& section, const std::string& attr, const std::string& val) ;
 
   /**
-   * @brief create a directory or File. If the node is a WsDirNode than
-   * it will be only accessible to the Admin and the editor who created the node
-   * @param groups the groups of the user to test access to parent dir
-   * @param uid uid of user
-   * @param path path to the new node
-   * @param type type of node 0 for file 1 for directory
-   *
-   * @return  SUCCESS or FAILURE if no access, node already existing or failure
+   * @copydoc WsFsTreeOperations::createNode()
    */
   int createNode( const std::set<std::string>& groups, const std::string& uid, const string& path, int type) ;
 
   /**
-   * @brief delete a node. The user must be an Admin on editor to remove the node
-   *
-   * @param groups the groups of the user
-   * @param uid the uid of the user
-   * @param path the path to the node
-   *
-   * @return SUCCESS or FAILURE if no access, invalid path
+   * @copydoc WsFsTreeOperations::deleteNode()
    */
   int deleteNode( const std::set<std::string>& groups, const std::string& uid, const string& path) ;
 
   /**
-   * @brief renames a node
-   *
-   * @param groups the groups of the user
-   * @param uid the uid of the user
-   * @param path the path to the node
-   * @param newPath the new path
-   *
-   * @return SUCCESS or FAILURE if no access, invalid path, invalid new path
+   * @copydoc WsFsTreeOperations::renameNode()
    */
   int renameNode( const std::set<std::string>& groups, const std::string& uid, const string& path, const string& newPath) ;
 
-
   /**
-   * @return true if the actual user is an Administrator
-   * @param groups the groups of the user
+   * @copydoc WsFsTreeOperations::isAdministrator()
    **/
   bool isAdministrator( const std::set<std::string>& groups);
 
   /**
-   * @return true if actual user is an editor
-   * @param groups the groups of the user
+   * @copydoc WsFsTreeOperations::isEditor()
    **/
   bool isEditor( const std::set<std::string>& groups );
 

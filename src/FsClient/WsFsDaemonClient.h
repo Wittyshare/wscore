@@ -245,6 +245,8 @@ private:
    */
   vector<WsResultItem> receiveSearchResults();
 
+  int receiveIsLockedStatus(std::string uid);
+
   /**
    * @brief receive all the groups after a getAllGroups() request
    * @see WsAbstractFsClient::getAllGroups()

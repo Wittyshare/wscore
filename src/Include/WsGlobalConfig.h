@@ -13,10 +13,20 @@
 #ifndef WS_GLOBAL_H__
 #define WS_GLOBAL_H__
 
-#define SUCCESS     0
+#define SUCCESS 0
 #define FAILURE -1
 
+
 #include <iostream>
+
+enum ErrorCode {
+    Success = 0,
+    Failure = -1,
+    NoAccess= -4,
+    NotLogged = -5,
+    NotFound = -3,
+    Locked = -2
+};
 
 namespace GlobalConfig {
 

@@ -1,6 +1,7 @@
 
 #include "WsUser.h"
 #include <Include/WsGlobalConfig.h>
+#include <fstream>
 
 
 WsUser::WsUser(const string& strUid, const string& pass, const string& ip)
@@ -42,8 +43,8 @@ int WsUser::load()
 #endif //HAS_DAEMON
   /* load */
   if (m_client->load() == FAILURE)
-    return FAILURE;
-  return SUCCESS;
+    return ErrorCode::Failure;
+  return ErrorCode::Success;
 }
 
 NodePtr WsUser::getAccessRoot()
@@ -136,7 +137,6 @@ int WsUser::isLocked(const std::string& path, std::string& uid)
   return m_client->isLocked(cleanPath(path), uid);
 }
 
-
 const string WsUser::getHomePage()
 {
   //FIXME  get property from here ?
@@ -157,6 +157,23 @@ int WsUser::saveProperties(WsNodeProperties* props, const string& path)
 {
   return m_client->saveProperties(props, cleanPath(path));
 }
+  
+int WsUser::writeFile(const std::string path, const std::string& text){
+    int ret = getPermissions(path);
+    if(ret == ErrorCode::NotFound)
+        return ret;
+    if(ret != GlobalConfig::ReadWrite)
+        return ErrorCode::NoAccess;
+
+    ofstream myfile;
+    myfile.open (path.c_str());
+    if(myfile.is_open()){
+        myfile << text;
+        myfile.close();
+        return ErrorCode::Success;
+    }
+    return ErrorCode::Failure;
+}
 
 bool WsUser::isEditor()
 {
@@ -172,7 +189,6 @@ vector<string> WsUser::getTemplatesList(const string& path)
 {
   return m_client->getTemplatesList(cleanPath(path));
 }
-
 
 std::string WsUser::cleanPath(const std::string& path)
 {
