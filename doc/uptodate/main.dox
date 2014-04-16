@@ -150,6 +150,10 @@ The sorted vector will contain the Nodes is this order
 
 [Node5, Node3, Node1, Node4, Node2]
 
+### Node edition
+
+It is possible to edit a Node configuration or contents (ie. contents of the file represented by the node). 
+When a node is going to be edited, the methods WsUser::getLock() should be called prior to that. This method will check for a current lock and if it does not found any, it will create a lock file in .config/locks/ . The file will be named following this pattern filename.ext.json. The file contains the UID of the editor and a the current timestamp in ms. The lock is valid for 30 min (this value is configurable in config file WsGlobalConfig). After the timeout the lock will be dropped.
 
 \page configuration The Configuration Files
 ## The configuration files
