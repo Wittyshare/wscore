@@ -610,6 +610,7 @@ int WsFsDaemonClient::createNode(const string& p, int type)
     getAccessRoot(true);
     return ErrorCode::Success;
   }
+  LOG(ERROR)<<"WsFsDaemonClient::createNode() : Failure";
   return ErrorCode::Failure;
 }
 
