@@ -13,6 +13,7 @@
 
 #include "WsLdapAuth.h"
 #include <Include/WsGlobalConfig.h>
+#include <Utils/WsUtils.h>
 #include <boost/tokenizer.hpp>
 #include <stdlib.h>
 using namespace std;
@@ -40,7 +41,7 @@ int WsLdapAuth::authentify(const string& uid, const string& pass, const std::str
   bool isPublicSite = WsGlobalProperties::instance()->get("global", "public_site", "false") == "true" ? true : false;
   if (isPublicSite) {
     string guest = WsGlobalProperties::instance()->get("global", "guest_group", "guest");
-    if (!ipValid(ip) || uid == guest) {
+    if (!WsUtils::ipValid(ip) || uid == guest) {
       LOG(INFO) << "WsLdapAuth::authentify() : IP not valid " << ip << " For user " << uid;
       /* Generate unique id for the guest */
       int ran = rand() % 10000000 + 1;
@@ -217,24 +218,3 @@ set<string> WsLdapAuth::getAllGroups()
   return m_allGroups;
 }
 
-bool WsLdapAuth::ipValid(string ip)
-{
-  string ipMask = WsGlobalProperties::instance()->get("ldap", "ip_mask", "*");
-  if (ipMask == "*")
-    return true;
-  typedef boost::tokenizer<boost::char_separator<char> > tokenizer;
-  boost::char_separator<char> sep(".");
-  tokenizer maskTok(ipMask, sep);
-  tokenizer uipTok(ip, sep);
-  tokenizer::iterator mask_iter = maskTok.begin();
-  tokenizer::iterator ip_iter = uipTok.begin();
-  for (; ip_iter != uipTok.end(); ++mask_iter, ++ip_iter) {
-    if (mask_iter == maskTok.end())
-      return false;
-    if (*mask_iter == "*")
-      continue;
-    if (*ip_iter != *mask_iter)
-      return false;
-  }
-  return true;
-}

@@ -82,11 +82,6 @@ public:
   std::set<std::string> getAllGroups();
 
 protected:
-  /**
-   * @brief return true or false whether the ip is valid (ie match the mask in the configuration file
-   * @param ip the ip
-   */
-  bool ipValid(std::string ip);
 
 private:
   std::string m_uid;
