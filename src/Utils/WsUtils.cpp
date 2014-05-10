@@ -30,8 +30,9 @@ bool WsUtils::ipValid(string ip)
 
   char_separator<char> sep1("|");
   tokenizer<char_separator<char> > tokens(ipMask, sep1);
-  for (const auto& ipMask_ : tokens) {
-      if(ipMatch(ip, ipMask_))
+  tokenizer<char_separator<char> >::iterator iter = tokens.begin();
+  for (; iter != tokens.end(); ++iter) {
+      if(ipMatch(ip, *iter))
           return true;
   }
   return false;
