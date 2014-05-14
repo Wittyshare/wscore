@@ -93,10 +93,12 @@ int WsFsTreeModification::createNode( const std::set<std::string>& groups, const
   case 0: { /* Create a FileNode */
       fstream f;
       /* Create the file on disk */
-      f.open( string(root.string() + p).c_str(), ios::out );
-      if (!f.is_open())
-        return ErrorCode::Failure;
-      f.close();
+      if(!exists( string(root.string() + p).c_str())){
+	f.open( string(root.string() + p).c_str(), ios::out );
+	if (!f.is_open())
+		return ErrorCode::Failure;
+	f.close();
+      }
       /* Create Node and properties */
       WsFileNode* fn = new WsFileNode(root / p, root);
       NodePropertiesPtr props(new WsNodeProperties(root / path(p), WsNodeProperties::File));
