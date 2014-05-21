@@ -110,7 +110,7 @@ int WsFsTreeConsultation::getLock(const std::set<std::string> groups, const std:
   if (n.get()->isDirectory()) return -1; //Cannot lock directory
   else p = n.get()->getPath().parent_path();
   std::string name = n.get()->getName() + ".lock";
-  if(n.get()->isDirectory)
+  if(n.get()->isDirectory())
       n.get()->getProperties()->createPropertiesDirectories();
   p = root / p / GlobalConfig::PathToNodeLock / name;
   std::string id = "";
